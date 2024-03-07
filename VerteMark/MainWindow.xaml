@@ -9,7 +9,11 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Soubor">
-                <MenuItem Header="Open" Click="btnOpenFile_Click" />
+                <MenuItem Header="Open" Click="btnOpenFile_Click">
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="Otevře soubor" />
+                    </MenuItem.ToolTip>
+                </MenuItem>
                 <MenuItem Command="Save" />
                 <Separator />
                 <MenuItem Header="Konec" />
@@ -24,7 +28,9 @@
             <MenuItem Header="O aplikaci">
             </MenuItem>
         </Menu>
-        <TextBox Name="txtEditor" AcceptsReturn="True" />
+        <StatusBar Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+            <StatusBarItem Name="StatusText" />
+        </StatusBar>
     </DockPanel>
     
 </Window>
