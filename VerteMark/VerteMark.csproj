@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="icon.png" />
-    <Resource Include="verteIcon.png" />
+    <Resource Include="pictures\icon.png" />
+    <Resource Include="pictures\verteIcon.png" />
   </ItemGroup>
 
 </Project>
