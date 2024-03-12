@@ -8,10 +8,18 @@ using System.Windows.Media.Imaging;
 namespace VerteMark.ObjectClasses {
     internal class PaintingCanvas {
 
-        BitmapImage bitmapCanvas;
+        WriteableBitmap? bitmapCanvas;
 
         public PaintingCanvas() {
-            bitmapCanvas = new BitmapImage();
+
+        }
+
+        public void CreateNewEmptyCanvas(int width, int height) {
+         //   bitmapCanvas = new WriteableBitmap(width, height);
+        }
+        // Tohle bude (nepřímo) pro kreslení v UI
+        public void UpdateCanvas() {
+
         }
 
         
