@@ -1,0 +1,12 @@
+﻿<Window x:Class="VerteMark.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VerteMark"
+        mc:Ignorable="d"
+        Title="O Aplikaci" Height="150" Width="300">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="16,22,0,0" TextWrapping="Wrap" Text="VerteMark verze {version}" VerticalAlignment="Top"/>
+    </Grid>
+</Window>

@@ -19,6 +19,7 @@ namespace VerteMark
     /// </summary>
     public partial class WelcomeWindow : Window
     {
+
         public WelcomeWindow()
         {
             InitializeComponent();
@@ -34,6 +35,27 @@ namespace VerteMark
                     box.Background = null;
             }
         }
+
+        private void RadioButton_Hint(object sender, RoutedEventArgs e)
+        {
+            var radioButton = sender as RadioButton;
+
+            if (HintLabel == null) return;
+
+            if (radioButton != null && radioButton.IsChecked == true)
+            {
+                if (radioButton == AnotatorRadioButton)
+                {
+                    HintLabel.Content = "Nápověda pro anotátora";
+                }
+                else
+                {
+                    HintLabel.Content = "Nápověda pro validátora";
+                }
+            }
+        }
+ 
+
 
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
@@ -63,5 +85,6 @@ namespace VerteMark
                 this.Close();
             }
         }
+
     }
 }

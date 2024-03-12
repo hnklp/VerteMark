@@ -6,26 +6,33 @@
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
         Title="VerteMark" Height="450" Width="800" Icon="/icon.png">
+
+
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenFileItem_Click"/>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseItem_Click"/>
+        <CommandBinding Command="ApplicationCommands.Properties" Executed="PropertiesItem_Click"/>
+    </Window.CommandBindings>
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Soubor">
-                <MenuItem Header="Open" Click="btnOpenFile_Click">
+                <MenuItem Command="Open">
                     <MenuItem.ToolTip>
                         <ToolTip Content="Otevře soubor" />
                     </MenuItem.ToolTip>
                 </MenuItem>
                 <MenuItem Command="Save" />
                 <Separator />
-                <MenuItem Header="Konec" />
-            </MenuItem>
+                <MenuItem Command="ApplicationCommands.Close" />
+                    </MenuItem>
             <MenuItem Header="Úpravy">
                 <MenuItem Command="Cut" />
                 <MenuItem Command="Copy" />
                 <MenuItem Command="Paste" />
+                <MenuItem Command="ApplicationCommands.Properties" />
             </MenuItem>
-            <MenuItem Header="Nastavení">
-            </MenuItem>
-            <MenuItem Header="O aplikaci">
+            <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
         </Menu>
         <StatusBar Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
