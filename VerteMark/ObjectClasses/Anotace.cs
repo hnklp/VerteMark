@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
+    /// <summary>
+    /// Třída reprezentující anotaci.
+    /// Poskytuje nástroje pro automatickou tvorbu v novém projektu, veřejné metody pro aktualizaci bitmapy a stavu validace.
+    /// Umožňuje definici anotace s identifikátorem, názvem, barvou a stavem ověření.
+    /// </summary>
     internal class Anotace {
 
         public int Id { get; private set; }

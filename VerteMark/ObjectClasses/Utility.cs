@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace VerteMark.ObjectClasses {
+    /// <summary>
+    /// Třída obsahující metody, které slouží jako interface pro UI
+    /// (Prakticky metody co se volají tlačítky)
+    /// </summary>
     internal class Utility {
 
         public Utility() {

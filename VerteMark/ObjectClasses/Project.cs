@@ -8,6 +8,15 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace VerteMark.ObjectClasses {
+    /// <summary>
+    /// Hlavní třída projektu.
+    /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
+    /// 
+    /// Zahrnuje:
+    /// * Všechny anotace
+    /// * Přihlášeného uživatele
+    /// * Manipulaci s anotacemi, uživatelem a soubory (nepřímo)
+    /// </summary>
     internal class Project {
 
         User? user;

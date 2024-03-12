@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
-    internal class PaintingCanvas {
+    /// <summary>
+    /// Plátno patřící k anotaci
+    /// Obsahuje bitmapu anotace a metody pro manipulaci s ní (bitmapou).
+    /// Bitmapa by měla být nastavená podle obrázku nad kterým se pracuje (momentální crop)
+    /// </summary>
+        internal class PaintingCanvas {
 
         WriteableBitmap? bitmapCanvas;
 
@@ -17,7 +22,7 @@ namespace VerteMark.ObjectClasses {
         public void CreateNewEmptyCanvas(int width, int height) {
          //   bitmapCanvas = new WriteableBitmap(width, height);
         }
-        // Tohle bude (nepřímo) pro kreslení v UI
+        
         public void UpdateCanvas() {
 
         }

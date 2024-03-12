@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace VerteMark.ObjectClasses {
+    /// <summary>
+    /// Záznam uživatelskch dat pro snažší manipulaci a ukládání
+    /// </summary>
     internal class User {
 
         public string Id { get; private set; }
