@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="O Aplikaci" Height="150" Width="300">
+        Title="O Aplikaci" Height="150" Width="300" ShowInTaskbar="False" ResizeMode="NoResize" Icon="/icon.png">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="56*"/>
+            <ColumnDefinition Width="19*"/>
+        </Grid.ColumnDefinitions>
         <TextBlock HorizontalAlignment="Left" Margin="16,22,0,0" TextWrapping="Wrap" Text="VerteMark verze {version}" VerticalAlignment="Top"/>
+        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="169,105,0,10"/>
     </Grid>
 </Window>

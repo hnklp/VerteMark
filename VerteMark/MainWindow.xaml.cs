@@ -47,7 +47,8 @@ namespace VerteMark
 
         private void AboutItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("VerteMark\nVerze {version}\nAutoři: Alex Schönfelder\nHynek Půta\nJakub Kepič\nJosef Bér\nMatěj Ježek\nSabina Ajksnerová\n2024 PřF UJEP");
+            AboutWindow AboutWindow = new AboutWindow();
+            AboutWindow.Show();
         }
 
         private void PropertiesItem_Click(object sender, RoutedEventArgs e)
