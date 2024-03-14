@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System;
 using System.IO;
 using Microsoft.Win32;
+using VerteMark.ObjectClasses;
 
 namespace VerteMark
 {
@@ -18,8 +19,13 @@ namespace VerteMark
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        // Vlastnosti
+        Utility utility;
         public MainWindow() {
             InitializeComponent();
+
+            // Tady začíná kód
+            utility = new Utility();
         }
         private void mnuOpen_Click(object sender, RoutedEventArgs e) {
             MessageBox.Show("New");

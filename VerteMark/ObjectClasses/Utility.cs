@@ -10,20 +10,23 @@ namespace VerteMark.ObjectClasses {
     /// (Prakticky metody co se volají tlačítky)
     /// </summary>
     internal class Utility {
+        // Vlastnosti
+        Project project;
 
+        // Konstruktor
         public Utility() {
-
+            project = new Project();
         }
 
-        public void LoginUser() {
-
+        public void LoginUser(string id, bool validator) {
+            project.LoginNewUser(id, validator);
         }
         public void LogoutUser() {
-
+            project.LogoutUser();
         }
         // Can return something to let UI know that the folder is shit
-        public void ChooseProjectFolder() {
-
+        public void ChooseProjectFolder(string path) {
+            project.TryOpeningProject(path);
         }
         public void SaveProject() {
              

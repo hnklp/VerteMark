@@ -24,5 +24,18 @@ namespace VerteMark.ObjectClasses {
 
         }
 
+        public FolderState CheckFolderType(string path) {
+            // zjistí typ/stav souboru a vrátí enum, co to je
+
+            return FolderState.Nonfunctional;
+        }
+
+
+    }
+
+    public enum FolderState {
+        New,
+        Existing,
+        Nonfunctional
     }
 }

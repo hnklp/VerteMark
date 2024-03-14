@@ -18,6 +18,5 @@ namespace VerteMark.ObjectClasses {
             IsValidator = Validator;
         }
 
-
     }
 }
