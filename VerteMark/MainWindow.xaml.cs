@@ -37,8 +37,5 @@ namespace VerteMark
                 txtEditor.Text = File.ReadAllText(openFileDialog.FileName);
         }
 
-        private void pepuvButt_Click(object sender, RoutedEventArgs e) {
-            textik.Text = "uauauauaua";
-        }
     }
 }
