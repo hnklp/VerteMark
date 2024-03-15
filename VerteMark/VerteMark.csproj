@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="icon.png" />
-    <None Remove="textboxbackground.gif" />
-    <None Remove="verteIcon.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="icon.png" />
     <Resource Include="textboxbackground.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

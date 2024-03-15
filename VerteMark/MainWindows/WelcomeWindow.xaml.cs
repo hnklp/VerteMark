@@ -25,6 +25,7 @@ namespace VerteMark
             InitializeComponent();
         }
 
+        //textbox hint
         private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox box)
@@ -36,27 +37,28 @@ namespace VerteMark
             }
         }
 
+        //zmena hintu podle vybraneho RadioButton
         private void RadioButton_Hint(object sender, RoutedEventArgs e)
         {
             var radioButton = sender as RadioButton;
 
-            if (HintLabel == null) return;
+            if (HintLabel == null) return; //safeguard
 
             if (radioButton != null && radioButton.IsChecked == true)
             {
                 if (radioButton == AnotatorRadioButton)
                 {
-                    HintLabel.Content = "Nápověda pro anotátora";
+                    HintLabel.Content = "51 placeholder anapoveda";
                 }
                 else
                 {
-                    HintLabel.Content = "Nápověda pro validátora";
+                    HintLabel.Content = "55 placeholder vnapoveda";
                 }
             }
         }
  
 
-
+        //talcitko prihlaseni, vyber rezimu podle RadioButton
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
             RadioButton? selectedRadioButton = null;
@@ -85,6 +87,6 @@ namespace VerteMark
                 this.Close();
             }
         }
-
+        //data z textboxu (zadani ID) tahejte z IDTextBox.text
     }
 }

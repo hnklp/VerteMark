@@ -24,38 +24,42 @@ namespace VerteMark
             InitializeComponent();
         }
 
+        //dialog otevreni souboru s filtrem
+        //TODO odstranit moznost vsechny soubory??
+        //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         private void OpenFileItem_Click(object sender, RoutedEventArgs e)
         {
+            //toto mozna presunout jinam, at jsou tady jenom funkce pro tlacitka?
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "DICOM (*.dcm)|*.dcm|JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|Všechny soubory (*.*)|*.*";
+            openFileDialog.Filter = "DICOM (*.dcm)|*.dcm|Všechny soubory (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 try
                 {
-                    // Zde můžete provést další akce s vybraným souborem
                     string selectedFileName = openFileDialog.FileName;
-                    // Například můžete načíst obsah souboru a zpracovat ho:
-                    string fileContent = File.ReadAllText(selectedFileName);
-                    // Zde můžete provést další zpracování obsahu souboru
+                    //sem pridat co se ma se souborem udelat
                 }
-                catch (Exception ex)
+                catch (Exception ex) //safeguard pokud se nepovede soubor otevrit
                 {
-                    MessageBox.Show($"Chyba při otevírání souboru: {ex.Message}", "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"zde vlozit string (CZ: Chyba EN: Error {ex.Message}", "Sem to stejne", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
+        //kliknuti na o aplikaci
         private void AboutItem_Click(object sender, RoutedEventArgs e)
         {
             AboutWindow AboutWindow = new AboutWindow();
             AboutWindow.Show();
         }
 
+        //kliknuti na nastaveni aplikace
         private void PropertiesItem_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Properties clicked");
         }
 
+        //soubor - zavrit
         private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             Application.Current.Shutdown();
