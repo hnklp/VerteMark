@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -24,6 +25,13 @@ namespace VerteMark.ObjectClasses {
         public void LogoutUser() {
             project.LogoutUser();
         }
+        public User? GetLoggedInUser() {
+            return project.GetLoggedInUser();
+        }
+        public BitmapImage? GetOriginalPicture() {
+            return project.GetOriginalPicture();
+        }
+
         // Returns true if project was loaded (in any way), returns false if loading has failed
         public bool ChooseProjectFolder(string path) {
             return project.TryOpeningProject(path);
@@ -34,7 +42,10 @@ namespace VerteMark.ObjectClasses {
         public void ChangeSelectedAnotation(int id) {
 
         }
-        public void ClearAnotation() {
+        public void UpdatedSelectedAnotation(int idAnotace) {
+            project.UpdateAnotaceCanvas(idAnotace);
+        }
+        public void ClearSelectedAnotation() {
 
         }
         public void SwitchAnotationValidation(int id) {
