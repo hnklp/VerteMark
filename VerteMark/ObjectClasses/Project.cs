@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -20,49 +21,46 @@ namespace VerteMark.ObjectClasses {
     internal class Project {
 
         FileManager fileManager;
-        User? loggedInUser;
-        List<Anotace> anotaces;
+        User? loggedInUser; // Info o uživateli
+        List<Anotace> anotaces; // Objekty anotace
+        BitmapImage? originalPicture; // Fotka toho krku
+        Metadata? metadata; // Metadata projektu
 
         public Project() {
             fileManager = new FileManager();
             anotaces = new List<Anotace>();
+            originalPicture = new BitmapImage();
         }
 
-        public void TryOpeningProject(string path) {
+        public bool TryOpeningProject(string path) {
             FolderState folderState = fileManager.CheckFolderType(path);
-
             switch (folderState) {
                 case FolderState.New:
-                    // Oznámit UI že je nový(aby otevřel další okno po načtení tady) a načíst ho tady
                     CreateNewProject(path);
-                    break;
+                    return true;
                 case FolderState.Existing:
-                    // Oznámit UI že je existing(aby otevřel další okno po načtení tady) a načíst ho tady
                     LoadProject(path);
-                    break;
+                    return true;
                 case FolderState.Nonfunctional:
-                    // Oznámit UI že je to špatný file a vrátit se 
-                    break;
+                    return false;
             }
+            return false;
         }
         public void CreateNewProject(string path) {
-            // Vytvořím všechny složky (to dělá fileloader)
-
-            // Initialize project
-            InitializeProject();
+            // Vytvoř čistý metadata
+            metadata = new Metadata();
+            // Vytvoř čistý anotace
+            CreateNewAnotaces();
+            // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
+            originalPicture = fileManager.GetPictureAsBitmapImage();
         }
         public void LoadProject(string path) {
-            // si řekne o složky atd
-
-            // Initialize project
-            InitializeProject();
-        }
-        void InitializeProject() {
-            // nainstancuje všechny proměnné projektu
-            // načte z jsonu anotace
-            // načte **někam** metadata csv
-            // načte **někam** png podklad
-
+            // Získej metadata
+            metadata = fileManager.GetProjectMetada();
+            // Získej anotace
+            anotaces = fileManager.GetProjectAnotaces();
+            // Získej uložený obrázek do projektu
+            originalPicture = fileManager.GetPictureAsBitmapImage();
         }
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
@@ -76,11 +74,15 @@ namespace VerteMark.ObjectClasses {
             loggedInUser = null;
         }
 
-
-        void NewAnotaces() {
+        void CreateNewAnotaces() {
             anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Red));
+            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Blue));
+            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Green));
+            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Yellow));
+            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Purple));
+            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.MediumPurple));
+            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.RebeccaPurple));
+            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.Magenta));
         }
         public void UpdateAnotaceCanvas(int idAnotace) {
             FindAnotaceById(idAnotace).UpdateCanvas();

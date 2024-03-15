@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="450" Width="800" Icon="/icon.png">
+        Title="VerteMark" Height="450" Width="800" >
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Soubor">
@@ -23,8 +23,10 @@
             </MenuItem>
             <MenuItem Header="O aplikaci">
             </MenuItem>
+            <Button x:Name="pepuvButt" Content="Čůdl" ContentStringFormat="" Width="153" Click="pepuvButt_Click"/>
         </Menu>
-        <TextBox Name="txtEditor" AcceptsReturn="True" />
+        <TextBox x:Name="txtEditor" AcceptsReturn="True" Width="156" Height="145" />
+        <TextBlock x:Name="textik" TextWrapping="Wrap" Text="..." Width="175"/>
     </DockPanel>
     
 </Window>

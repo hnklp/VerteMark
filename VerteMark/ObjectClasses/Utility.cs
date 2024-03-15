@@ -24,9 +24,9 @@ namespace VerteMark.ObjectClasses {
         public void LogoutUser() {
             project.LogoutUser();
         }
-        // Can return something to let UI know that the folder is shit
-        public void ChooseProjectFolder(string path) {
-            project.TryOpeningProject(path);
+        // Returns true if project was loaded (in any way), returns false if loading has failed
+        public bool ChooseProjectFolder(string path) {
+            return project.TryOpeningProject(path);
         }
         public void SaveProject() {
              
@@ -38,6 +38,10 @@ namespace VerteMark.ObjectClasses {
 
         }
         public void SwitchAnotationValidation(int id) {
+
+        }
+        // Vrátí JPEG/PNG toho krku aby se to mohlo načíst
+        public void GetMainPicture() {
 
         }
 

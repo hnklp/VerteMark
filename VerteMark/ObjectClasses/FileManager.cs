@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -29,7 +30,16 @@ namespace VerteMark.ObjectClasses {
 
             return FolderState.Nonfunctional;
         }
-
+        //Return DICOM image as bitmapImage so we can use it and crop it
+        public BitmapImage GetPictureAsBitmapImage() {
+            return null;
+        }
+        public Metadata GetProjectMetada() {
+            return null;
+        }
+        public List<Anotace> GetProjectAnotaces() {
+            return null;
+        }
 
     }
 
