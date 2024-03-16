@@ -11,28 +11,31 @@ using System.Windows.Shapes;
 using System;
 using System.IO;
 using Microsoft.Win32;
+using VerteMark.ObjectClasses;
 
 namespace VerteMark
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
+    public partial class MainWindow : Window {
+        // Vlastnosti
+        Utility utility;
+        public MainWindow() {
             InitializeComponent();
+
+            // Tady začíná kód
+            utility = new Utility();
         }
-        private void mnuOpen_Click(object sender, RoutedEventArgs e)
-        {
+        private void mnuOpen_Click(object sender, RoutedEventArgs e) {
             MessageBox.Show("New");
         }
 
-        private void btnOpenFile_Click(object sender, RoutedEventArgs e)
-        {
+        private void btnOpenFile_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            if(openFileDialog.ShowDialog() == true)
                 txtEditor.Text = File.ReadAllText(openFileDialog.FileName);
         }
+
     }
 }
