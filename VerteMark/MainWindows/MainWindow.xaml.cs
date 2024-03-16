@@ -11,6 +11,9 @@ using System.Windows.Shapes;
 using System;
 using System.IO;
 using Microsoft.Win32;
+using VerteMark.ObjectClasses;
+using FellowOakDicom;
+
 
 namespace VerteMark
 {
@@ -21,32 +24,44 @@ namespace VerteMark
     {
         public bool IsValidator { get; private set; }
         private string UserId;
+        Utility utility;                            //######################
+        private BitmapSource? bitmap;           //######################
 
         public MainWindow(bool IsValidator, string UserId)
         {
             InitializeComponent();
             this.IsValidator = IsValidator;
             this.UserId = UserId;
+            utility = new Utility();                   //######################
+
+            inkCanvas.Width = ImageHolder.Width;     // ######################
+            inkCanvas.Height = ImageHolder.Height;    //######################
         }
 
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
-        private void OpenFileItem_Click(object sender, RoutedEventArgs e)
-        {
-            //toto mozna presunout jinam, at jsou tady jenom funkce pro tlacitka?
+        //TODO dodelat exception
+
+        private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "DICOM (*.dcm)|*.dcm|Všechny soubory (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                try
-                {
-                    string selectedFileName = openFileDialog.FileName;
-                    //sem pridat co se ma se souborem udelat
-                }
-                catch (Exception ex) //safeguard pokud se nepovede soubor otevrit
-                {
-                    MessageBox.Show($"zde vlozit string (CZ: Chyba EN: Error {ex.Message}", "Sem to stejne", MessageBoxButton.OK, MessageBoxImage.Error);
+            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.Multiselect = false; // Allow selecting only one file
+            openFileDialog.Title = "Select a PNG File";
+            if (openFileDialog.ShowDialog() == true) {
+                string selectedFilePath = openFileDialog.FileName;
+                bool success = utility.ChooseProjectFolder(selectedFilePath);
+                if (success) {
+                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
+                    BitmapImage bitmapImage = utility.GetOriginalPicture(); 
+
+
+                    ImageHolder.Source = bitmapImage;
+                    /*
+                    inkCanvas.Width = bitmapImage.PixelWidth;
+                    inkCanvas.Height = bitmapImage.PixelHeight;
+                    */
                 }
             }
         }
@@ -80,6 +95,29 @@ namespace VerteMark
         }
 
 
+
+
+
+        /*******************/
+//######################
+        public BitmapSource ConvertInkCanvasToBitmap(InkCanvas inkCanvas) {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth,(int)inkCanvas.ActualHeight,96d, 96d,PixelFormats.Default);
+            renderBitmap.Render(inkCanvas);
+            BitmapSource bitmapSource = renderBitmap;
+            return bitmapSource;
+        }
+
+        //######################
+
+
+        //######################
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
+
+            bitmap = ConvertInkCanvasToBitmap(inkCanvas);
+            utility.SaveBitmapToFile(bitmap, saveFileDialog);
+        }
 
     }
 }

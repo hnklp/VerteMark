@@ -45,6 +45,12 @@
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
+            <!-- InkCanvas control -->
+            <InkCanvas Grid.Column="1" x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
+                Width="138" Height="154" Margin="30,26,0,0" Panel.ZIndex="99999" Background="Transparent"/>
+
+            <Image Grid.Column="1" x:Name="ImageHolder" HorizontalAlignment="Left" Height="376" Margin="30,26,0,0" VerticalAlignment="Top" Width="414" Stretch="Fill"/>
+
             <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
                 <ToolBar Margin="1,0,-2,-27">
@@ -133,6 +139,10 @@
                     </TransformGroup>
                 </CheckBox.RenderTransform>
             </CheckBox>
+
+            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="696,367,0,0" VerticalAlignment="Top" Height="57" Width="94" Click="Button_Click"/>
+            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="564,162,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click"/>
+
 
         </Grid>
 
