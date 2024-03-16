@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="Vítejte ve VerteMark!" Height="300" Width="400" Topmost="True" ResizeMode="NoResize" Icon="../icon.png" WindowStartupLocation="CenterScreen" >
+        Title="Vítejte ve VerteMark!" Height="300" Width="400" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" >
 
     <Window.Resources>
-        <ImageBrush x:Key="watermark" ImageSource="\textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
+        <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
     </Window.Resources>
 
     <Grid>
