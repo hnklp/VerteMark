@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows.Media.Imaging;
 using System;
 using System.Drawing;
 using System.IO;
 using Dicom;
 using Dicom.Imaging;
-using Dicom.Imaging.Codec;
-using Dicom.IO;
-using System.Runtime.CompilerServices;
 
 
 namespace VerteMark.ObjectClasses {
@@ -36,6 +28,7 @@ namespace VerteMark.ObjectClasses {
             this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
+
         public void SaveProject() {
 
         }
@@ -57,8 +50,8 @@ namespace VerteMark.ObjectClasses {
         }
 
 
-        // zatim nastaveno na to, aby se png ukladalo na desktop
-        // problem je v tom, ze to nefunguje - Dicom Image se nechce renderovat
+        // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
+        // nastavi instanci pngPath
         void ExtractImageFromDicom()
         {
 
@@ -84,47 +77,44 @@ namespace VerteMark.ObjectClasses {
         }
 
 
+        // extrahuje metadata do csv souboru do output slozky
+        // nastavi instanci metaPath
         void ExtractAndSaveMetadata()
         {
-            // Kontrola existence zadaného DICOM souboru
             if (!File.Exists(this.dicomPath))
             {
                 Console.WriteLine("Zadaný DICOM soubor neexistuje.");
                 return;
             }
 
-            // Vytvoření názvu CSV souboru
+
             string csvFileName = System.IO.Path.GetFileNameWithoutExtension(this.dicomPath) + "_metadata.csv";
             this.metaPath = System.IO.Path.Combine(this.outputPath, csvFileName);
 
-            // Načtení DICOM souboru
             DicomFile dicomFile = DicomFile.Open(this.dicomPath);
 
             // Vytvoření CSV souboru
             using (StreamWriter writer = new StreamWriter(this.metaPath))
             {
-                // Zápis hlavičky CSV souboru
+                // hlavička
                 writer.WriteLine("Tag;Value;VR;Description");
 
-                // Procházení všech elementů v datasetu DICOM
                 foreach (DicomItem item in dicomFile.Dataset)
                 {
-                    // Získání informací o elementu
+
                     string tag = item.Tag.ToString();
                     string value = item.ToString();
                     string vr = item.ValueRepresentation.Code;
                     string description = DicomDictionary.Default[item.Tag].Name;
 
-                    // Zápis řádku do CSV souboru
                     writer.WriteLine($"{tag};{value};{vr};{description}");
                 }
             }
         }
 
 
-
         // nacitani DICOM souboru - nutno prejmenovat funkci
-        // path = dicom soubor
+        // path = dicom soubor -> vytvoreni slozky na plose -> extrahovani png a csv souboru -> nacteni png obrazku
         public BitmapImage GetPictureAsBitmapImage(string path) {
             try {
                 // Check if the file exists
@@ -158,6 +148,7 @@ namespace VerteMark.ObjectClasses {
         }
 
 
+        // nacte obrazek pomoci cesty pngPath
         BitmapImage LoadBitmapImage()
         {
             try

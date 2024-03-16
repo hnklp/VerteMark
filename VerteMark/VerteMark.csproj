@@ -10,10 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="fo-dicom" Version="5.1.2" />
-    <PackageReference Include="fo-dicom.Codecs" Version="5.12.1-beta1" />
     <PackageReference Include="fo-dicom.Desktop" Version="4.0.8" />
     <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />
-    <PackageReference Include="fo-dicom.NetCore" Version="4.0.8" />
   </ItemGroup>
 
   <ItemGroup>
