@@ -22,17 +22,17 @@ namespace VerteMark
     /// </summary>
     public partial class MainWindow : Window {
         // Vlastnosti
-        Utility utility;
-        private BitmapSource? bitmap;
+        Utility utility;                            //######################
+        private BitmapSource? bitmap;           //######################
 
         public MainWindow() {
             InitializeComponent();
 
             // Tady začíná kód
-            utility = new Utility();
+            utility = new Utility();                   //######################
 
-            inkCanvas.Width = ImageHolder.Width;
-            inkCanvas.Height = ImageHolder.Height;
+            inkCanvas.Width = ImageHolder.Width;     // ######################
+            inkCanvas.Height = ImageHolder.Height;    //######################
         }
 
         /*** LOGIN ***/
@@ -59,7 +59,8 @@ namespace VerteMark
 
         /*** PROJECT CREATION ***/
 
-
+        // TIMHLE NAHRADIME S+H
+        // DVA FILTRY: DICOM / SLOZKA
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
@@ -86,7 +87,7 @@ namespace VerteMark
 
 
         /*******************/
-
+//######################
         public BitmapSource ConvertInkCanvasToBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth,(int)inkCanvas.ActualHeight,96d, 96d,PixelFormats.Default);
             renderBitmap.Render(inkCanvas);
@@ -94,40 +95,16 @@ namespace VerteMark
             return bitmapSource;
         }
 
-        public void SaveBitmapToFile(BitmapSource bitmap) {
-            // Create a SaveFileDialog to prompt the user for file save location
+        //######################
+
+
+        //######################
+        private void Button_Click(object sender, RoutedEventArgs e) {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
-            // Show the dialog and get the result
-            if (saveFileDialog.ShowDialog() == true) {
-                // Create a BitmapEncoder based on the selected file format
-                BitmapEncoder encoder = null;
-                switch (System.IO.Path.GetExtension(saveFileDialog.FileName).ToUpper()) {
-                    case ".PNG":
-                        encoder = new PngBitmapEncoder();
-                        break;
-                    case ".JPG":
-                        encoder = new JpegBitmapEncoder();
-                        break;
-                    case ".BMP":
-                        encoder = new BmpBitmapEncoder();
-                        break;
-                    default:
-                        // Unsupported file format
-                        return;
-                }
 
-                // Encode and save the bitmap to the selected file path
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                using (FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.Create)) {
-                    encoder.Save(stream);
-                }
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e) {
             bitmap = ConvertInkCanvasToBitmap(inkCanvas);
-            SaveBitmapToFile(bitmap);
+            utility.SaveBitmapToFile(bitmap, saveFileDialog);
         }
 
     }
