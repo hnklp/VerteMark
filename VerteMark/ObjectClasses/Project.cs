@@ -66,7 +66,7 @@ namespace VerteMark.ObjectClasses {
             // Získej anotace
             anotaces = fileManager.GetProjectAnotaces();
             // Získej uložený obrázek do projektu
-            originalPicture = fileManager.GetPictureAsBitmapImage();
+            //originalPicture = fileManager.GetPictureAsBitmapImage();
         }
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
