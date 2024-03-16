@@ -19,7 +19,7 @@ namespace VerteMark
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool IsValidator;
+        public bool IsValidator { get; private set; }
         private string UserId;
 
         public MainWindow(bool IsValidator, string UserId)
@@ -78,5 +78,8 @@ namespace VerteMark
         {
             Application.Current.Shutdown();
         }
+
+
+
     }
 }
