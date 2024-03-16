@@ -119,5 +119,30 @@ namespace VerteMark
             utility.SaveBitmapToFile(bitmap, saveFileDialog);
         }
 
+        private void OpenProject_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.Multiselect = false; // Allow selecting only one file
+            openFileDialog.Title = "Select a PNG File";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string selectedFilePath = openFileDialog.FileName;
+                bool success = utility.ChooseProjectFolder(selectedFilePath);
+                if (success)
+                {
+                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
+                    BitmapImage bitmapImage = utility.GetOriginalPicture();
+
+
+                    ImageHolder.Source = bitmapImage;
+                    /*
+                    inkCanvas.Width = bitmapImage.PixelWidth;
+                    inkCanvas.Height = bitmapImage.PixelHeight;
+                    */
+                }
+            }
+        }
     }
 }
