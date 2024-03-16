@@ -36,6 +36,21 @@ namespace VerteMark
 
             inkCanvas.Width = ImageHolder.Width;     // ######################
             inkCanvas.Height = ImageHolder.Height;    //######################
+            
+            List<CheckBox> CheckBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+
+
+            foreach (var CheckBox in CheckBoxes)
+            {
+                CheckBox.IsEnabled = IsValidator;
+                CheckBox.IsChecked = IsValidator;
+            }
+
+
         }
 
         //dialog otevreni souboru s filtrem
