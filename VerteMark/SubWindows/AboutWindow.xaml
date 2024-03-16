@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="O Aplikaci" Height="150" Width="300" ShowInTaskbar="False" ResizeMode="NoResize" Icon="../icon.png">
+        Title="O Aplikaci" Height="150" Width="300" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="56*"/>
