@@ -33,6 +33,7 @@ namespace VerteMark.ObjectClasses {
         }
 
         public bool TryOpeningProject(string path) {
+            /**
             FolderState folderState = fileManager.CheckFolderType(path);
             switch (folderState) {
                 case FolderState.New:
@@ -45,6 +46,11 @@ namespace VerteMark.ObjectClasses {
                     return false;
             }
             return false;
+            **/
+
+
+            CreateNewProject(path);
+            return true;
         }
         public void CreateNewProject(string path) {
             // Vytvoř čistý metadata
@@ -52,7 +58,7 @@ namespace VerteMark.ObjectClasses {
             // Vytvoř čistý anotace
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
-            originalPicture = fileManager.GetPictureAsBitmapImage();
+            originalPicture = fileManager.GetPictureAsBitmapImage(path);
         }
         public void LoadProject(string path) {
             // Získej metadata
@@ -60,7 +66,7 @@ namespace VerteMark.ObjectClasses {
             // Získej anotace
             anotaces = fileManager.GetProjectAnotaces();
             // Získej uložený obrázek do projektu
-            originalPicture = fileManager.GetPictureAsBitmapImage();
+            //originalPicture = fileManager.GetPictureAsBitmapImage();
         }
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
@@ -72,6 +78,9 @@ namespace VerteMark.ObjectClasses {
         }
         public void LogoutUser() {
             loggedInUser = null;
+        }
+        public User? GetLoggedInUser() {
+            return loggedInUser;
         }
 
         void CreateNewAnotaces() {
@@ -99,6 +108,10 @@ namespace VerteMark.ObjectClasses {
             } else {
                 throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
             }
+        }
+
+        public BitmapImage? GetOriginalPicture() {
+            return originalPicture;
         }
 
 

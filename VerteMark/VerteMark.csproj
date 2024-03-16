@@ -13,6 +13,9 @@
     <Resource Include="Pictures\textboxbackground.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <PackageReference Include="fo-dicom" Version="5.1.2" />
+    <PackageReference Include="fo-dicom.Desktop" Version="4.0.8" />
+    <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />
   </ItemGroup>
 
 </Project>
