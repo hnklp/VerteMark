@@ -5,3 +5,5 @@ Obratlům na stopě.
 GUI (Skoro)
 
 Welcome screen
+Dicom extraction (PNG, CSV)
+Painting Canvas
