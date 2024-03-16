@@ -46,10 +46,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- InkCanvas control -->
-            <InkCanvas Grid.Column="1" x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Width="138" Height="154" Margin="30,26,0,0" Panel.ZIndex="99999" Background="Transparent"/>
+            <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
+                Width="455" Height="355" Margin="94,60,0,0" Panel.ZIndex="99999" Background="Transparent"/>
 
-            <Image Grid.Column="1" x:Name="ImageHolder" HorizontalAlignment="Left" Height="376" Margin="30,26,0,0" VerticalAlignment="Top" Width="414" Stretch="Fill"/>
+            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="376" Margin="128,60,0,0" VerticalAlignment="Top" Width="414" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
             <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
@@ -140,8 +140,8 @@
                 </CheckBox.RenderTransform>
             </CheckBox>
 
-            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="696,367,0,0" VerticalAlignment="Top" Height="57" Width="94" Click="Button_Click"/>
-            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="564,162,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click"/>
+            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,405,0,0" VerticalAlignment="Top" Height="57" Width="94" Click="Button_Click" Grid.Column="1"/>
+            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="54,323,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click" Grid.Column="1"/>
 
 
         </Grid>
