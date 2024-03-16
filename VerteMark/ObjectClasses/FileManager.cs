@@ -11,6 +11,7 @@ using Dicom;
 using Dicom.Imaging;
 using Dicom.Imaging.Codec;
 using Dicom.IO;
+using System.Runtime.CompilerServices;
 
 
 namespace VerteMark.ObjectClasses {
@@ -26,11 +27,13 @@ namespace VerteMark.ObjectClasses {
 
         public string outputPath;
         public string? dicomPath;
+        public string? pngPath;
+        public string? jsonPath;
+        public string? metaPath;
 
 
         public FileManager() {
-            this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); ;
-            this.dicomPath = null;
+            this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
         public void SaveProject() {
@@ -66,10 +69,10 @@ namespace VerteMark.ObjectClasses {
             Bitmap bmp = image.RenderImage().As<Bitmap>();
 
             string outputFileName = System.IO.Path.GetFileNameWithoutExtension(this.dicomPath) + ".png";
-            string outputPath = System.IO.Path.Combine(this.outputPath, outputFileName);
+            this.pngPath = System.IO.Path.Combine(this.outputPath, outputFileName);
 
             // Uložení obrázku jako PNG
-            bmp.Save(outputPath, System.Drawing.Imaging.ImageFormat.Png);
+            bmp.Save(this.pngPath, System.Drawing.Imaging.ImageFormat.Png);
         }
 
 
@@ -92,13 +95,13 @@ namespace VerteMark.ObjectClasses {
 
             // Vytvoření názvu CSV souboru
             string csvFileName = System.IO.Path.GetFileNameWithoutExtension(this.dicomPath) + "_metadata.csv";
-            string csvFilePath = System.IO.Path.Combine(this.outputPath, csvFileName);
+            this.metaPath = System.IO.Path.Combine(this.outputPath, csvFileName);
 
             // Načtení DICOM souboru
             DicomFile dicomFile = DicomFile.Open(this.dicomPath);
 
             // Vytvoření CSV souboru
-            using (StreamWriter writer = new StreamWriter(csvFilePath))
+            using (StreamWriter writer = new StreamWriter(this.metaPath))
             {
                 // Zápis hlavičky CSV souboru
                 writer.WriteLine("Tag;Value;VR;Description");
@@ -129,17 +132,21 @@ namespace VerteMark.ObjectClasses {
                     throw new FileNotFoundException("File not found.", path);
                 }
 
-                this.dicomPath = path;
-                CreateOutputFile("test");
+                if (this.outputPath != Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
+                {
+                    this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                }
 
+                this.dicomPath = path;
+
+                CreateOutputFile("test");
                 ExtractImageFromDicom();
                 ExtractAndSaveMetadata();
-
-                path = System.IO.Path.Combine(this.outputPath, "00000000.png");
+;
 
                 // Create a new BitmapImage
 
-                BitmapImage image = LoadBitmapImage(path);
+                BitmapImage image = LoadBitmapImage();
                 return image;
             }
             catch (Exception ex)
@@ -151,7 +158,7 @@ namespace VerteMark.ObjectClasses {
         }
 
 
-        BitmapImage LoadBitmapImage(string pathToImage)
+        BitmapImage LoadBitmapImage()
         {
             try
             {
@@ -161,7 +168,7 @@ namespace VerteMark.ObjectClasses {
                 bitmapImage.BeginInit();
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bitmapImage.UriSource = new Uri(pathToImage);
+                bitmapImage.UriSource = new Uri(this.pngPath);
                 bitmapImage.EndInit();
 
                 // Ensure the BitmapImage is fully loaded before returning
