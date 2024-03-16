@@ -1,0 +1,23 @@
+﻿<Window x:Class="VerteMark.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VerteMark"
+        mc:Ignorable="d"
+        Title="Vítejte ve VerteMark!" Height="300" Width="400" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" >
+
+    <Window.Resources>
+        <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
+    </Window.Resources>
+
+    <Grid>
+        <Label x:Name="HintLabel" Content="" HorizontalContentAlignment="Center" Margin="0,172,0,0" VerticalAlignment="Top" Width="284" Height="26"/>
+        <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="82,142,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
+        <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="251,143,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
+        <TextBox x:Name ="IDTextBox" HorizontalAlignment="Center" Margin="0,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="19" />
+        <Button Name="LoginButton" Content="Přihlásit se" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="25" Width="68" Click="SignInButton_Click"/>
+        <Label Name="LoginLabel" Content="Přihlaste se pomocí ID" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
+    </Grid>
+
+</Window>

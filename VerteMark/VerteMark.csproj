@@ -9,8 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="pictures\icon.png" />
-    <Resource Include="pictures\verteIcon.png" />
+    <Resource Include="Pictures\icon.png" />
+    <Resource Include="Pictures\textboxbackground.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
