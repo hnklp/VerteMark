@@ -35,7 +35,7 @@
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
         </Menu>
-        <StatusBar Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+        <StatusBar Name="StatusBar" Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <StatusBarItem Name="StatusText" />
         </StatusBar>
 
@@ -45,7 +45,9 @@
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
-            <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
+            <Rectangle Grid.Column="2" Fill="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
+
+            <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Right" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
                 <ToolBar Margin="1,0,-2,-27">
                     <Button Content="&#xE105;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Left"/>
@@ -56,17 +58,18 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C1" HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,61,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
+            <CheckBox x:Name="CheckBox1" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,61,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
+            <CheckBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
+                </TransformGroup>
+            </CheckBox.RenderTransform>
             </CheckBox>
+
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox2" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -76,7 +79,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox3" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -86,7 +89,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,150,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,151,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox4" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,151,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -96,7 +99,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,180,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,181,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox5" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,181,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -106,7 +109,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,210,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,211,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox6" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,211,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -116,7 +119,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,240,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,241,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox7" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,241,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
@@ -126,7 +129,7 @@
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,270,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
-            <CheckBox Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,271,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
+            <CheckBox x:Name="CheckBox8" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,271,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
