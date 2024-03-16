@@ -12,6 +12,8 @@ using System;
 using System.IO;
 using Microsoft.Win32;
 using VerteMark.ObjectClasses;
+using FellowOakDicom;
+
 
 namespace VerteMark
 {
