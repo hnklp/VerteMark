@@ -22,11 +22,25 @@ namespace VerteMark
         public bool IsValidator { get; private set; }
         private string UserId;
 
-        public MainWindow(bool IsValidator, string UserId)
+    public MainWindow(bool IsValidator, string UserId)
         {
             InitializeComponent();
             this.IsValidator = IsValidator;
             this.UserId = UserId;
+
+            List<CheckBox> CheckBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+
+
+            foreach (var CheckBox in CheckBoxes)
+                    {
+                        CheckBox.IsEnabled = IsValidator;
+                        CheckBox.IsChecked = IsValidator;
+                    }
+
         }
 
         //dialog otevreni souboru s filtrem
