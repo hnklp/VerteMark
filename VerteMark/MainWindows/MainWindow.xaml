@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="450" Width="800" Icon="../icon.png">
+        Title="VerteMark" Height="572" Width="1024" Icon="../icon.png">
 
 
     <Window.CommandBindings>
@@ -38,8 +38,14 @@
         <StatusBar Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <StatusBarItem Name="StatusText" />
         </StatusBar>
-        <Grid Width="802">
-            <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Center" Height="28" VerticalAlignment="Top" Width="802">
+        
+        <Grid ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+
+            <ToolBarTray x:Name="MainToolBar" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="409">
 
                 <ToolBar>
                     <Button Content="&#xE105;" FontFamily="Segoe UI Symbol" FontSize="15"/>

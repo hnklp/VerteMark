@@ -40,13 +40,13 @@ namespace VerteMark
         //zmena hintu podle vybraneho RadioButton
         private void RadioButton_Hint(object sender, RoutedEventArgs e)
         {
-            var radioButton = sender as RadioButton;
+            var RadioButton = sender as RadioButton;
 
             if (HintLabel == null) return; //safeguard
 
-            if (radioButton != null && radioButton.IsChecked == true)
+            if (RadioButton != null && RadioButton.IsChecked == true)
             {
-                if (radioButton == AnotatorRadioButton)
+                if (RadioButton == AnotatorRadioButton)
                 {
                     HintLabel.Content = "51 placeholder anapoveda";
                 }
@@ -58,34 +58,29 @@ namespace VerteMark
         }
  
 
-        //talcitko prihlaseni, vyber rezimu podle RadioButton
+        //tlacitko prihlaseni, vyber rezimu podle RadioButton
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
-            RadioButton? selectedRadioButton = null;
-            if (AnotatorRadioButton.IsChecked == true)
+            bool IsValidator = false;
+            if (ValidatorRadioButton.IsChecked == true)
             {
-                selectedRadioButton = AnotatorRadioButton;
+                IsValidator = true;
             }
-            else if (ValidatorRadioButton.IsChecked == true)
-            {
-                selectedRadioButton = ValidatorRadioButton;
-            }
+            string UserId = IDTextBox.Text;
 
-            if (selectedRadioButton != null)
-            {
-                if (selectedRadioButton.Content.ToString() == "Anotátor")
-                {
-                    MainWindow windowAnotator = new MainWindow();
-                    windowAnotator.Show();
-                }
-                else if (selectedRadioButton.Content.ToString() == "Validátor")
-                {
-                    MainWindowValidator windowValidator = new MainWindowValidator();
-                    windowValidator.Show();
-                }
+            MainWindow MainAnotator = new MainWindow(IsValidator, UserId);
 
-                this.Close();
-            }
+            // Získání středu původního okna
+            double originalCenterX = Left + Width / 2;
+            double originalCenterY = Top + Height / 2;
+
+            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+            MainAnotator.Left = originalCenterX - MainAnotator.Width / 2;
+            MainAnotator.Top = originalCenterY - MainAnotator.Height / 2;
+
+            MainAnotator.Show();
+
+            this.Close();
         }
         //data z textboxu (zadani ID) tahejte z IDTextBox.text
     }
