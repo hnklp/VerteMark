@@ -6,6 +6,22 @@ using System.Linq;
 
 
 namespace VerteMark.ObjectClasses {
+    
+    interface iUser
+    {
+        void logIn();
+
+        void logOut();
+
+        void unselectID();
+
+        void selectID(string selectedID);
+
+        void unselectMod();
+
+        void selectMod(bool? validatorChoice);
+    }
+    
     class User : iUser 
     {
         public string userID {get; private set;}
@@ -59,21 +75,6 @@ namespace VerteMark.ObjectClasses {
         }
 
 
-    }
-
-    interface iUser
-    {
-        void logIn();
-
-        void logOut();
-
-        void unselectID();
-
-        void selectID(string selectedID);
-
-        void unselectMod();
-
-        void selectMod(bool? validatorChoice);
     }
 
     class Program 
