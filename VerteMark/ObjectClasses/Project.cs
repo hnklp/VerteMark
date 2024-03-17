@@ -97,7 +97,7 @@ namespace VerteMark.ObjectClasses {
             FindAnotaceById(idAnotace).UpdateCanvas();
         }
 
-        void ClearAnotace(int idAnotace) {
+        public void ClearAnotace(int idAnotace) {
             FindAnotaceById(idAnotace).ClearCanvas();
         }
 
