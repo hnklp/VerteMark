@@ -20,6 +20,7 @@ namespace VerteMark.ObjectClasses {
     /// </summary>
     internal class Project {
 
+        private static Project instance;
         FileManager fileManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
@@ -114,6 +115,12 @@ namespace VerteMark.ObjectClasses {
             return originalPicture;
         }
 
+        public static Project GetInstance() {
+            if (instance == null) {
+                instance = new Project();
+            }
+            return instance;
+        }
 
     }
 }

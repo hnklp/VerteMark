@@ -24,8 +24,7 @@ namespace VerteMark
         public WelcomeWindow()
         {
             InitializeComponent();
-            utility = Utility.GetInstance();
-            
+            utility = new Utility();
         }
 
         //textbox hint

@@ -14,12 +14,11 @@ namespace VerteMark.ObjectClasses {
     /// </summary>
     internal class Utility {
         // Vlastnosti
-        private static Utility instance;
         Project project;
 
         // Konstruktor
         public Utility() {
-            project = new Project();
+            project = Project.GetInstance();
         }
 
         public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
@@ -91,13 +90,7 @@ namespace VerteMark.ObjectClasses {
 
         }
 
-        // Metoda pro získání instance třídy
-        public static Utility GetInstance() {
-            if (instance == null) {
-                instance = new Utility();
-            }
-            return instance;
-        }
+        
 
     }
 }
