@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses {
@@ -16,19 +17,31 @@ namespace VerteMark.ObjectClasses {
 
         public int Id { get; private set; }
         public string Name { get; private set;}
-        public Color Color { get; private set;}
+        public System.Drawing.Color Color { get; private set;}
         public bool IsValidated {  get; private set;}
-        PaintingCanvas canvas;
+        WriteableBitmap? canvas;
 
-        public Anotace(int id, string name, Color color) {
+        public Anotace(int id, string name, System.Drawing.Color color) {
             this.Id = id;
             this.Name = name;
             this.Color = color;
-            canvas = new PaintingCanvas();
         }
+        public void CreateEmptyCanvas(int width, int height) {
+            canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+        }
+        public void UpdateCanvas(BitmapSource bitmapSource) {
+            if (bitmapSource is WriteableBitmap writableBitmap) {
+                canvas = writableBitmap;
+            } else {
+                try {
+                    canvas = new WriteableBitmap(bitmapSource);
+                } catch (Exception) {
 
-        public void UpdateCanvas() {
-
+                }
+            }
+        }
+        public WriteableBitmap GetCanvas() {
+            return canvas;
         }
         public void ClearCanvas() {
 

@@ -188,6 +188,30 @@ namespace VerteMark.ObjectClasses {
             return null;
         }
 
+        //Prozatimní funkce, používám ji při testování těch anotací
+        public BitmapImage PEPEGetPictureAsBitmap(string path) {
+            // Check if the file exists
+            if (!File.Exists(path)) {
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            // Load the image using System.Drawing
+            using (var bitmap = new Bitmap(path)) {
+                // Convert System.Drawing.Bitmap to System.Windows.Media.Imaging.BitmapImage
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                MemoryStream memoryStream = new MemoryStream();
+                // Save to a memory stream
+                bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                // Load the bitmap from memory stream
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
+        }
+
     }
 
 
