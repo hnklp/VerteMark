@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace VerteMark.ObjectClasses {
     
-    interface iUser
+    interface IUser
     {
         void logIn();
 
@@ -22,7 +22,7 @@ namespace VerteMark.ObjectClasses {
         void selectMod(bool? validatorChoice);
     }
     
-    class User : iUser 
+    class User : IUser 
     {
         public string userID {get; private set;}
         public bool? Validator {get; private set;}
