@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using VerteMark.ObjectClasses;
 
 namespace VerteMark
 {
@@ -19,10 +20,12 @@ namespace VerteMark
     /// </summary>
     public partial class WelcomeWindow : Window
     {
-
+        Utility utility;
         public WelcomeWindow()
         {
             InitializeComponent();
+            utility = Utility.GetInstance();
+            
         }
 
         //textbox hint

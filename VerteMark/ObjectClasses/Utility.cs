@@ -14,6 +14,7 @@ namespace VerteMark.ObjectClasses {
     /// </summary>
     internal class Utility {
         // Vlastnosti
+        private static Utility instance;
         Project project;
 
         // Konstruktor
@@ -88,6 +89,14 @@ namespace VerteMark.ObjectClasses {
         // Vrátí JPEG/PNG toho krku aby se to mohlo načíst
         public void GetMainPicture() {
 
+        }
+
+        // Metoda pro získání instance třídy
+        public static Utility GetInstance() {
+            if (instance == null) {
+                instance = new Utility();
+            }
+            return instance;
         }
 
     }
