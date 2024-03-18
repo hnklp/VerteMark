@@ -35,8 +35,18 @@
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
         </Menu>
-        <StatusBar Name="StatusBar" Height="15" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
-            <StatusBarItem Name="StatusText" />
+        <StatusBar Name="StatusBar" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+            <DockPanel LastChildFill="True">
+
+                <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock x:Name="UserIDStatus" Text="" />
+                </StatusBarItem>
+
+                <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock x:Name="RoleStatus" Text="" />
+                </StatusBarItem>
+
+            </DockPanel>
         </StatusBar>
 
         <Grid>
@@ -143,9 +153,8 @@
                 </CheckBox.RenderTransform>
             </CheckBox>
 
-            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,405,0,0" VerticalAlignment="Top" Height="57" Width="94" Click="Button_Click" Grid.Column="1"/>
-            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="54,323,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click" Grid.Column="1"/>
-
+            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="156,462,0,0" VerticalAlignment="Top" Click="Button_Click" Grid.Column="1" Width="75"/>
+            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="20,462,0,0" VerticalAlignment="Top" Click="OpenProject_Click" Grid.Column="1"/>
 
         </Grid>
 
