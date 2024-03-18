@@ -54,8 +54,8 @@ namespace VerteMark.ObjectClasses {
         public string GetActiveAnoticeId() {
             return project.ActiveAnotaceId();
         }
-        public void ClearSelectedAnotation() {
-
+        public void ClearActiveAnotace() {
+            project.ClearActiveAnotace();
         }
         public void SwitchAnotationValidation(int id) {
 

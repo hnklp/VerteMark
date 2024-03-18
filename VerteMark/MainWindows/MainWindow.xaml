@@ -47,9 +47,9 @@
 
             <!-- InkCanvas control -->
             <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Width="289" Height="240" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp"/>
+                Width="289" Height="241" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp"/>
 
-            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="280" Margin="10,10,0,0" VerticalAlignment="Top" Width="318" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
+            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
             <ToolBarTray x:Name="MainToolBar" Background="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
@@ -143,10 +143,10 @@
                 </CheckBox.RenderTransform>
             </CheckBox>
 
-            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,405,0,0" VerticalAlignment="Top" Height="57" Width="94" Click="Button_Click" Grid.Column="1"/>
+            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,438,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Button_Click" Grid.Column="1"/>
             <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="54,323,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click" Grid.Column="1"/>
-            <TextBlock x:Name="textik" Grid.Column="1" HorizontalAlignment="Left" Margin="37,481,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-            <Image x:Name="previewImage" HorizontalAlignment="Left" Height="284" Margin="387,60,0,0" VerticalAlignment="Top" Width="297"/>
+            <Image x:Name="previewImage" HorizontalAlignment="Left" Height="182" Margin="10,10,0,0" VerticalAlignment="Top" Width="239"/>
+            <Button x:Name="delete" Content="Smazat content" HorizontalAlignment="Center" Margin="0,388,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Smazat_butt" Grid.Column="1"/>
 
 
         </Grid>

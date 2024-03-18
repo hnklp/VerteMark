@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using VerteMark.ObjectClasses;
 using FellowOakDicom;
 using System.Windows.Media.Media3D;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace VerteMark {
@@ -32,8 +33,21 @@ namespace VerteMark {
             this.UserId = UserId;
             utility = new Utility();                   //######################
 
-            inkCanvas.Width = ImageHolder.Width;     // ######################
-            inkCanvas.Height = ImageHolder.Height;    //######################
+
+            inkCanvas.Width = ImageHolder.Width;
+            inkCanvas.Height = ImageHolder.Height;
+            inkCanvas.Margin = new Thickness(0);
+
+            previewImage.Width = ImageHolder.Width;
+            previewImage.Height = ImageHolder.Height;
+            previewImage.Margin = new Thickness(0);
+
+            // Assuming you have a Grid as the common container
+            Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
+
+            Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
 
             List<CheckBox> CheckBoxes = new List<CheckBox>
             {
@@ -57,10 +71,10 @@ namespace VerteMark {
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
+            openFileDialog.Filter = "All Files (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "Select a PNG File";
+            openFileDialog.Title = "Select a File";
             if (openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
@@ -100,7 +114,7 @@ namespace VerteMark {
 
         //soubor - zavrit
         private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e) {
-            Application.Current.Shutdown();
+        //    Application.Current.Shutdown();   // <- začalo to házet error tak jsem to zakomentil
         }
 
 
@@ -109,11 +123,18 @@ namespace VerteMark {
 
         /*******************/
         //######################
-        public BitmapSource ConvertInkCanvasToBitmap(InkCanvas inkCanvas) {
+        public WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
             renderBitmap.Render(inkCanvas);
-            BitmapSource bitmapSource = renderBitmap;
-            return bitmapSource;
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
+            renderBitmap.CopyPixels(new Int32Rect(0, 0, renderBitmap.PixelWidth, renderBitmap.PixelHeight), writeableBitmap.BackBuffer, writeableBitmap.BackBufferStride * writeableBitmap.PixelHeight, writeableBitmap.BackBufferStride);
+
+            writeableBitmap.Lock();
+            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight));
+            writeableBitmap.Unlock();
+
+            return writeableBitmap;
         }
 
         //######################
@@ -150,54 +171,52 @@ namespace VerteMark {
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
         private void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
-            utility.UpdateSelectedAnotation(ConvertInkCanvasToBitmap(inkCanvas));
+            utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
             previewImage.Source = utility.GetActiveAnotaceImage();
             inkCanvas.Strokes.Clear();
         }
-
+        //Smaže obsah vybrané anotace
+        private void Smazat_butt(object sender, RoutedEventArgs e) {
+            utility.ClearActiveAnotace();
+            previewImage.Source = utility.GetActiveAnotaceImage();
+        }
 
         /* Přepínání anotací */
-        private void Button_Click_1(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(0);
-            textik.Text = "Active anotace is: " + utility.GetActiveAnoticeId();
+        void SwitchActiveAnot(int id) {
+            utility.ChangeActiveAnotation(id);
             previewImage.Source = utility.GetActiveAnotaceImage();
+        }
+        private void Button_Click_1(object sender, RoutedEventArgs e) {
+            SwitchActiveAnot(0);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(1);
-            textik.Text = "Active anotace is: " + utility.GetActiveAnoticeId();
-            previewImage.Source = utility.GetActiveAnotaceImage();
-
+            SwitchActiveAnot(1);
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(2);
-
+            SwitchActiveAnot(2);
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(3);
-
+            SwitchActiveAnot(3);
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(4);
+            SwitchActiveAnot(4);
 
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(5);
-
+            SwitchActiveAnot(5);
         }
 
         private void Button_Click_7(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(6);
-
+            SwitchActiveAnot(6);
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e) {
-            utility.ChangeActiveAnotation(7);
-
+            SwitchActiveAnot(7);
         }
     }
 }

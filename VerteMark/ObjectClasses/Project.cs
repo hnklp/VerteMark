@@ -60,7 +60,7 @@ namespace VerteMark.ObjectClasses {
             // Vytvoř čistý anotace
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
-            originalPicture = fileManager.PEPEGetPictureAsBitmap(path);
+            originalPicture = fileManager.GetPictureAsBitmapImage(path);
         }
         public void LoadProject(string path) {
             // Získej metadata
@@ -100,7 +100,7 @@ namespace VerteMark.ObjectClasses {
             activeAnotace.UpdateCanvas(bitmapSource);
         }
 
-        public void ClearSelectedAnotace() {
+        public void ClearActiveAnotace() {
             activeAnotace.ClearCanvas();
         }
         public void SelectActiveAnotace(int id) {
