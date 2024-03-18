@@ -68,9 +68,17 @@ namespace VerteMark
             {
                 IsValidator = true;
             }
+            
             string UserId = IDTextBox.Text;
 
-            MainWindow MainAnotator = new MainWindow(IsValidator, UserId);
+            if (UserId == null || UserId == "")
+            {
+                MessageBox.Show("str_User_ID_Empty_text", "str_User_ID_Empty_title", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            utility.LoginUser(UserId, IsValidator);
+            MainWindow MainAnotator = new MainWindow();
 
             // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
