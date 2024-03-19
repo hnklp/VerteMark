@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Shell;
 using System;
 using System.IO;
 using Microsoft.Win32;
@@ -21,18 +22,18 @@ namespace VerteMark {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-        public bool IsValidator { get; private set; }
-        private string UserId;
-        Utility utility;                            //######################
-        private BitmapSource? bitmap;           //######################
+    /// 
+    /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
+    public partial class MainWindow : Window
+    {
+        Utility utility;                           
+        private BitmapSource? bitmap;           
 
-        public MainWindow(bool IsValidator, string UserId) {
+        public MainWindow()
+        {
             InitializeComponent();
-            this.IsValidator = IsValidator;
-            this.UserId = UserId;
-            utility = new Utility();                   //######################
-
+            utility = new Utility(); 
+            User? loggedInUser = utility.GetLoggedInUser();
 
             inkCanvas.Width = ImageHolder.Width;
             inkCanvas.Height = ImageHolder.Height;
@@ -49,16 +50,30 @@ namespace VerteMark {
             Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
             Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
 
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+
+            if (loggedInUser.Validator)
+            {
+                RoleStatus.Text = "v_status_str";
+            }
+
+            else
+            {
+                RoleStatus.Text = "a_status_str";
+            }
+            
             List<CheckBox> CheckBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
 
+            foreach (var CheckBox in CheckBoxes)
+            {
+                bool isValidator = loggedInUser.Validator;
 
-            foreach (var CheckBox in CheckBoxes) {
-                CheckBox.IsEnabled = IsValidator;
-                CheckBox.IsChecked = IsValidator;
+                CheckBox.IsEnabled = isValidator;
+                CheckBox.IsChecked = isValidator;
             }
 
 
@@ -71,10 +86,11 @@ namespace VerteMark {
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All Files (*.*)|*.*";
+            openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "Select a File";
+            openFileDialog.Title = "open_dialog_title_str";
+
             if (openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
@@ -120,11 +136,11 @@ namespace VerteMark {
 
 
 
-
         /*******************/
         //######################
         public WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
+            
             renderBitmap.Render(inkCanvas);
 
             WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
@@ -137,10 +153,6 @@ namespace VerteMark {
             return writeableBitmap;
         }
 
-        //######################
-
-
-        //######################
         private void Button_Click(object sender, RoutedEventArgs e) {
             /* 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
