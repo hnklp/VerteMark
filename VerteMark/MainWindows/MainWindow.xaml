@@ -57,9 +57,9 @@
 
             <!-- InkCanvas control -->
             <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Width="455" Height="355" Margin="94,60,0,0" Panel.ZIndex="99999" Background="Transparent"/>
+                Width="289" Height="241" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp"/>
 
-            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="376" Margin="128,60,0,0" VerticalAlignment="Top" Width="414" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
+            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
             <ToolBarTray x:Name="MainToolBar" Background="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
@@ -74,7 +74,7 @@
 
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C1" HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C1" HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1"/>
             <CheckBox Name="CheckBox1" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,61,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -84,7 +84,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_2"/>
             <CheckBox Name="CheckBox2" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -94,7 +94,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_3"/>
             <CheckBox Name="CheckBox3" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -104,7 +104,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,150,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_4"/>
             <CheckBox Name="CheckBox4" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,151,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -114,7 +114,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,180,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_5"/>
             <CheckBox Name="CheckBox5" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,181,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -124,7 +124,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,210,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_6"/>
             <CheckBox Name="CheckBox6" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,211,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -134,7 +134,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,240,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_7"/>
             <CheckBox Name="CheckBox7" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,241,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -144,7 +144,7 @@
             </CheckBox>
 
             <Rectangle Grid.Column="2" Stroke="Black" HorizontalAlignment="Left" Margin="20,270,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125"/>
+            <Button Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
             <CheckBox Name="CheckBox8" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,271,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
                 <CheckBox.RenderTransform>
                     <TransformGroup>
@@ -153,8 +153,10 @@
                 </CheckBox.RenderTransform>
             </CheckBox>
 
-            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="156,462,0,0" VerticalAlignment="Top" Click="Button_Click" Grid.Column="1" Width="75"/>
-            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="20,462,0,0" VerticalAlignment="Top" Click="OpenProject_Click" Grid.Column="1"/>
+            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,438,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Button_Click" Grid.Column="1"/>
+            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="54,323,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click" Grid.Column="1"/>
+            <Image x:Name="previewImage" HorizontalAlignment="Left" Height="182" Margin="10,10,0,0" VerticalAlignment="Top" Width="239"/>
+            <Button x:Name="delete" Content="Smazat content" HorizontalAlignment="Center" Margin="0,388,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Smazat_butt" Grid.Column="1"/>
 
         </Grid>
 

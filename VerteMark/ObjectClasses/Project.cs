@@ -24,6 +24,7 @@ namespace VerteMark.ObjectClasses {
         FileManager fileManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
+        Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
 
@@ -93,13 +94,23 @@ namespace VerteMark.ObjectClasses {
             anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.MediumPurple));
             anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.RebeccaPurple));
             anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.Magenta));
+            SelectActiveAnotace(0);
         }
-        public void UpdateAnotaceCanvas(int idAnotace) {
-            FindAnotaceById(idAnotace).UpdateCanvas();
+        public void UpdateSelectedAnotaceCanvas(BitmapSource bitmapSource) {
+            activeAnotace.UpdateCanvas(bitmapSource);
         }
 
-        public void ClearAnotace(int idAnotace) {
-            FindAnotaceById(idAnotace).ClearCanvas();
+        public void ClearActiveAnotace() {
+            activeAnotace.ClearCanvas();
+        }
+        public void SelectActiveAnotace(int id) {
+            activeAnotace = FindAnotaceById(id);
+        }
+        public string ActiveAnotaceId() {
+            return activeAnotace.Id.ToString();
+        }
+        public WriteableBitmap ActiveAnotaceImage() {
+            return activeAnotace.GetCanvas();
         }
 
         Anotace FindAnotaceById(int idAnotace) {
