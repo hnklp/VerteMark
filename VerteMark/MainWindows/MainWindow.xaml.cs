@@ -24,6 +24,7 @@ namespace VerteMark {
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
+    /// TODO: Rozdelit status bar oddelovaci a text s ID dat doprava
     public partial class MainWindow : Window
     {
         Utility utility;                           
