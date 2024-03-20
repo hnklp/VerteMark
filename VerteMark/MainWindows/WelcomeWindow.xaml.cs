@@ -63,6 +63,7 @@ namespace VerteMark
         //tlacitko prihlaseni, vyber rezimu podle RadioButton
         private void SignInButton_Click(object sender, RoutedEventArgs e)
         {
+            // User login
             bool IsValidator = false;
             if (ValidatorRadioButton.IsChecked == true)
             {
@@ -78,20 +79,21 @@ namespace VerteMark
             }
 
             utility.LoginUser(UserId, IsValidator);
-            MainWindow MainAnotator = new MainWindow();
+
+            // Switch to SelectWindow
+            SelectWindow selectWindow = new SelectWindow();
 
             // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
 
             // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
-            MainAnotator.Left = originalCenterX - MainAnotator.Width / 2;
-            MainAnotator.Top = originalCenterY - MainAnotator.Height / 2;
+            selectWindow.Left = originalCenterX - selectWindow.Width / 2;
+            selectWindow.Top = originalCenterY - selectWindow.Height / 2;
 
-            MainAnotator.Show();
+            selectWindow.Show();
 
             this.Close();
         }
-        //data z textboxu (zadani ID) tahejte z IDTextBox.text
     }
 }
