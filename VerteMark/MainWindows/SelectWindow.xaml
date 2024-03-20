@@ -9,7 +9,7 @@
 
     <Grid>
         <Label x:Name="HintLabel" Content="C:/cesta" HorizontalContentAlignment="Center" Margin="58,142,58,0" VerticalAlignment="Top" Width="284" Height="26"/>
-        <Button Name="Select" Content="Vybrat složku" HorizontalAlignment="Center" Margin="0,109,0,0" VerticalAlignment="Top" Height="25" Width="124" />
+        <Button Name="Select" Content="Vybrat složku" HorizontalAlignment="Center" Margin="0,109,0,0" VerticalAlignment="Top" Height="25" Width="124" Click="Select_Click" />
         <Button Name="Continue" Content="Pokračovat" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="30" Width="130" Click="ContinueButton_Click"/>
         <Label Name="SelectLabel" Content="Vyberte složku" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
     </Grid>

@@ -16,6 +16,7 @@ using VerteMark.ObjectClasses;
 using FellowOakDicom;
 using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Media.Animation;
 
 
 namespace VerteMark {
@@ -27,13 +28,14 @@ namespace VerteMark {
     public partial class MainWindow : Window
     {
         Utility utility;                           
-        private BitmapSource? bitmap;           
+        private BitmapSource? bitmap;
 
         public MainWindow()
         {
             InitializeComponent();
-            utility = new Utility(); 
+            utility = new Utility();
             User? loggedInUser = utility.GetLoggedInUser();
+            
 
             inkCanvas.Width = ImageHolder.Width;
             inkCanvas.Height = ImageHolder.Height;
@@ -61,7 +63,7 @@ namespace VerteMark {
             {
                 RoleStatus.Text = "a_status_str";
             }
-            
+
             List<CheckBox> CheckBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
@@ -76,6 +78,13 @@ namespace VerteMark {
                 CheckBox.IsChecked = isValidator;
             }
 
+            BitmapImage bitmapImage = utility.GetOriginalPicture();
+            if (bitmapImage != null)
+            {
+                //Pokud se vybrala dobrá složka/soubor tak pokračuj
+                ImageHolder.Source = bitmapImage;
+            }
+            
 
         }
 
@@ -83,6 +92,7 @@ namespace VerteMark {
         //TODO odstranit moznost vsechny soubory??
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception
+
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
