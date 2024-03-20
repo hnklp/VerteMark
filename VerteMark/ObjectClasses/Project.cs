@@ -64,6 +64,8 @@ namespace VerteMark.ObjectClasses {
         }
         public void LoadProject(string path) {
             // Získej metadata
+        // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
+        // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             metadata = fileManager.GetProjectMetada();
             // Získej anotace
             anotaces = fileManager.GetProjectAnotaces();
@@ -97,7 +99,10 @@ namespace VerteMark.ObjectClasses {
             SelectActiveAnotace(0);
         }
         public void UpdateSelectedAnotaceCanvas(BitmapSource bitmapSource) {
-            activeAnotace.UpdateCanvas(bitmapSource);
+            if (activeAnotace != null)
+            {
+                activeAnotace.UpdateCanvas(bitmapSource);
+            }
         }
 
         public void ClearActiveAnotace() {
@@ -110,7 +115,11 @@ namespace VerteMark.ObjectClasses {
             return activeAnotace.Id.ToString();
         }
         public WriteableBitmap ActiveAnotaceImage() {
-            return activeAnotace.GetCanvas();
+            if (activeAnotace != null)
+            {
+                return activeAnotace.GetCanvas();
+            }
+            return null;
         }
 
         Anotace FindAnotaceById(int idAnotace) {
