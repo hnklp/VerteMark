@@ -28,11 +28,13 @@ namespace VerteMark.ObjectClasses {
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
 
+
         public Project() {
             fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
         }
+
 
         public bool TryOpeningProject(string path) {
             /**
