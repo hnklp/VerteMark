@@ -197,6 +197,7 @@ namespace VerteMark {
         void SwitchActiveAnot(int id) {
             utility.ChangeActiveAnotation(id);
             previewImage.Source = utility.GetActiveAnotaceImage();
+            inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
         }
         private void Button_Click_1(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(0);

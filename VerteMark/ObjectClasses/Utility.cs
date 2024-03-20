@@ -51,8 +51,11 @@ namespace VerteMark.ObjectClasses {
         public void UpdateSelectedAnotation(BitmapSource bitmap) {
             project.UpdateSelectedAnotaceCanvas(bitmap);
         }
-        public string GetActiveAnoticeId() {
+        public string GetActiveAnotaceId() {
             return project.ActiveAnotaceId();
+        }
+        public System.Windows.Media.Color GetActiveAnotaceColor() {
+            return project.ActiveAnotaceColor();
         }
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();

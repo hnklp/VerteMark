@@ -57,7 +57,12 @@
 
             <!-- InkCanvas control -->
             <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Width="289" Height="241" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp"/>
+                Width="289" Height="241" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp">
+                <InkCanvas.DefaultDrawingAttributes>
+                    <DrawingAttributes Color="Black" />
+                    <!-- Change to the desired color -->
+                </InkCanvas.DefaultDrawingAttributes>
+            </InkCanvas>
 
             <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 

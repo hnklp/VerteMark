@@ -109,6 +109,9 @@ namespace VerteMark.ObjectClasses {
         public string ActiveAnotaceId() {
             return activeAnotace.Id.ToString();
         }
+        public System.Windows.Media.Color ActiveAnotaceColor() {
+            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
+        }
         public WriteableBitmap ActiveAnotaceImage() {
             return activeAnotace.GetCanvas();
         }
