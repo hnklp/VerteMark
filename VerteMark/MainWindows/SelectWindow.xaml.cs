@@ -48,6 +48,8 @@ namespace VerteMark
                 string selectedFilePath = openFileDialog.FileName;
                 utility.ChooseProjectFolder(selectedFilePath);
             }
+
+            this.HintLabel.Content = openFileDialog.FileName;
         }
     }
 }
