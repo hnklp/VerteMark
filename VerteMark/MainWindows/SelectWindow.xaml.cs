@@ -2,6 +2,7 @@
 using System.Windows;
 using VerteMark.ObjectClasses;
 
+
 namespace VerteMark
 {
     /// <summary>
@@ -28,7 +29,7 @@ namespace VerteMark
             // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
             MainWindow.Left = originalCenterX - MainWindow.Width / 2;
             MainWindow.Top = originalCenterY - MainWindow.Height / 2;
-            
+
 
             MainWindow.Show();
 
@@ -38,7 +39,14 @@ namespace VerteMark
         private void Select_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
+            if (sender.ToString() == "System.Windows.Controls.Button: Vybrat soubor DICOM")
+            {
+                openFileDialog.Filter = "all_files_opend_str (*.*)|*.*";
+            }
+            else
+            {
+                openFileDialog.Filter = "png_files_opend_str (*.png)|*.png";
+            }
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "open_dialog_title_str";

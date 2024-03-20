@@ -8,10 +8,13 @@
         Title="Vítejte ve VerteMark!" Height="300" Width="400" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png">
 
     <Grid>
-        <Label x:Name="HintLabel" Content="C:/cesta" HorizontalContentAlignment="Center" Margin="58,142,58,0" VerticalAlignment="Top" Width="284" Height="26"/>
-        <Button Name="Select" Content="Vybrat složku" HorizontalAlignment="Center" Margin="0,109,0,0" VerticalAlignment="Top" Height="25" Width="124" Click="Select_Click" />
+        <Label x:Name="HintLabel" Content="C:/cesta" HorizontalContentAlignment="Left" Margin="131,177,64,0" VerticalAlignment="Top" Height="27" FontSize="12"/>
+        <Button Name="SelectFile" Content="Vybrat obrázek" HorizontalAlignment="Left" Margin="135,142,0,0" VerticalAlignment="Top" Height="25" Width="124" Click="Select_Click" />
         <Button Name="Continue" Content="Pokračovat" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="30" Width="130" Click="ContinueButton_Click"/>
-        <Label Name="SelectLabel" Content="Vyberte složku" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
+        <Label Name="SelectLabel" Content="Vyberte složku" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,17,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
+        <Button x:Name="SelectDicom" Content="Vybrat soubor DICOM" HorizontalAlignment="Left" Margin="135,72,0,0" VerticalAlignment="Top" Height="24" Width="124" Click="Select_Click" />
+        <Label x:Name="Nebo" Content="nebo" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="113,106,0,0" VerticalAlignment="Top" Height="24" Width="168" FontSize="12"/>
+        <Label x:Name="TextCesta" Content="Vybraná cesta:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="45,177,0,0" VerticalAlignment="Top" Height="24" Width="86" FontSize="12"/>
     </Grid>
 
 </Window>

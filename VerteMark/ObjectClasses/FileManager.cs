@@ -72,7 +72,6 @@ namespace VerteMark.ObjectClasses {
         public FolderState CheckFolderType(string path)
         {
             // zjistí typ/stav souboru a vrátí enum, co to je
-
             return FolderState.Nonfunctional;
         }
 
@@ -127,12 +126,19 @@ namespace VerteMark.ObjectClasses {
                     this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 }
 
-                this.dicomPath = path;
+                string fileExtension = Path.GetExtension(path);
+                if (fileExtension != null && fileExtension.Equals(".png", StringComparison.OrdinalIgnoreCase))
+                {
+                    this.pngPath = path;
+                }
+                else
+                {
+                    this.dicomPath = path;
 
-                CreateOutputFile("test");
-                ExtractImageFromDicom();
-                ExtractAndSaveMetadata();
-;
+                    CreateOutputFile("test");
+                    ExtractImageFromDicom();
+                    ExtractAndSaveMetadata(); 
+                }
 
                 // Create a new BitmapImage
 
@@ -211,7 +217,6 @@ namespace VerteMark.ObjectClasses {
                 return bitmapImage;
             }
         }
-
     }
 
 
