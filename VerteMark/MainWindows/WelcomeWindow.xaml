@@ -16,8 +16,8 @@
         <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="82,142,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
         <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="251,143,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
         <TextBox x:Name ="IDTextBox" HorizontalAlignment="Center" Margin="0,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="19" />
-        <Button Name="LoginButton" Content="Přihlásit se" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="25" Width="68" Click="SignInButton_Click"/>
-        <Label Name="LoginLabel" Content="Přihlaste se pomocí ID" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
+        <Button Name="LoginButton" Content="Přihlásit se" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="30" Width="130" Click="SignInButton_Click"/>
+        <Label Name="LoginLabel" Content="Přihlaste se pomocí ID" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
     </Grid>
 
 </Window>
