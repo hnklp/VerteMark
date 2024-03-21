@@ -37,6 +37,7 @@
             </StackPanel>
         </GroupBox>
         <Label Content="UJEP Ústí nad Labem 2024" HorizontalAlignment="Left" Margin="16,268,0,0" VerticalAlignment="Top" Width="158" FontSize="10"/>
+        <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="59,32,0,0" VerticalAlignment="Top" FontSize="10"/>
 
     </Grid>
 </Window>
