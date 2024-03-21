@@ -76,10 +76,11 @@ namespace VerteMark
             
             string UserId = IDTextBox.Text;
 
+            //nefunguje, uživatel může po smazání id pokračovat dál bez ID :/ - sabina opraví
+
             if (UserId == null || UserId == "")
             {
-                MessageBox.Show("str_User_ID_Empty_text", "str_User_ID_Empty_title", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                SignInButton.IsEnabled = false;
             }
 
             utility.LoginUser(UserId, IsValidator);
