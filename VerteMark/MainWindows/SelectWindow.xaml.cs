@@ -41,7 +41,7 @@ namespace VerteMark
         private void Select_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (sender.ToString() == "System.Windows.Controls.Button: Vybrat soubor DICOM")
+            if (sender.ToString() == "System.Windows.Controls.Button: Vybrat DICOM")
             {
                 openFileDialog.Filter = "all_files_opend_str (*.*)|*.*";
             }
