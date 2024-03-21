@@ -27,68 +27,24 @@ namespace VerteMark {
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
     /// TODO: Rozdelit status bar oddelovaci a text s ID dat doprava
-    public partial class MainWindow : Window
-    {
-        Utility utility;                           
-        private BitmapSource? bitmap;
-
-        public MainWindow()
-        {
+    public partial class MainWindow : Window {
+        Utility utility;
+        User? loggedInUser;
+        List<CheckBox> CheckBoxes;
+        public MainWindow() {
             InitializeComponent();
             utility = new Utility();
-            User? loggedInUser = utility.GetLoggedInUser();
-            
-
-            inkCanvas.Width = ImageHolder.Width;
-            inkCanvas.Height = ImageHolder.Height;
-            inkCanvas.Margin = new Thickness(0);
-
-            previewImage.Width = ImageHolder.Width;
-            previewImage.Height = ImageHolder.Height;
-            previewImage.Margin = new Thickness(0);
-
-            // Assuming you have a Grid as the common container
-            Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
-
-            Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
-
-            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
-
-            if (loggedInUser.Validator)
-            {
-                RoleStatus.Text = "v_status_str";
-            }
-
-            else
-            {
-                RoleStatus.Text = "a_status_str";
-            }
-
-            List<CheckBox> CheckBoxes = new List<CheckBox>
+            CheckBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-
-            foreach (var CheckBox in CheckBoxes)
-            {
-                bool isValidator = loggedInUser.Validator;
-
-                CheckBox.IsEnabled = isValidator;
-                CheckBox.IsChecked = isValidator;
-            }
-
-            BitmapImage bitmapImage = utility.GetOriginalPicture();
-            if (bitmapImage != null)
-            {
-                //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                ImageHolder.Source = bitmapImage;
-            }
-            
-            SwitchActiveAnot(0);
-
+            loggedInUser = utility.GetLoggedInUser();
+            SetCanvasComponentsSize();
+            InitializeCheckboxes();
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
         }
 
         //dialog otevreni souboru s filtrem
@@ -96,7 +52,27 @@ namespace VerteMark {
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
+        void InitializeCheckboxes() {
+            foreach(var CheckBox in CheckBoxes) {
+                bool isValidator = loggedInUser.Validator;
+                CheckBox.IsEnabled = isValidator;
+                CheckBox.IsChecked = isValidator;
+            }
+        }
 
+        // Podle velikosti ImageHolder nastaví plátno
+        void SetCanvasComponentsSize() {
+            inkCanvas.Width = ImageHolder.Width;
+            inkCanvas.Height = ImageHolder.Height;
+            inkCanvas.Margin = new Thickness(0);
+            previewImage.Width = ImageHolder.Width;
+            previewImage.Height = ImageHolder.Height;
+            previewImage.Margin = new Thickness(0);
+            Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
+            Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
+        }
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
@@ -104,14 +80,12 @@ namespace VerteMark {
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "open_dialog_title_str";
 
-            if (openFileDialog.ShowDialog() == true) {
+            if(openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
+                if(success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
-
-
                     ImageHolder.Source = bitmapImage;
                     /*
                     inkCanvas.Width = bitmapImage.PixelWidth;
@@ -146,20 +120,7 @@ namespace VerteMark {
             System.Windows.Application.Current.Shutdown();   // <- už jsem to opravil, tak jsem to odkomentil -h
         }
 
-        public WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
-            
-            renderBitmap.Render(inkCanvas);
-
-            WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
-            renderBitmap.CopyPixels(new Int32Rect(0, 0, renderBitmap.PixelWidth, renderBitmap.PixelHeight), writeableBitmap.BackBuffer, writeableBitmap.BackBufferStride * writeableBitmap.PixelHeight, writeableBitmap.BackBufferStride);
-
-            writeableBitmap.Lock();
-            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight));
-            writeableBitmap.Unlock();
-
-            return writeableBitmap;
-        }
+        
 
         private void Button_Click(object sender, RoutedEventArgs e) {
             /* 
@@ -204,10 +165,10 @@ namespace VerteMark {
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "Select a PNG File";
-            if (openFileDialog.ShowDialog() == true) {
+            if(openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
+                if(success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -215,14 +176,30 @@ namespace VerteMark {
             }
         }
 
+        WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
+
+            renderBitmap.Render(inkCanvas);
+
+            WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
+            renderBitmap.CopyPixels(new Int32Rect(0, 0, renderBitmap.PixelWidth, renderBitmap.PixelHeight), writeableBitmap.BackBuffer, writeableBitmap.BackBufferStride * writeableBitmap.PixelHeight, writeableBitmap.BackBufferStride);
+
+            writeableBitmap.Lock();
+            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight));
+            writeableBitmap.Unlock();
+
+            return writeableBitmap;
+        }
+
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
-        private void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
+        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
             utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
             previewImage.Source = utility.GetActiveAnotaceImage();
             inkCanvas.Strokes.Clear();
         }
+
         //Smaže obsah vybrané anotace
-        private void Smazat_butt(object sender, RoutedEventArgs e) {
+        void Smazat_butt(object sender, RoutedEventArgs e) {
             utility.ClearActiveAnotace();
             previewImage.Source = utility.GetActiveAnotaceImage();
         }
@@ -233,6 +210,7 @@ namespace VerteMark {
             previewImage.Source = utility.GetActiveAnotaceImage();
             inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
         }
+
         private void Button_Click_1(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(0);
         }
@@ -251,7 +229,6 @@ namespace VerteMark {
 
         private void Button_Click_5(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(4);
-
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e) {
