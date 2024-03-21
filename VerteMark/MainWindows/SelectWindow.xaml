@@ -11,7 +11,7 @@
 
         <Button Name="SelectFile" Content="Vybrat PNG" HorizontalAlignment="Left" Margin="586,210,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="Select_Click" />
         <Button x:Name="SelectDicom" Content="Vybrat DICOM" HorizontalAlignment="Left" Margin="462,210,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="Select_Click" />
-        <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="ContinueButton_Click" IsEnabled="False"/>
+        <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True"/>
         <Button x:Name="BackButton" Content="Zpět" HorizontalAlignment="Left" Margin="547,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="BackButton_Click" IsEnabled="True"/>
 
         <Label x:Name="HintLabel" Content="" HorizontalContentAlignment="Left" Margin="545,176,0,0" VerticalAlignment="Top" Height="27" FontSize="12"/>
