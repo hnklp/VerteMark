@@ -141,15 +141,11 @@ namespace VerteMark.ObjectClasses {
             }
             return null;
         }
-
-
-        public WriteableBitmap ActiveAnotaceImage()
-        {
-            if (activeAnotace != null)
-            {
-                return activeAnotace.GetCanvas();
-            }
-            return null;
+        public System.Windows.Media.Color ActiveAnotaceColor() {
+            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
+        }
+        public WriteableBitmap ActiveAnotaceImage() {
+            return activeAnotace.GetCanvas();
         }
 
 
