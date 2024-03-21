@@ -87,6 +87,7 @@ namespace VerteMark {
                 ImageHolder.Source = bitmapImage;
             }
             
+            SwitchActiveAnot(0);
 
         }
 

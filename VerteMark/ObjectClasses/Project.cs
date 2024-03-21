@@ -101,13 +101,13 @@ namespace VerteMark.ObjectClasses {
 
         void CreateNewAnotaces() {
             anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Blue));
-            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Green));
-            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Yellow));
-            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Purple));
-            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.MediumPurple));
-            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.RebeccaPurple));
-            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.Magenta));
+            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Orange));
+            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Yellow));
+            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Lime));
+            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Aquamarine));
+            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.Aqua));
+            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.BlueViolet));
+            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.DeepPink));
             SelectActiveAnotace(0);
         }
 
