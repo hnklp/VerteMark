@@ -16,6 +16,7 @@ using VerteMark.ObjectClasses;
 using FellowOakDicom;
 using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Ink;
 
 
 namespace VerteMark {
@@ -162,6 +163,32 @@ namespace VerteMark {
                 utility.SaveBitmapToFile(bitmap, saveFileDialog);
             */
 
+        }
+
+        //Spojování linky
+        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
+            // Get the first and last points of the stroke
+            StylusPoint firstPoint = e.Stroke.StylusPoints.First();
+            StylusPoint lastPoint = e.Stroke.StylusPoints.Last();
+
+            // Calculate the distance between the first and last points
+            double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
+
+            // If the distance is less than 5, connect the points with a line
+            if(distance < 100) {
+                // Create a new stroke for the connecting line
+                StylusPointCollection points = new StylusPointCollection();
+                points.Add(firstPoint);
+                points.Add(lastPoint);
+                Stroke lineStroke = new Stroke(points);
+
+                // Set the color and thickness of the connecting line
+                lineStroke.DrawingAttributes.Color = Colors.Black;
+                lineStroke.DrawingAttributes.Width = 3;
+
+                // Add the connecting line stroke to the InkCanvas
+                inkCanvas.Strokes.Add(lineStroke);
+            }
         }
 
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
