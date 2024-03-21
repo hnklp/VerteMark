@@ -5,19 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="Vítejte ve VerteMark!" Height="300" Width="400" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" >
+        Title="VerteMark" Height="415" Width="800" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" Background="#FFF0F0F0" >
 
     <Window.Resources>
         <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
     </Window.Resources>
 
     <Grid>
-        <Label x:Name="HintLabel" Content="" HorizontalContentAlignment="Center" Margin="0,172,0,0" VerticalAlignment="Top" Width="284" Height="26"/>
-        <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="82,142,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
-        <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="251,143,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
-        <TextBox x:Name ="IDTextBox" HorizontalAlignment="Center" Margin="0,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="19" />
-        <Button Name="LoginButton" Content="Přihlásit se" HorizontalAlignment="Center" Margin="0,209,0,0" VerticalAlignment="Top" Height="30" Width="130" Click="SignInButton_Click"/>
-        <Label Name="LoginLabel" Content="Přihlaste se pomocí ID" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="36" Width="236" FontSize="22"/>
+        <Rectangle HorizontalAlignment="Left" Height="19" Margin="462,176,0,0" Fill="White" VerticalAlignment="Top" Width="190"/>
+
+        <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,196,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
+        <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="455,140,0,0" VerticalAlignment="Top" Height="36" Width="101" FontSize="18"/>
+        <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
+
+        <Button x:Name="SignInButton" Content="Přihlásit se" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="SignInButton_Click" IsEnabled="False" IsDefault="True"/>
+        <Button Name="SettingsButtonUI" Content="&#xE115;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="625,331,0,0" VerticalAlignment="Top" Height="27" Width="27"/>
+        <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="462,210,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
+        <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="586,210,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
+
+        <TextBox x:Name ="IDTextBox" HorizontalAlignment="Left" Margin="462,176,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="19" TabIndex="0" />
+
+        <GridSplitter HorizontalAlignment="Center" Height="282" VerticalAlignment="Center" Width="1">
+            <GridSplitter.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                    <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                </LinearGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
+
     </Grid>
 
 </Window>

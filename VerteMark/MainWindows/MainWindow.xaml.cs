@@ -92,7 +92,7 @@ namespace VerteMark {
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
-        //TODO dodelat exception
+        //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
@@ -141,14 +141,9 @@ namespace VerteMark {
 
         //soubor - zavrit
         private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e) {
-        //    Application.Current.Shutdown();   // <- začalo to házet error tak jsem to zakomentil
+            System.Windows.Application.Current.Shutdown();   // <- už jsem to opravil, tak jsem to odkomentil -h
         }
 
-
-
-
-        /*******************/
-        //######################
         public WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
             

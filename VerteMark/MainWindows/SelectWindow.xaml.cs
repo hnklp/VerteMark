@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using VerteMark.ObjectClasses;
 
 
@@ -58,6 +60,28 @@ namespace VerteMark
             }
 
             this.HintLabel.Content = openFileDialog.FileName;
+            ContinueButton.IsEnabled = true;
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            WelcomeWindow welcomeWindow = new WelcomeWindow();
+
+            // Získání středu původního okna
+            double originalCenterX = Left + Width / 2;
+            double originalCenterY = Top + Height / 2;
+
+            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+            welcomeWindow.Left = originalCenterX - welcomeWindow.Width / 2;
+            welcomeWindow.Top = originalCenterY - welcomeWindow.Height / 2;
+
+
+            welcomeWindow.Show();
+
+            this.Close();
+        }
+
+       
+        }
+
     }
-}

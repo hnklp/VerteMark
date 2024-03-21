@@ -24,6 +24,7 @@ namespace VerteMark
         public WelcomeWindow()
         {
             InitializeComponent();
+            IDTextBox.Focus();
             utility = new Utility();
         }
 
@@ -34,8 +35,11 @@ namespace VerteMark
             {
                 if (string.IsNullOrEmpty(box.Text))
                     box.Background = (ImageBrush)FindResource("watermark");
+
                 else
                     box.Background = null;
+                    
+                    SignInButton.IsEnabled = true;
             }
         }
 
