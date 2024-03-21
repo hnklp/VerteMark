@@ -24,6 +24,7 @@ namespace VerteMark
         public WelcomeWindow()
         {
             InitializeComponent();
+            IDTextBox.Focus();
             utility = new Utility();
         }
 
