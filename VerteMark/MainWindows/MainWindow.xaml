@@ -26,12 +26,7 @@
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close" />
             </MenuItem>
-            <MenuItem Header="Úpravy">
-                <MenuItem Command="Cut" />
-                <MenuItem Command="Copy" />
-                <MenuItem Command="Paste" />
-                <MenuItem Command="ApplicationCommands.Properties" />
-            </MenuItem>
+            <MenuItem Command="ApplicationCommands.Properties"/>
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
         </Menu>
@@ -45,6 +40,8 @@
                 <StatusBarItem HorizontalAlignment="Right">
                     <TextBlock x:Name="RoleStatus" Text="" />
                 </StatusBarItem>
+
+
 
             </DockPanel>
         </StatusBar>
@@ -66,15 +63,17 @@
 
             <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
-            <ToolBarTray x:Name="MainToolBar" Background="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
+            <!--Potrebujeme tedy ten toolbartray, nebo ne?-->
+            
+            <!--<ToolBarTray x:Name="MainToolBar" Background="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
 
                 <ToolBar Margin="1,0,118,-88" Background="{Binding Background, ElementName=StatusBar}">
                     <Button Content="&#xE105;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Left"/>
                     <Button Content="Placeholder! Vymyslet ikony!"/>
                 </ToolBar>
 
-            </ToolBarTray>
-
+            </ToolBarTray> --> 
+            
             <Rectangle Grid.Column="2" Fill="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
 
 
@@ -158,10 +157,10 @@
                 </CheckBox.RenderTransform>
             </CheckBox>
 
-            <Button Content="Uložit pic" HorizontalAlignment="Left" Margin="75,438,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Button_Click" Grid.Column="1"/>
-            <Button x:Name="OpenProject" Content="Vybrat složku" HorizontalAlignment="Left" Margin="54,323,0,0" VerticalAlignment="Top" Height="37" Width="136" Click="OpenProject_Click" Grid.Column="1"/>
+            <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1"/>
+            <Button x:Name="OpenProject" Content="&#xE188;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1"/>
             <Image x:Name="previewImage" HorizontalAlignment="Left" Height="182" Margin="10,10,0,0" VerticalAlignment="Top" Width="239"/>
-            <Button x:Name="delete" Content="Smazat content" HorizontalAlignment="Center" Margin="0,388,0,0" VerticalAlignment="Top" Height="24" Width="94" Click="Smazat_butt" Grid.Column="1"/>
+            <Button x:Name="delete" Content="&#xE107;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1"/>
 
         </Grid>
 

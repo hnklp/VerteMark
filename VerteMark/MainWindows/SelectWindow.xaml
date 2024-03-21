@@ -1,0 +1,32 @@
+﻿<Window x:Class="VerteMark.SelectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VerteMark"
+        mc:Ignorable="d"
+        Title="VerteMark" Height="415" Width="800" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+
+    <Grid>
+
+        <Button Name="SelectFile" Content="Vybrat PNG" HorizontalAlignment="Left" Margin="586,210,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="Select_Click" />
+        <Button x:Name="SelectDicom" Content="Vybrat DICOM" HorizontalAlignment="Left" Margin="462,210,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="Select_Click" />
+        <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True"/>
+        <Button x:Name="BackButton" Content="Zpět" HorizontalAlignment="Left" Margin="547,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="BackButton_Click" IsEnabled="True"/>
+
+        <Label x:Name="HintLabel" Content="" HorizontalContentAlignment="Left" Margin="545,176,0,0" VerticalAlignment="Top" Height="27" FontSize="12"/>
+        <Label Name="WelcomeLabel" Content="Vyberte složku nebo soubor" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
+        <Label x:Name="TextCesta" Content="Vybraná cesta:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="462,176,0,0" VerticalAlignment="Top" Height="24" Width="86" FontSize="12"/>
+
+        <GridSplitter HorizontalAlignment="Center" Height="282" VerticalAlignment="Center" Width="1">
+            <GridSplitter.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                    <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                </LinearGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
+    </Grid>
+
+</Window>

@@ -28,11 +28,13 @@ namespace VerteMark.ObjectClasses {
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
 
+
         public Project() {
             fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
         }
+
 
         public bool TryOpeningProject(string path) {
             /**
@@ -62,28 +64,40 @@ namespace VerteMark.ObjectClasses {
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
             originalPicture = fileManager.GetPictureAsBitmapImage(path);
         }
+
+
         public void LoadProject(string path) {
             // Získej metadata
+        // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
+        // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             metadata = fileManager.GetProjectMetada();
             // Získej anotace
             anotaces = fileManager.GetProjectAnotaces();
             // Získej uložený obrázek do projektu
             //originalPicture = fileManager.GetPictureAsBitmapImage();
         }
+
+
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
         }
         
+
         public void LoginNewUser(string id, bool validator) {
             loggedInUser = new User(id, validator);
         }
+
+
         public void LogoutUser() {
             loggedInUser = null;
         }
+
+
         public User? GetLoggedInUser() {
             return loggedInUser;
         }
+
 
         void CreateNewAnotaces() {
             anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
@@ -96,18 +110,36 @@ namespace VerteMark.ObjectClasses {
             anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.Magenta));
             SelectActiveAnotace(0);
         }
+
+
         public void UpdateSelectedAnotaceCanvas(BitmapSource bitmapSource) {
-            activeAnotace.UpdateCanvas(bitmapSource);
+            if (activeAnotace != null)
+            {
+                activeAnotace.UpdateCanvas(bitmapSource);
+            }
         }
 
+
         public void ClearActiveAnotace() {
-            activeAnotace.ClearCanvas();
+            if (activeAnotace != null)
+            {
+                activeAnotace.ClearCanvas();
+            }
         }
-        public void SelectActiveAnotace(int id) {
+
+
+        public void SelectActiveAnotace(int id)
+        {
             activeAnotace = FindAnotaceById(id);
         }
+
+
         public string ActiveAnotaceId() {
-            return activeAnotace.Id.ToString();
+            if (activeAnotace != null)
+            {
+                return activeAnotace.Id.ToString();
+            }
+            return null;
         }
         public System.Windows.Media.Color ActiveAnotaceColor() {
             return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
@@ -116,25 +148,39 @@ namespace VerteMark.ObjectClasses {
             return activeAnotace.GetCanvas();
         }
 
-        Anotace FindAnotaceById(int idAnotace) {
+
+        Anotace FindAnotaceById(int idAnotace)
+        {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
-            if (foundAnotace != null) {
+            if (foundAnotace != null)
+            {
                 return foundAnotace;
-            } else {
-                throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
+            }
+            else
+            {
+// !!!!!!
+// POUZE SE ZOBRAZÍ PRÁZDNÝ CANVAS!!
+// NEVYHODÍ VÝJIMKU
+
+                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
+                return null;
+
             }
         }
 
-        public BitmapImage? GetOriginalPicture() {
+
+        public BitmapImage? GetOriginalPicture()
+        {
             return originalPicture;
         }
 
-        public static Project GetInstance() {
+
+        public static Project GetInstance()
+        {
             if (instance == null) {
                 instance = new Project();
             }
             return instance;
         }
-
     }
 }

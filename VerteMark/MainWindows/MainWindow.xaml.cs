@@ -17,6 +17,7 @@ using FellowOakDicom;
 using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
+using System.Windows.Media.Animation;
 
 
 namespace VerteMark {
@@ -25,16 +26,18 @@ namespace VerteMark {
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
+    /// TODO: Rozdelit status bar oddelovaci a text s ID dat doprava
     public partial class MainWindow : Window
     {
         Utility utility;                           
-        private BitmapSource? bitmap;           
+        private BitmapSource? bitmap;
 
         public MainWindow()
         {
             InitializeComponent();
-            utility = new Utility(); 
+            utility = new Utility();
             User? loggedInUser = utility.GetLoggedInUser();
+            
 
             inkCanvas.Width = ImageHolder.Width;
             inkCanvas.Height = ImageHolder.Height;
@@ -62,7 +65,7 @@ namespace VerteMark {
             {
                 RoleStatus.Text = "a_status_str";
             }
-            
+
             List<CheckBox> CheckBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
@@ -77,13 +80,21 @@ namespace VerteMark {
                 CheckBox.IsChecked = isValidator;
             }
 
+            BitmapImage bitmapImage = utility.GetOriginalPicture();
+            if (bitmapImage != null)
+            {
+                //Pokud se vybrala dobrá složka/soubor tak pokračuj
+                ImageHolder.Source = bitmapImage;
+            }
+            
 
         }
 
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
-        //TODO dodelat exception
+        //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
+
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -131,14 +142,9 @@ namespace VerteMark {
 
         //soubor - zavrit
         private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e) {
-        //    Application.Current.Shutdown();   // <- začalo to házet error tak jsem to zakomentil
+            System.Windows.Application.Current.Shutdown();   // <- už jsem to opravil, tak jsem to odkomentil -h
         }
 
-
-
-
-        /*******************/
-        //######################
         public WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
             
