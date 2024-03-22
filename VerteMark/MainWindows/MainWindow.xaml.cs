@@ -18,6 +18,7 @@ using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
 using System.Windows.Media.Animation;
+using System.Windows.Controls.Primitives;
 
 
 namespace VerteMark {
@@ -31,6 +32,8 @@ namespace VerteMark {
         Utility utility;
         User? loggedInUser;
         List<CheckBox> CheckBoxes;
+        ToggleButton activeButton;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -211,36 +214,53 @@ namespace VerteMark {
             inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
         }
 
+        void SwitchActiveButton(ToggleButton pressedButton)
+        {
+            if (activeButton != null)
+            {
+                activeButton.IsChecked = false;
+            }
+            activeButton = pressedButton;
+        }
+
         private void Button_Click_1(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(0);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(1);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(2);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(3);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(4);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(5);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_7(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(6);
+            SwitchActiveButton(sender as ToggleButton);
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(7);
+            SwitchActiveButton(sender as ToggleButton);
         }
     }
 }

@@ -94,42 +94,36 @@
 
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1"/>
-            <CheckBox Name="CheckBox1" Grid.Column="2" Content="" Margin="205,61,0,0" IsChecked="True"/>
+            <ToggleButton Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1"/>
+            <CheckBox Name="CheckBox1" Grid.Column="2" Content="" Margin="205,61,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Orange" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_2"/>
-            <CheckBox Name="CheckBox2" Grid.Column="2" Content="" Margin="205,91,0,0" IsChecked="True"/>
+            <ToggleButton Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_2"/>
+            <CheckBox Name="CheckBox2" Grid.Column="2" Content="" Margin="205,91,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Yellow" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_3"/>
-            <CheckBox Name="CheckBox3" Grid.Column="2" Content="" Margin="205,121,0,0" IsChecked="True"/>
+            <ToggleButton Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_3"/>
+            <CheckBox Name="CheckBox3" Grid.Column="2" Content="" Margin="205,121,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Lime" HorizontalAlignment="Left" Margin="20,150,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_4"/>
-            <CheckBox Name="CheckBox4" Grid.Column="2" Content="" Margin="205,151,0,0" IsChecked="True"/>
+            <ToggleButton Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_4"/>
+            <CheckBox Name="CheckBox4" Grid.Column="2" Content="" Margin="205,151,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Aquamarine" HorizontalAlignment="Left" Margin="20,180,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_5"/>
-            <CheckBox Name="CheckBox5" Grid.Column="2" Content="" Margin="205,181,0,0" IsChecked="True" />
+            <ToggleButton Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_5"/>
+            <CheckBox Name="CheckBox5" Grid.Column="2" Content="" Margin="205,181,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Aqua" HorizontalAlignment="Left" Margin="20,210,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_6"/>
-            <CheckBox Name="CheckBox6" Grid.Column="2" Content="" Margin="205,211,0,0" IsChecked="True" />
+            <ToggleButton Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_6"/>
+            <CheckBox Name="CheckBox6" Grid.Column="2" Content="" Margin="205,211,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="BlueViolet" HorizontalAlignment="Left" Margin="20,240,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_7"/>
-            <CheckBox Name="CheckBox7" Grid.Column="2" Content="" Margin="205,241,0,0" IsChecked="True"/>
+            <ToggleButton Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_7"/>
+            <CheckBox Name="CheckBox7" Grid.Column="2" Content="" Margin="205,241,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="DeepPink" HorizontalAlignment="Left" Margin="20,270,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <Button Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
-            <CheckBox Name="CheckBox8" Grid.Column="2" Content="" HorizontalAlignment="Left" Margin="205,271,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.255,-0.061" IsChecked="True" Height="15" Width="20">
-                <CheckBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
-                    </TransformGroup>
-                </CheckBox.RenderTransform>
-            </CheckBox>
+            <ToggleButton Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
+            <CheckBox Name="CheckBox8" Grid.Column="2" Content="" Margin="205,271,0,0"/>
 
             <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1"/>
             <Button x:Name="OpenProject" Content="&#xE188;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1"/>
