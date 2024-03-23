@@ -14,7 +14,7 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
 * Windows 7 SP1
 
 > [!IMPORTANT]  
-> Windows 7 musí mít nainstalované veškeré ESR aktualizace.
+> Windows 7 musí mít nainstalované veškeré ESU.
 
 > [!CAUTION]
 > Windows 8 a verze starší, než 7 nejsou a nebudou podporovány!
