@@ -21,6 +21,7 @@ namespace VerteMark.ObjectClasses {
     internal class Project {
 
         private static Project instance;
+        ZipManager zipManager;
         FileManager fileManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
@@ -33,6 +34,7 @@ namespace VerteMark.ObjectClasses {
             fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
+            zipManager = new ZipManager();
         }
 
 
@@ -52,7 +54,7 @@ namespace VerteMark.ObjectClasses {
             return false;
             **/
 
-
+            zipManager.LoadZip(path);
             CreateNewProject(path);
             return true;
         }
@@ -62,6 +64,7 @@ namespace VerteMark.ObjectClasses {
             // Vytvoř čistý anotace
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
+
             originalPicture = fileManager.GetPictureAsBitmapImage(path);
         }
 
@@ -81,6 +84,8 @@ namespace VerteMark.ObjectClasses {
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
+            // ZKOUSKA UKLADANI TEMP DO ZIP
+            zipManager.UpdateZipFromTempFolder();
         }
         
 

@@ -40,7 +40,7 @@ namespace VerteMark.ObjectClasses {
             return project.TryOpeningProject(path);
         }
         public void SaveProject() {
-             
+            project.SaveProject();
         }
         public void ChangeSelectedAnotation(int id) {
 
@@ -59,6 +59,7 @@ namespace VerteMark.ObjectClasses {
         }
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();
+            project.SaveProject();
         }
         public void SwitchAnotationValidation(int id) {
 
