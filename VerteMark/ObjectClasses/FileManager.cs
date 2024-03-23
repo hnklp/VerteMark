@@ -71,8 +71,36 @@ namespace VerteMark.ObjectClasses {
 
         public FolderState CheckFolderType(string path)
         {
-            // zjistí typ/stav souboru a vrátí enum, co to je
-            return FolderState.Nonfunctional;
+            // Pokud je soubor PNG, označíme ho jako existující
+            if (Path.GetExtension(path).Equals(".png", StringComparison.OrdinalIgnoreCase))
+            {
+                return FolderState.Existing;
+            }
+
+            // Pokus o načtení souboru DICOM
+            try
+            {
+                DicomFile dicomFile = DicomFile.Open(path);
+                // Zkontrolujte, zda se soubor úspěšně načetl
+                if (dicomFile != null && dicomFile.Dataset != null)
+                {
+                    return FolderState.Existing; // Soubor DICOM existuje a je funkční
+                }
+            }
+            catch (DicomFileException)
+            {
+                // Soubor není platný DICOM soubor
+                return FolderState.Nonfunctional;
+            }
+            catch (Exception)
+            {
+                // Nějaká obecná chyba při zpracování souboru
+                // Zde můžete přidat další zachycení specifických chyb, pokud to potřebujete
+                return FolderState.Nonfunctional;
+            }
+
+            // Pokud není soubor DICOM a nedošlo k žádné chybě, označíme jej jako nový
+            return FolderState.New;
         }
 
 
