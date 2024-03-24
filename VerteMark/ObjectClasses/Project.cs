@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -28,6 +29,7 @@ namespace VerteMark.ObjectClasses {
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
+        FolderManager folderManager; // manager slozky Temp v projektu
 
 
         public Project() {
@@ -35,6 +37,7 @@ namespace VerteMark.ObjectClasses {
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
             zipManager = new ZipManager();
+            folderManager = new FolderManager();
         }
 
 
@@ -55,6 +58,7 @@ namespace VerteMark.ObjectClasses {
             **/
 
             zipManager.LoadZip(path);
+
             CreateNewProject(path);
             return true;
         }

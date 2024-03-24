@@ -17,8 +17,6 @@ namespace VerteMark.ObjectClasses
         {
             try
             {
-                // Určení cesty pro extrakci obsahu ZIP souboru
-                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 this.zipPath = zipPath;
                 this.tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
 
