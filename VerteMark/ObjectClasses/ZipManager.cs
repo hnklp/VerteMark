@@ -8,11 +8,10 @@ using System.IO;
 
 namespace VerteMark.ObjectClasses
 {
-    internal class ZipManager
+    public class ZipManager
     {
         public string? zipPath;
         public string? tempFolderPath;
-
 
         public void LoadZip(string zipPath)
         {
@@ -54,7 +53,6 @@ namespace VerteMark.ObjectClasses
         }
 
 
-
         public void UpdateZipFromTempFolder()
         {
             using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Update))
@@ -73,7 +71,7 @@ namespace VerteMark.ObjectClasses
                 if (zipEntry == null)
                 {
                     // Složka ve zip neexistuje, vytvoř ji
-                    archive.CreateEntry(Path.Combine(currentPath, directoryName));
+                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, directoryName) + "/");
                 }
 
                 // Projdi rekurzivně do podsložky
@@ -84,63 +82,27 @@ namespace VerteMark.ObjectClasses
             {
                 var fileName = Path.GetFileName(file);
                 var zipEntry = archive.GetEntry(Path.Combine(currentPath, fileName));
-                var tempFilePath = Path.Combine(currentFolderPath, fileName);
-                var zipFilePath = Path.Combine(currentPath, fileName);
 
                 if (zipEntry == null)
                 {
                     // Soubor ve zip neexistuje, přidej ho
-                    if (Path.GetExtension(fileName) == "")
-                    {
-                        // Skip files without extensions
-                        continue;
-                    }
-                    archive.CreateEntryFromFile(tempFilePath, zipFilePath);
+                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, fileName));
                 }
                 else
                 {
-                    if (zipEntry.FullName.EndsWith("/"))
-                    {
-                        // Složka ve zip existuje, nikdyse nedostaneme sem
-                        Console.WriteLine("Error: Zip file contains a directory with the same name as a file in the temp folder.");
-                        continue;
-                    }
-
-                    if (File.GetLastWriteTimeUtc(file) == zipEntry.LastWriteTime.UtcDateTime)
-                    {
-                        // Pokud máme stejný soubor, nic neuděláme
-                        continue;
-                    }
-
-                    // Odstraň stávající soubor z zip
+                    // Soubor ve zip existuje, smaž ho
                     zipEntry.Delete();
-                    // Přidej aktualizovaný soubor z temp
-                    if (Path.GetExtension(fileName) == "")
-                    {
-                        // Skip files without extensions
-                        continue;
-                    }
-                    archive.CreateEntryFromFile(tempFilePath, zipFilePath);
+                    // Přidej nový soubor z temp
+                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, fileName));
+                }
+
+                // Přidej obsah souboru
+                using (var entryStream = zipEntry.Open())
+                using (var fileStream = File.OpenRead(file))
+                {
+                    fileStream.CopyTo(entryStream);
                 }
             }
-
-            // Odstraň složky ve zip, které nejsou ve složce temp
-    /*        ZipArchiveEntry[] entriesToRemove = archive.Entries.Where(entry => entry.FullName.StartsWith(currentPath) && entry.FullName.EndsWith("/")).ToArray();
-            foreach (ZipArchiveEntry entry in entriesToRemove)
-            {
-                if (currentPath != currentFolderPath)
-                {
-                    string? entryPath = entry.FullName.Replace(currentPath, currentFolderPath);
-
-                    if (entry.FullName.EndsWith("/") && Directory.Exists(entryPath))
-                    {
-                        if (!string.IsNullOrEmpty(entryPath) && !Directory.Exists(entryPath))
-                        {
-                            entry.Delete();
-                        }
-                    }
-                } 
-            }*/
         }
     }
 }

@@ -59,7 +59,6 @@ namespace VerteMark.ObjectClasses {
         }
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();
-            project.SaveProject();
         }
         public void SwitchAnotationValidation(int id) {
 

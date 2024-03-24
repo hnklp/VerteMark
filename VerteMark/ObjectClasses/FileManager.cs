@@ -34,6 +34,7 @@ namespace VerteMark.ObjectClasses {
         }
 
 
+
         // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
         void CreateOutputFile(string outputDirectoryName)
         {
