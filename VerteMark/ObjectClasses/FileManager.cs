@@ -15,6 +15,8 @@ namespace VerteMark.ObjectClasses {
     /// * Konverzi DICOM dat do požadovaných formátů.
     /// * Ukládání projektu a souvisejících souborů.
     /// </summary>
+    /// 
+    // sračka
     internal class FileManager {
 
         public string outputPath;
