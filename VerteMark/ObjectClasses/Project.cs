@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using VerteMark.ObjectClasses.FolderClasses;
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
@@ -22,22 +24,18 @@ namespace VerteMark.ObjectClasses {
     internal class Project {
 
         private static Project instance;
-        ZipManager zipManager;
-        FileManager fileManager;
+        UtilityManager utilityManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
-        FolderManager folderManager; // manager slozky Temp v projektu
 
 
         public Project() {
-            fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
-            zipManager = new ZipManager();
-            folderManager = new FolderManager();
+            utilityManager = new UtilityManager();
         }
 
 
@@ -57,8 +55,6 @@ namespace VerteMark.ObjectClasses {
             return false;
             **/
 
-            zipManager.LoadZip(path);
-
             CreateNewProject(path);
             return true;
         }
@@ -69,7 +65,8 @@ namespace VerteMark.ObjectClasses {
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
 
-            originalPicture = fileManager.GetPictureAsBitmapImage(path);
+            utilityManager.CreateNewProject(path);
+            originalPicture = utilityManager.GetImage();
         }
 
 
@@ -77,11 +74,12 @@ namespace VerteMark.ObjectClasses {
             // Získej metadata
         // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
         // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
-            metadata = fileManager.GetProjectMetada();
             // Získej anotace
-            anotaces = fileManager.GetProjectAnotaces();
             // Získej uložený obrázek do projektu
-            //originalPicture = fileManager.GetPictureAsBitmapImage();
+            
+            utilityManager.LoadProject(path);
+            originalPicture = utilityManager.GetImage();
+            // json = utilityManager.GetAnotaces();
         }
 
 
@@ -89,7 +87,7 @@ namespace VerteMark.ObjectClasses {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
             // ZKOUSKA UKLADANI TEMP DO ZIP
-            zipManager.UpdateZipFromTempFolder();
+            utilityManager.SaveZip();
         }
         
 

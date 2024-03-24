@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
 
-namespace VerteMark.ObjectClasses
+namespace VerteMark.ObjectClasses.FolderClasses
 {
     public class ZipManager
     {
@@ -18,7 +18,7 @@ namespace VerteMark.ObjectClasses
             try
             {
                 this.zipPath = zipPath;
-                this.tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+                tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
 
                 // Kontrola, zda je složka temp prázdná a pokud ne, smaž její obsah
                 if (Directory.Exists(tempFolderPath) && Directory.GetFileSystemEntries(tempFolderPath).Length > 0)

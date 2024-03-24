@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace VerteMark.ObjectClasses
+namespace VerteMark.ObjectClasses.FolderClasses
 {
     // Prace s temp slozkou v behovem prostredi
     // bude nastrojem pro vyber slozek, ze kterych chce uzivatel vybirat
@@ -16,12 +16,12 @@ namespace VerteMark.ObjectClasses
 
         public FolderManager()
         {
-            this.tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+            tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
 
         public bool CheckTempFolder()
-            // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
+        // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
         {
             string[] requiredFolders = { "dicoms", "to_validate", "to_anotate", "validated" };
 

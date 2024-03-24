@@ -6,7 +6,8 @@ using Dicom;
 using Dicom.Imaging;
 
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses.FolderClasses
+{
     /// <summary>
     /// Správa a manipulace se soubory pro projekt.
     /// 
@@ -17,7 +18,8 @@ namespace VerteMark.ObjectClasses {
     /// </summary>
     /// 
     // sračka
-    internal class FileManager {
+    internal class FileManager
+    {
 
         public string outputPath;
         public string? dicomPath;
@@ -26,105 +28,68 @@ namespace VerteMark.ObjectClasses {
         public string? metaPath;
 
 
-        public FileManager() {
-            this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        public FileManager()
+        {
+            outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
 
-        public void SaveProject() {
-
+        public void SaveProject()
+        {
+            // ulozeni vseho do output slozky
         }
 
 
 
         // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
-        void CreateOutputFile(string outputDirectoryName)
+        public void CreateOutputFile(string outputDirectoryName)
         {
             if (outputPath != null)
             {
-                string fullPath = System.IO.Path.Combine(outputPath, outputDirectoryName);
-                if (Directory.Exists(fullPath))
-                {
-                    fullPath += "_new";
-                }
+                string fullPath = Path.Combine(outputPath, outputDirectoryName);
                 Directory.CreateDirectory(fullPath);
-                this.outputPath = fullPath;
+                outputPath = fullPath;
             }
         }
 
 
         // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
         // nastavi instanci pngPath
-        void ExtractImageFromDicom()
+        public void ExtractImageFromDicom()
         {
 
-            DicomFile dicomFile = DicomFile.Open(this.dicomPath);
+            DicomFile dicomFile = DicomFile.Open(dicomPath);
 
             DicomImage image = new DicomImage(dicomFile.Dataset);
 
             Bitmap bmp = image.RenderImage().As<Bitmap>();
 
-            string outputFileName = System.IO.Path.GetFileNameWithoutExtension(this.dicomPath) + ".png";
-            this.pngPath = System.IO.Path.Combine(this.outputPath, outputFileName);
+            string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
+            pngPath = Path.Combine(outputPath, outputFileName);
 
             // Uložení obrázku jako PNG
-            bmp.Save(this.pngPath, System.Drawing.Imaging.ImageFormat.Png);
-        }
-
-
-        public FolderState CheckFolderType(string path)
-        {
-            // Pokud je soubor PNG, označíme ho jako existující
-            if (Path.GetExtension(path).Equals(".png", StringComparison.OrdinalIgnoreCase))
-            {
-                return FolderState.Existing;
-            }
-
-            // Pokus o načtení souboru DICOM
-            try
-            {
-                DicomFile dicomFile = DicomFile.Open(path);
-                // Zkontrolujte, zda se soubor úspěšně načetl
-                if (dicomFile != null && dicomFile.Dataset != null)
-                {
-                    return FolderState.Existing; // Soubor DICOM existuje a je funkční
-                }
-            }
-            catch (DicomFileException)
-            {
-                // Soubor není platný DICOM soubor
-                return FolderState.Nonfunctional;
-            }
-            catch (Exception)
-            {
-                // Nějaká obecná chyba při zpracování souboru
-                // Zde můžete přidat další zachycení specifických chyb, pokud to potřebujete
-                return FolderState.Nonfunctional;
-            }
-
-            // Pokud není soubor DICOM a nedošlo k žádné chybě, označíme jej jako nový
-            return FolderState.New;
+            bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
         }
 
 
         // extrahuje metadata do csv souboru do output slozky
         // nastavi instanci metaPath
-        void ExtractAndSaveMetadata()
+        public void ExtractAndSaveMetadata()
         {
-            if (!File.Exists(this.dicomPath))
+            if (!File.Exists(dicomPath))
             {
                 Console.WriteLine("Zadaný DICOM soubor neexistuje.");
                 return;
             }
 
 
-            string csvFileName = System.IO.Path.GetFileNameWithoutExtension(this.dicomPath) + "_metadata.csv";
-            this.metaPath = System.IO.Path.Combine(this.outputPath, csvFileName);
+            string csvFileName = Path.GetFileNameWithoutExtension(dicomPath) + "_metadata.csv";
+            metaPath = Path.Combine(outputPath, csvFileName);
 
-            DicomFile dicomFile = DicomFile.Open(this.dicomPath);
+            DicomFile dicomFile = DicomFile.Open(dicomPath);
 
             // Vytvoření CSV souboru
-            using (StreamWriter writer = new StreamWriter(this.metaPath))
+            using (StreamWriter writer = new StreamWriter(metaPath))
             {
                 // hlavička
                 writer.WriteLine("Tag;Value;VR;Description");
@@ -145,30 +110,33 @@ namespace VerteMark.ObjectClasses {
 
         // nacitani DICOM souboru - nutno prejmenovat funkci
         // path = dicom soubor -> vytvoreni slozky na plose -> extrahovani png a csv souboru -> nacteni png obrazku
-        public BitmapImage GetPictureAsBitmapImage(string path) {
-            try {
+        public BitmapImage GetPictureAsBitmapImage(string path)
+        {
+            try
+            {
                 // Check if the file exists
-                if (!File.Exists(path)) {
+                if (!File.Exists(path))
+                {
                     throw new FileNotFoundException("File not found.", path);
                 }
 
-                if (this.outputPath != Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
+                if (outputPath != Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
                 {
-                    this.outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 }
 
                 string fileExtension = Path.GetExtension(path);
                 if (fileExtension != null && fileExtension.Equals(".png", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.pngPath = path;
+                    pngPath = path;
                 }
                 else
                 {
-                    this.dicomPath = path;
+                    dicomPath = path;
 
                     CreateOutputFile("test");
                     ExtractImageFromDicom();
-                    ExtractAndSaveMetadata(); 
+                    ExtractAndSaveMetadata();
                 }
 
                 // Create a new BitmapImage
@@ -186,7 +154,7 @@ namespace VerteMark.ObjectClasses {
 
 
         // nacte obrazek pomoci cesty pngPath
-        BitmapImage LoadBitmapImage()
+        public BitmapImage LoadBitmapImage()
         {
             try
             {
@@ -196,7 +164,7 @@ namespace VerteMark.ObjectClasses {
                 bitmapImage.BeginInit();
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bitmapImage.UriSource = new Uri(this.pngPath);
+                bitmapImage.UriSource = new Uri(pngPath);
                 bitmapImage.EndInit();
 
                 // Ensure the BitmapImage is fully loaded before returning
@@ -215,25 +183,30 @@ namespace VerteMark.ObjectClasses {
 
 
         // nevim, jestli bude potreba - data o pacientovy nejsou potreba
-        public Metadata GetProjectMetada() {
+        public Metadata GetProjectMetada()
+        {
             return null;
         }
 
 
         // pujde do funkce JSON maker - ulozeni do output slozky
-        public List<Anotace> GetProjectAnotaces() {
+        public List<Anotace> GetProjectAnotaces()
+        {
             return null;
         }
 
         //Prozatimní funkce, používám ji při testování těch anotací
-        public BitmapImage PEPEGetPictureAsBitmap(string path) {
+        public BitmapImage PEPEGetPictureAsBitmap(string path)
+        {
             // Check if the file exists
-            if (!File.Exists(path)) {
+            if (!File.Exists(path))
+            {
                 throw new FileNotFoundException("File not found", path);
             }
 
             // Load the image using System.Drawing
-            using (var bitmap = new Bitmap(path)) {
+            using (var bitmap = new Bitmap(path))
+            {
                 // Convert System.Drawing.Bitmap to System.Windows.Media.Imaging.BitmapImage
                 var bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
@@ -251,7 +224,8 @@ namespace VerteMark.ObjectClasses {
     }
 
 
-    public enum FolderState {
+    public enum FolderState
+    {
         New,
         Existing,
         Nonfunctional
