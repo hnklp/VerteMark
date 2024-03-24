@@ -21,7 +21,17 @@ namespace VerteMark.ObjectClasses
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 this.zipPath = zipPath;
                 this.tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-                Directory.CreateDirectory(tempFolderPath);
+
+                // Kontrola, zda je složka temp prázdná a pokud ne, smaž její obsah
+                if (Directory.Exists(tempFolderPath) && Directory.GetFileSystemEntries(tempFolderPath).Length > 0)
+                {
+                    Directory.Delete(tempFolderPath, true);
+                    Directory.CreateDirectory(tempFolderPath);
+                }
+                else
+                {
+                    Directory.CreateDirectory(tempFolderPath);
+                }
 
                 // Extrahování obsahu ZIP souboru do cílové složky
                 using (ZipArchive archive = ZipFile.OpenRead(zipPath))
