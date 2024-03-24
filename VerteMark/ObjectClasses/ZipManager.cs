@@ -85,7 +85,10 @@ namespace VerteMark.ObjectClasses
                 }
 
                 // Projdi rekurzivně do podsložky
-                UpdateZipFromTempFolderRecursive(archive, Path.Combine(currentPath, directoryName), directory);
+                if (directoryName != "dicoms")
+                {
+                    UpdateZipFromTempFolderRecursive(archive, Path.Combine(currentPath, directoryName), directory);
+                }
             }
 
             foreach (var file in Directory.GetFiles(currentFolderPath))
