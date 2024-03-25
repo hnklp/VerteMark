@@ -24,7 +24,7 @@ namespace VerteMark.ObjectClasses
     internal class Project {
 
         private static Project instance;
-        UtilityManager utilityManager;
+        FolderUtilityManager folderUtilityManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
@@ -35,7 +35,7 @@ namespace VerteMark.ObjectClasses
         public Project() {
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
-            utilityManager = new UtilityManager();
+            folderUtilityManager = new FolderUtilityManager();
         }
 
 
@@ -65,8 +65,8 @@ namespace VerteMark.ObjectClasses
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
 
-            utilityManager.CreateNewProject(path);
-            originalPicture = utilityManager.GetImage();
+            folderUtilityManager.CreateNewProject(path);
+            originalPicture = folderUtilityManager.GetImage();
         }
 
 
@@ -77,9 +77,9 @@ namespace VerteMark.ObjectClasses
             // Získej anotace
             // Získej uložený obrázek do projektu
             
-            utilityManager.LoadProject(path);
-            originalPicture = utilityManager.GetImage();
-            // json = utilityManager.GetAnotaces();
+            folderUtilityManager.LoadProject(path);
+            originalPicture = folderUtilityManager.GetImage();
+            // json = folderUtilityManager.GetAnotaces();
         }
 
 
@@ -87,7 +87,7 @@ namespace VerteMark.ObjectClasses
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
             // ZKOUSKA UKLADANI TEMP DO ZIP
-            utilityManager.SaveZip();
+            folderUtilityManager.SaveZip();
         }
         
 

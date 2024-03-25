@@ -107,52 +107,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
             }
         }
 
-
-        // nacitani DICOM souboru - nutno prejmenovat funkci
-        // path = dicom soubor -> vytvoreni slozky na plose -> extrahovani png a csv souboru -> nacteni png obrazku
-        public BitmapImage GetPictureAsBitmapImage(string path)
-        {
-            try
-            {
-                // Check if the file exists
-                if (!File.Exists(path))
-                {
-                    throw new FileNotFoundException("File not found.", path);
-                }
-
-                if (outputPath != Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
-                {
-                    outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                }
-
-                string fileExtension = Path.GetExtension(path);
-                if (fileExtension != null && fileExtension.Equals(".png", StringComparison.OrdinalIgnoreCase))
-                {
-                    pngPath = path;
-                }
-                else
-                {
-                    dicomPath = path;
-
-                    CreateOutputFile("test");
-                    ExtractImageFromDicom();
-                    ExtractAndSaveMetadata();
-                }
-
-                // Create a new BitmapImage
-
-                BitmapImage image = LoadBitmapImage();
-                return image;
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions, e.g., file not found or invalid image format
-                Console.WriteLine("Error loading image: " + ex.Message);
-                return null;
-            }
-        }
-
-
         // nacte obrazek pomoci cesty pngPath
         public BitmapImage LoadBitmapImage()
         {

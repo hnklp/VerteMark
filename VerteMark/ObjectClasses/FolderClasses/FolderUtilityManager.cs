@@ -8,14 +8,14 @@ using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses.FolderClasses
 {
-    internal class UtilityManager
+    internal class FolderUtilityManager
     {
         ZipManager zipManager;
         FileManager fileManager;
         FolderManager folderManager;
         string tempPath;
 
-        public UtilityManager()
+        public FolderUtilityManager()
         {
             zipManager = new ZipManager();
             fileManager = new FileManager();
@@ -48,22 +48,39 @@ namespace VerteMark.ObjectClasses.FolderClasses
             fileManager.CreateOutputFile(folderName);
             fileManager.ExtractImageFromDicom();
             fileManager.ExtractAndSaveMetadata();
-
-            // bude vracet png
         }
 
 
         public void LoadProject(string path)
         {
-            // fileManager.pngPath = path;
-            // fileManager.outputPath =
-            // fileManager.jsonPath =
+            try
+            {
+                // Získání všech souborů ve složce
+                string[] files = Directory.GetFiles(path);
 
-            //BitmapImage image = fileManager.LoadBitmap();
-            // List<Anotace> anotace = fileManager.GetProjectAnotaces();
+                // Filtrace souborů podle přípon
+                string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
+                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
 
-            // bude vracet png a json
+                // Kontrola existence souborů
+                if (pngFile == null || jsonFile == null)
+                {
+                    throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
+                }
+
+                // Nastavení cest
+                fileManager.pngPath = pngFile;
+                fileManager.jsonPath = jsonFile;
+                fileManager.outputPath = path;
+
+                Console.WriteLine("Soubory načteny úspěšně.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Chyba při načítání projektu: {ex.Message}");
+            }
         }
+    
 
         
         /**
