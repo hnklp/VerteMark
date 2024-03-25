@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 
 
@@ -22,18 +23,18 @@ namespace VerteMark
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow MainWindow = new MainWindow();
+            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow();
 
             // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
 
             // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
-            MainWindow.Left = originalCenterX - MainWindow.Width / 2;
-            MainWindow.Top = originalCenterY - MainWindow.Height / 2;
+            folderbrowserWindow.Left = originalCenterX - folderbrowserWindow.Width / 2;
+            folderbrowserWindow.Top = originalCenterY - folderbrowserWindow.Height / 2;
 
 
-            MainWindow.Show();
+            folderbrowserWindow.Show();
 
             this.Close();
         }

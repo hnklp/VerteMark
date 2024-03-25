@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
+using System.Diagnostics;
 
 namespace VerteMark.ObjectClasses
 {
@@ -55,7 +56,7 @@ namespace VerteMark.ObjectClasses
             return false;
             **/
 
-            CreateNewProject(path);
+            //CreateNewProject(path);
             return true;
         }
         public void CreateNewProject(string path) {
@@ -188,6 +189,29 @@ namespace VerteMark.ObjectClasses
                 instance = new Project();
             }
             return instance;
+        }
+
+        public List<string> ChooseNewProject()
+        {
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation()
+        {
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public void Choose(string path)
+        {
+            folderUtilityManager.Choose(path);
         }
     }
 }

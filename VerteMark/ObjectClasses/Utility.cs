@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using VerteMark.ObjectClasses.FolderClasses;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -66,7 +67,27 @@ namespace VerteMark.ObjectClasses {
         public void ChangeActiveAnotation(int id) {
             project.SelectActiveAnotace(id);
         }
-        
+
+        public List<string> ChooseNewProject()
+        {
+            return project.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation()
+        {
+            return project.ChooseNewProject();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return project.ChooseNewProject();
+        }
+
+        public void Choose(string path)
+        {
+            project.Choose(path);
+        }
+
         /*
         public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
         {

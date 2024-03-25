@@ -81,8 +81,48 @@ namespace VerteMark.ObjectClasses.FolderClasses
             }
         }
     
+         public List<string> ChooseNewProject()
+        {
+            return folderManager.ChooseNewProject();
+        }
 
-        
+        public List<string> ChooseContinueAnotation()
+        {
+            return folderManager.ChooseContinueAnotation();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return folderManager.ChooseValidation();
+        }
+
+        public void Choose(string path)
+        {
+            // Zjistíme, zda je zadaná cesta k souboru nebo k složce
+            if (File.Exists(path)) // Je to soubor
+            {
+                // Nová cesta pro soubor v adresáři temp
+                string newPath = Path.Combine(tempPath, Path.GetFileName(path));
+
+                // Zavoláme funkci CreateNewProject s novou cestou
+                CreateNewProject(newPath);
+            }
+            else if (Directory.Exists(path)) // Je to složka
+            {
+                // Nová cesta pro složku v adresáři temp
+                string newPath = Path.Combine(tempPath, Path.GetFileName(path));
+
+                // Zavoláme funkci LoadProject s novou cestou
+                LoadProject(newPath);
+            }
+            else
+            {
+                // Zde můžete přidat další zpracování, pokud cesta neexistuje
+                Console.WriteLine("Zadaná cesta neexistuje.");
+            }
+        }
+
+
         /**
         public FolderState CheckFolderType(string path)
         {
