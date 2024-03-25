@@ -112,7 +112,7 @@ namespace VerteMark.ObjectClasses {
         }
 
 
-        public void UpdateSelectedAnotaceCanvas(BitmapSource bitmapSource) {
+        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
             if (activeAnotace != null)
             {
                 activeAnotace.UpdateCanvas(bitmapSource);

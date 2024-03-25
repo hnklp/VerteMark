@@ -48,7 +48,7 @@ namespace VerteMark.ObjectClasses {
         public WriteableBitmap GetActiveAnotaceImage() {
             return project.ActiveAnotaceImage();
         }
-        public void UpdateSelectedAnotation(BitmapSource bitmap) {
+        public void UpdateSelectedAnotation(WriteableBitmap bitmap) {
             project.UpdateSelectedAnotaceCanvas(bitmap);
         }
         public string GetActiveAnotaceId() {
