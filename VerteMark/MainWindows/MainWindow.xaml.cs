@@ -153,7 +153,7 @@ namespace VerteMark {
 
                 // Set the color and thickness of the connecting line
                 lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
-                lineStroke.DrawingAttributes.Width = 2;
+                lineStroke.DrawingAttributes.Width = 1;
 
                 // Add the connecting line stroke to the InkCanvas
                 inkCanvas.Strokes.Add(lineStroke);
@@ -192,7 +192,7 @@ namespace VerteMark {
         void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
             utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
             previewImage.Source = utility.GetActiveAnotaceImage();
-            inkCanvas.Strokes.Clear();
+        //    inkCanvas.Strokes.Clear();
         }
 
         //Smaže obsah vybrané anotace
@@ -204,8 +204,10 @@ namespace VerteMark {
         /* Přepínání anotací */
         void SwitchActiveAnot(int id) {
             utility.ChangeActiveAnotation(id);
-            previewImage.Source = utility.GetActiveAnotaceImage();
+         //   previewImage.Source = utility.GetActiveAnotaceImage();
             inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
+            inkCanvas.Strokes.Clear();
+            previewImage.Source = utility.GetActiveAnotaceImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e) {
