@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace VerteMark.ObjectClasses.FolderClasses
 {
@@ -73,11 +74,11 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 fileManager.jsonPath = jsonFile;
                 fileManager.outputPath = path;
 
-                Console.WriteLine("Soubory načteny úspěšně.");
+                Debug.WriteLine("Soubory načteny úspěšně.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Chyba při načítání projektu: {ex.Message}");
+                Debug.WriteLine($"Chyba při načítání projektu: {ex.Message}");
             }
         }
     
