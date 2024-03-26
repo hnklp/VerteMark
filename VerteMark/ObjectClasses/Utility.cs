@@ -75,12 +75,12 @@ namespace VerteMark.ObjectClasses {
 
         public List<string> ChooseContinueAnotation()
         {
-            return project.ChooseNewProject();
+            return project.ChooseContinueAnotation();
         }
 
         public List<string> ChooseValidation()
         {
-            return project.ChooseNewProject();
+            return project.ChooseValidation();
         }
 
         public void Choose(string path)

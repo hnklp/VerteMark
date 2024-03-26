@@ -78,21 +78,31 @@ namespace VerteMark.MainWindows
                 // Vyčištění obsahu ListBoxu
                 FileListBox.Items.Clear();
 
+                Debug.WriteLine("--------FILENAME-------------");
+                Debug.WriteLine(selectedRadioButton.Name);
                 // Zobrazení seznamu souborů nebo složek jako tlačítek
                 switch (selectedRadioButton.Name)
                 {
                     case "DicomRadioButton":
-                        foreach (string filename in utility.ChooseNewProject())
+                        List<String> filenames = utility.ChooseNewProject();
+                        Debug.WriteLine(filenames.Count());
+                        foreach (string filename in filenames)
                         {
                             Button button = new Button();
+                            Debug.WriteLine(filename);
+                            Debug.WriteLine("--------FILENAME-------------");
                             button.Content = filename;
                             button.Click += (sender, e) => { utility.Choose(filename); };
                             FileListBox.Items.Add(button);
                         }
                         break;
                     case "InProgressRadioButton":
-                        foreach (string filename in utility.ChooseContinueAnotation())
+                        List<String> filenamesA = utility.ChooseContinueAnotation();
+                        Debug.WriteLine(filenamesA.Count());
+                        foreach (string filename in filenamesA)
                         {
+                            Debug.WriteLine(filename);
+                            Debug.WriteLine("--------FILENAME---ANOTATE----------");
                             Button button = new Button();
                             button.Content = filename;
                             button.Click += (sender, e) => { utility.Choose(filename); };
@@ -100,8 +110,12 @@ namespace VerteMark.MainWindows
                         }
                         break;
                     case "ValidationRadioButton":
-                        foreach (string filename in utility.ChooseValidation())
+                        List<String> filenamesV = utility.ChooseValidation();
+                        Debug.WriteLine(filenamesV.Count());
+                        foreach (string filename in filenamesV)
                         {
+                            Debug.WriteLine(filename);
+                            Debug.WriteLine("--------FILENAME---VALIDATE----------");
                             Button button = new Button();
                             button.Content = filename;
                             button.Click += (sender, e) => { utility.Choose(filename); };

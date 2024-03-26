@@ -57,6 +57,7 @@ namespace VerteMark.ObjectClasses
             **/
 
             //CreateNewProject(path);
+            folderUtilityManager.ExtractZip(path);
             return true;
         }
         public void CreateNewProject(string path) {
@@ -201,12 +202,12 @@ namespace VerteMark.ObjectClasses
 
         public List<string> ChooseContinueAnotation()
         {
-            return folderUtilityManager.ChooseNewProject();
+            return folderUtilityManager.ChooseContinueAnotation();
         }
 
         public List<string> ChooseValidation()
         {
-            return folderUtilityManager.ChooseNewProject();
+            return folderUtilityManager.ChooseValidation();
         }
 
         public void Choose(string path)
