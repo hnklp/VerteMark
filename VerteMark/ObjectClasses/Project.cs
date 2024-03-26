@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
+using System.Diagnostics;
+using System.Windows.Shell;
 
 namespace VerteMark.ObjectClasses
 {
@@ -39,25 +41,14 @@ namespace VerteMark.ObjectClasses
         }
 
 
+        // SLOUZI POUZE PRO ZIP FILE
+        // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
-            /**
-            FolderState folderState = fileManager.CheckFolderType(path);
-            switch (folderState) {
-                case FolderState.New:
-                    CreateNewProject(path);
-                    return true;
-                case FolderState.Existing:
-                    LoadProject(path);
-                    return true;
-                case FolderState.Nonfunctional:
-                    return false;
-            }
-            return false;
-            **/
-
-            CreateNewProject(path);
+            //CreateNewProject(path);
+            folderUtilityManager.ExtractZip(path);
             return true;
         }
+
         public void CreateNewProject(string path) {
             // Vytvoř čistý metadata
             metadata = new Metadata();
@@ -188,6 +179,42 @@ namespace VerteMark.ObjectClasses
                 instance = new Project();
             }
             return instance;
+        }
+
+        public List<string> ChooseNewProject()
+        {
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation()
+        {
+            return folderUtilityManager.ChooseContinueAnotation();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return folderUtilityManager.ChooseValidation();
+        }
+
+        public void Choose(string path, bool newProject)
+        {
+            if (newProject)
+            {
+                string newPath = Path.Combine(folderUtilityManager.tempPath, "dicoms", path);
+                Debug.WriteLine(newPath);
+                CreateNewProject(newPath);
+            }
+            else
+            {
+                string newPath = Path.Combine(folderUtilityManager.tempPath, "to_anotate", path);
+                Debug.Write(newPath);
+                LoadProject(newPath);
+            }
+
+            originalPicture = folderUtilityManager.GetImage();
         }
     }
 }

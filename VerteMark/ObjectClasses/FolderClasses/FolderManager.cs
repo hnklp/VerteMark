@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 
 namespace VerteMark.ObjectClasses.FolderClasses
 {
@@ -39,6 +40,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         // vrati list dicomu, pro ktere jeste neni vytvoren projekt
         public List<string> ChooseNewProject()
         {
+            Debug.WriteLine("VOLA SE CHOOSENEWPROJECT!!");
             List<string> dicomFiles = GetDicomFiles();
             List<string> anotatedProjects = GetSubfolders("to_anotate");
             List<string> validatedProjects = GetSubfolders("validated");
@@ -69,6 +71,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         private List<string> GetSubfolders(string parentFolderName)
         {
             string parentFolderPath = Path.Combine(tempFolderPath, parentFolderName);
+            Debug.WriteLine(parentFolderPath);
             if (!Directory.Exists(parentFolderPath))
             {
                 Directory.CreateDirectory(parentFolderPath); // Zajistí vytvoření složky, pokud ještě neexistuje
