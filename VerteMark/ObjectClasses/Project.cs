@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
+using System.Windows.Shell;
 
 namespace VerteMark.ObjectClasses
 {
@@ -40,26 +41,14 @@ namespace VerteMark.ObjectClasses
         }
 
 
+        // SLOUZI POUZE PRO ZIP FILE
+        // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
-            /**
-            FolderState folderState = fileManager.CheckFolderType(path);
-            switch (folderState) {
-                case FolderState.New:
-                    CreateNewProject(path);
-                    return true;
-                case FolderState.Existing:
-                    LoadProject(path);
-                    return true;
-                case FolderState.Nonfunctional:
-                    return false;
-            }
-            return false;
-            **/
-
             //CreateNewProject(path);
             folderUtilityManager.ExtractZip(path);
             return true;
         }
+
         public void CreateNewProject(string path) {
             // Vytvoř čistý metadata
             metadata = new Metadata();
@@ -210,9 +199,22 @@ namespace VerteMark.ObjectClasses
             return folderUtilityManager.ChooseValidation();
         }
 
-        public void Choose(string path)
+        public void Choose(string path, bool newProject)
         {
-            folderUtilityManager.Choose(path);
+            if (newProject)
+            {
+                string newPath = Path.Combine(folderUtilityManager.tempPath, "dicoms", path);
+                Debug.WriteLine(newPath);
+                CreateNewProject(newPath);
+            }
+            else
+            {
+                string newPath = Path.Combine(folderUtilityManager.tempPath, "to_anotate", path);
+                Debug.Write(newPath);
+                LoadProject(newPath);
+            }
+
+            originalPicture = folderUtilityManager.GetImage();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using Dicom;
 using Dicom.Imaging;
+using System.Diagnostics;
 
 
 namespace VerteMark.ObjectClasses.FolderClasses
@@ -116,6 +117,8 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 bitmapImage.BeginInit();
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                Debug.WriteLine(pngPath);
+                Debug.WriteLine("----------------PNGPATH-------------------");
                 bitmapImage.UriSource = new Uri(pngPath);
                 bitmapImage.EndInit();
 

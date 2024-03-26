@@ -10,11 +10,16 @@ namespace VerteMark.MainWindows
     public partial class FolderbrowserWindow : Window
     {
         Utility utility;
+        bool newProject; // create new project or load existing
 
         public FolderbrowserWindow()
         {
             InitializeComponent();
             utility = new Utility();
+            newProject = true;
+
+            // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
+            FileListBox.SelectionChanged += FileListBox_SelectionChanged;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -29,11 +34,17 @@ namespace VerteMark.MainWindows
             string filename = (sender as Button).Content.ToString();
 
             // Zavolání funkce Choose s názvem vybraného souboru nebo složky
-            utility.Choose(filename);
+            utility.Choose(filename, newProject);
         }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
+
+            string selectedFile = FileListBox.SelectedItem as string;
+
+            // Zavolání metody Choose s názvem vybraného souboru
+            utility.Choose(selectedFile, newProject);
+
             MainWindow mainWindow = new MainWindow();
 
             // Získání středu původního okna
@@ -47,6 +58,16 @@ namespace VerteMark.MainWindows
             mainWindow.Show();
 
             this.Close();
+        }
+
+        private void FileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Zkontrolujte, zda je vybrán nějaký soubor
+            if (FileListBox.SelectedItem != null)
+            {
+                // Pokud je vybrán soubor, povolte tlačítko ContinueButton
+                ContinueButton.IsEnabled = true;
+            }
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -75,58 +96,27 @@ namespace VerteMark.MainWindows
 
             if (selectedRadioButton != null)
             {
-                // Vyčištění obsahu ListBoxu
-                FileListBox.Items.Clear();
-
-                Debug.WriteLine("--------FILENAME-------------");
-                Debug.WriteLine(selectedRadioButton.Name);
-                // Zobrazení seznamu souborů nebo složek jako tlačítek
+                // Aktualizace ListBoxu na základě vybraného typu projektu
                 switch (selectedRadioButton.Name)
                 {
                     case "DicomRadioButton":
-                        List<String> filenames = utility.ChooseNewProject();
-                        Debug.WriteLine(filenames.Count());
-                        foreach (string filename in filenames)
-                        {
-                            Button button = new Button();
-                            Debug.WriteLine(filename);
-                            Debug.WriteLine("--------FILENAME-------------");
-                            button.Content = filename;
-                            button.Click += (sender, e) => { utility.Choose(filename); };
-                            FileListBox.Items.Add(button);
-                        }
+                        FileListBox.ItemsSource = utility.ChooseNewProject();
+                        newProject = true;
                         break;
                     case "InProgressRadioButton":
-                        List<String> filenamesA = utility.ChooseContinueAnotation();
-                        Debug.WriteLine(filenamesA.Count());
-                        foreach (string filename in filenamesA)
-                        {
-                            Debug.WriteLine(filename);
-                            Debug.WriteLine("--------FILENAME---ANOTATE----------");
-                            Button button = new Button();
-                            button.Content = filename;
-                            button.Click += (sender, e) => { utility.Choose(filename); };
-                            FileListBox.Items.Add(button);
-                        }
+                        FileListBox.ItemsSource = utility.ChooseContinueAnotation();
+                        newProject = false;
                         break;
                     case "ValidationRadioButton":
-                        List<String> filenamesV = utility.ChooseValidation();
-                        Debug.WriteLine(filenamesV.Count());
-                        foreach (string filename in filenamesV)
-                        {
-                            Debug.WriteLine(filename);
-                            Debug.WriteLine("--------FILENAME---VALIDATE----------");
-                            Button button = new Button();
-                            button.Content = filename;
-                            button.Click += (sender, e) => { utility.Choose(filename); };
-                            FileListBox.Items.Add(button);
-                        }
+                        FileListBox.ItemsSource = utility.ChooseValidation();
+                        newProject = false;
                         break;
                     default:
                         break;
                 }
             }
         }
+
 
         // Pomocná metoda pro nalezení potomků daného typu
         private IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
