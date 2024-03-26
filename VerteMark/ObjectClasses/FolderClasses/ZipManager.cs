@@ -63,10 +63,14 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
         public void UpdateZipFromTempFolder()
         {
-            using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Update))
+            try
             {
-                UpdateZipFromTempFolderRecursive(archive, "", tempFolderPath);
+                using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Update))
+                {
+                    UpdateZipFromTempFolderRecursive(archive, "", tempFolderPath);
+                }
             }
+            catch (Exception ex){ Console.WriteLine(); }
         }
 
         private void UpdateZipFromTempFolderRecursive(ZipArchive archive, string currentPath, string currentFolderPath)
