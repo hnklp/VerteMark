@@ -63,9 +63,10 @@ namespace VerteMark.ObjectClasses
 
         public void LoadProject(string path) {
             // Získej metadata
-        // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
-        // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
+            // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
+            // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             // Získej anotace
+            CreateNewAnotaces(); // - prozatimni reseni!
             // Získej uložený obrázek do projektu
             
             folderUtilityManager.LoadProject(path);
@@ -199,18 +200,16 @@ namespace VerteMark.ObjectClasses
             return folderUtilityManager.ChooseValidation();
         }
 
-        public void Choose(string path, bool newProject)
+        public void Choose(string path, string projectType)
         {
-            if (newProject)
+            string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
+            if (projectType == "dicoms")
             {
-                string newPath = Path.Combine(folderUtilityManager.tempPath, "dicoms", path);
                 Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
             else
             {
-                string newPath = Path.Combine(folderUtilityManager.tempPath, "to_anotate", path);
-                Debug.Write(newPath);
                 LoadProject(newPath);
             }
 

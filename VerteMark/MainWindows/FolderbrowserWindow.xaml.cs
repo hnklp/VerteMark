@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,32 +12,32 @@ namespace VerteMark.MainWindows
     public partial class FolderbrowserWindow : Window
     {
         Utility utility;
-        bool newProject; // create new project or load existing
+        string projectType; // create new project or load existing
 
         public FolderbrowserWindow()
         {
             InitializeComponent();
             utility = new Utility();
-            newProject = true;
+            projectType = "";
 
             // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
             FileListBox.SelectionChanged += FileListBox_SelectionChanged;
+            LoadforRole();
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             // Aktualizace ListBoxu na základě vybraného typu projektu
             UpdateFileList();
+            RadioButton radioButton = sender as RadioButton;
+            if (radioButton != null && SelectedRadioButtonTextBlock != null)
+            {
+                SelectedRadioButtonTextBlock.Text = radioButton.Content.ToString();
+                // Aktualizujte ListBox na základě vybraného typu projektu
+                UpdateFileList();
+            }
         }
 
-        private void FileButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Získání názvu vybraného souboru nebo složky
-            string filename = (sender as Button).Content.ToString();
-
-            // Zavolání funkce Choose s názvem vybraného souboru nebo složky
-            utility.Choose(filename, newProject);
-        }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
@@ -43,7 +45,7 @@ namespace VerteMark.MainWindows
             string selectedFile = FileListBox.SelectedItem as string;
 
             // Zavolání metody Choose s názvem vybraného souboru
-            utility.Choose(selectedFile, newProject);
+            utility.Choose(selectedFile, projectType);
 
             MainWindow mainWindow = new MainWindow();
 
@@ -67,6 +69,10 @@ namespace VerteMark.MainWindows
             {
                 // Pokud je vybrán soubor, povolte tlačítko ContinueButton
                 ContinueButton.IsEnabled = true;
+            }
+            else
+            {
+                ContinueButton.IsEnabled = false;
             }
         }
 
@@ -101,15 +107,15 @@ namespace VerteMark.MainWindows
                 {
                     case "DicomRadioButton":
                         FileListBox.ItemsSource = utility.ChooseNewProject();
-                        newProject = true;
+                        projectType = "dicoms";
                         break;
                     case "InProgressRadioButton":
                         FileListBox.ItemsSource = utility.ChooseContinueAnotation();
-                        newProject = false;
+                        projectType = "to_anotate";
                         break;
                     case "ValidationRadioButton":
                         FileListBox.ItemsSource = utility.ChooseValidation();
-                        newProject = false;
+                        projectType = "to_validate";
                         break;
                     default:
                         break;
@@ -138,5 +144,24 @@ namespace VerteMark.MainWindows
                 }
             }
         }
+
+
+        void LoadforRole()
+       {        
+            if (utility.GetLoggedInUser().Validator)
+                {
+                    FileListBox.ItemsSource = utility.ChooseValidation();
+                    projectType = "to_validate";
+                    UpdateFileList();
+                    SelectedRadioButtonTextBlock.Text = "K validaci";
+                }
+            else
+            {
+                FileListBox.ItemsSource = utility.ChooseNewProject();
+                projectType = "dicoms";
+                UpdateFileList();
+            }
+            }
+        }
     }
-}
+

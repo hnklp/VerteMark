@@ -83,9 +83,9 @@ namespace VerteMark.ObjectClasses {
             return project.ChooseValidation();
         }
 
-        public void Choose(string path, bool newProject)
+        public void Choose(string path, string projectType)
         {
-            project.Choose(path, newProject);
+            project.Choose(path, projectType);
         }
 
         /*
