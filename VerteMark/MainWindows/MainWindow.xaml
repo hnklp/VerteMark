@@ -47,34 +47,59 @@
         </Menu>
 
         <DockPanel Height="45" DockPanel.Dock="Bottom">
-            <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
-            
-                <StatusBarItem>
-                    <TextBlock x:Name="UserIDStatus" Text="" HorizontalAlignment="Right"/>
-                </StatusBarItem>
-                <Separator/>
-                <StatusBarItem HorizontalAlignment="Right">
-                    <TextBlock x:Name="RoleStatus" Text="" />
+            <StatusBar DockPanel.Dock="Bottom">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+
+                <StatusBarItem Grid.Column="0">
+                    <TextBlock x:Name="UserIDStatus" Text="User ID"/>
                 </StatusBarItem>
 
-                <StatusBarItem HorizontalAlignment="Right">
+                <Separator Grid.Column="1">
+                    <Separator.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Separator.Background>
+                </Separator>
+
+                <StatusBarItem Grid.Column="2">
+                    <TextBlock x:Name="RoleStatus" Text="Role"/>
+                </StatusBarItem>
+
+                <StatusBarItem Grid.Column="3">
                     <Label Content="&#xE1A4;" FontFamily="Segoe UI Symbol"/>
                 </StatusBarItem>
 
-                <StatusBarItem HorizontalAlignment="Right">
+                <StatusBarItem Grid.Column="4">
                     <Slider x:Name="ZoomSlider" Value="100" Minimum="50" Maximum="150" TickFrequency="5" TickPlacement="BottomRight" 
-                    Orientation="Horizontal" Width="200" Margin="10"/>
+                Orientation="Horizontal" Width="200" Margin="10"/>
                 </StatusBarItem>
 
-                <StatusBarItem HorizontalAlignment="Right">
+                <StatusBarItem Grid.Column="5">
                     <Label Content="&#xE12E;" FontFamily="Segoe UI Symbol"/>
                 </StatusBarItem>
 
-                <StatusBarItem HorizontalAlignment="Right">
-                    <Label Content="{Binding ElementName=ZoomSlider, Path=Value, StringFormat={}{0}%}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
+                <StatusBarItem Grid.Column="6">
+                    <Label Content="{Binding ElementName=ZoomSlider, Path=Value, StringFormat={}{0}%}"/>
                 </StatusBarItem>
-            </StatusBar>        
-         </DockPanel>
+            </StatusBar>
+        </DockPanel>
        
 
         <Grid>
