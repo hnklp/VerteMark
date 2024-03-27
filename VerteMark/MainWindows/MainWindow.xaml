@@ -46,21 +46,36 @@
             </MenuItem>
         </Menu>
 
-        <StatusBar Name="StatusBar" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
-            <DockPanel LastChildFill="True">
-
-                <StatusBarItem HorizontalAlignment="Right">
-                    <TextBlock x:Name="UserIDStatus" Text="" />
+        <DockPanel Height="45" DockPanel.Dock="Bottom">
+            <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
+            
+                <StatusBarItem>
+                    <TextBlock x:Name="UserIDStatus" Text="" HorizontalAlignment="Right"/>
                 </StatusBarItem>
-
+                <Separator/>
                 <StatusBarItem HorizontalAlignment="Right">
                     <TextBlock x:Name="RoleStatus" Text="" />
                 </StatusBarItem>
 
+                <StatusBarItem HorizontalAlignment="Right">
+                    <Label Content="&#xE1A4;" FontFamily="Segoe UI Symbol"/>
+                </StatusBarItem>
 
+                <StatusBarItem HorizontalAlignment="Right">
+                    <Slider x:Name="ZoomSlider" Value="100" Minimum="50" Maximum="150" TickFrequency="5" TickPlacement="BottomRight" 
+                    Orientation="Horizontal" Width="200" Margin="10"/>
+                </StatusBarItem>
 
-            </DockPanel>
-        </StatusBar>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <Label Content="&#xE12E;" FontFamily="Segoe UI Symbol"/>
+                </StatusBarItem>
+
+                <StatusBarItem HorizontalAlignment="Right">
+                    <Label Content="{Binding ElementName=ZoomSlider, Path=Value, StringFormat={}{0}%}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
+                </StatusBarItem>
+            </StatusBar>        
+         </DockPanel>
+       
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -80,17 +95,41 @@
             <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
             <!--Potrebujeme tedy ten toolbartray, nebo ne?-->
-
-            <!--<ToolBarTray x:Name="MainToolBar" Background="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" Height="287" VerticalAlignment="Top" Width="38" Margin="735,0,0,0" Orientation="Vertical">
-
-                <ToolBar Margin="1,0,118,-88" Background="{Binding Background, ElementName=StatusBar}">
-                    <Button Content="&#xE105;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Left"/>
-                    <Button Content="Placeholder! Vymyslet ikony!"/>
+            <ToolBarTray HorizontalAlignment="Right" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical">
+                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <Button x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TCrop.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TDraw.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="EraseTButton" Content="&#x1f5fb;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TErase.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="ZoomTButton" Content="&#xE12E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TZoom.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="UndoTButton" Content="&#xE10E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TUndo.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="RedoTButton" Content="&#xE10D;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <Button.ToolTip>
+                            <ToolTip Content ="str_TRedo.tooltip"/>
+                        </Button.ToolTip>
+                    </Button>
                 </ToolBar>
-
-            </ToolBarTray> -->
-
-            <Rectangle Grid.Column="2" Fill="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
+            </ToolBarTray>
+                <Rectangle Grid.Column="2" Fill="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
 
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
