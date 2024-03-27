@@ -34,12 +34,16 @@ namespace VerteMark
             if (sender is TextBox box)
             {
                 if (string.IsNullOrEmpty(box.Text))
+                {
                     box.Background = (ImageBrush)FindResource("watermark");
-
+                    SignInButton.IsEnabled = false;
+                }
                 else
+                {
                     box.Background = null;
-                    
                     SignInButton.IsEnabled = true;
+                }
+                    
             }
         }
 
@@ -75,13 +79,6 @@ namespace VerteMark
             }
             
             string UserId = IDTextBox.Text;
-
-            //nefunguje, uživatel může po smazání id pokračovat dál bez ID :/ - sabina opraví
-
-            if (UserId == null || UserId == "")
-            {
-                SignInButton.IsEnabled = false;
-            }
 
             utility.LoginUser(UserId, IsValidator);
 
