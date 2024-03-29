@@ -17,7 +17,7 @@ using FellowOakDicom;
 using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
-using System.Windows.Media.Animation;
+using System.Globalization;
 
 
 namespace VerteMark {
@@ -40,11 +40,14 @@ namespace VerteMark {
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
             loggedInUser = utility.GetLoggedInUser();
-            SetCanvasComponentsSize();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            Loaded += delegate
+            {
+               SetCanvasComponentsSize();
+            };
         }
 
         //dialog otevreni souboru s filtrem
@@ -59,14 +62,14 @@ namespace VerteMark {
                 CheckBox.IsChecked = isValidator;
             }
         }
-
+         
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            inkCanvas.Width = ImageHolder.Width;
-            inkCanvas.Height = ImageHolder.Height;
+            inkCanvas.Width = ImageHolder.ActualWidth;
+            inkCanvas.Height = ImageHolder.ActualHeight;
             inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = ImageHolder.Width;
-            previewImage.Height = ImageHolder.Height;
+            previewImage.Width = ImageHolder.ActualWidth;
+            previewImage.Height = ImageHolder.ActualHeight;
             previewImage.Margin = new Thickness(0);
             Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
@@ -87,10 +90,6 @@ namespace VerteMark {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
-                    /*
-                    inkCanvas.Width = bitmapImage.PixelWidth;
-                    inkCanvas.Height = bitmapImage.PixelHeight;
-                    */
                 }
             }
         }
@@ -241,6 +240,33 @@ namespace VerteMark {
 
         private void Button_Click_8(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(7);
+        }
+
+        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ImageHolder != null)
+            {
+                double zoomFactor = ZoomSlider.Value / 100;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
+            }   
+        }
+    }
+
+    public class PercentageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || !(value is double))
+                return null;
+
+            double numericValue = (double)value;
+            int intValue = (int)Math.Round(numericValue);
+            return string.Format("{0}%", intValue);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

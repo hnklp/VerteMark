@@ -15,7 +15,8 @@
     </Window.CommandBindings>
 
     <Window.Resources>
-        <Style TargetType="CheckBox">
+        <local:PercentageConverter x:Key="PercentageConverter"/>
+        <Style TargetType="{x:Type CheckBox}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="RenderTransform">
@@ -30,7 +31,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu Background="{Binding Background, ElementName=StatusBar}" DockPanel.Dock="Top">
+        <Menu Background="#FFF0F0F0" DockPanel.Dock="Top">
             <MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>
@@ -46,8 +47,8 @@
             </MenuItem>
         </Menu>
 
-        <DockPanel Height="45" DockPanel.Dock="Bottom">
-            <StatusBar DockPanel.Dock="Bottom">
+        <DockPanel Height="35" DockPanel.Dock="Bottom">
+            <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" >
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -58,7 +59,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </ItemsPanelTemplate>
@@ -87,8 +88,8 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="4">
-                    <Slider x:Name="ZoomSlider" Value="100" Minimum="50" Maximum="150" TickFrequency="5" TickPlacement="BottomRight" 
-                Orientation="Horizontal" Width="200" Margin="10"/>
+                    <Slider x:Name="ZoomSlider" Value="100" Minimum="50" Maximum="300" TickPlacement="BottomRight" 
+                        Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="5">
@@ -96,11 +97,11 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="6">
-                    <Label Content="{Binding ElementName=ZoomSlider, Path=Value, StringFormat={}{0}%}"/>
+                    <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}"/>
                 </StatusBarItem>
             </StatusBar>
         </DockPanel>
-       
+
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -108,19 +109,27 @@
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
-            <!-- InkCanvas control -->
-            <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Width="289" Height="241" Margin="10,10,0,0" Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp" StrokeCollected="inkCanvas_StrokeCollected">
-                <InkCanvas.DefaultDrawingAttributes>
-                    <DrawingAttributes Color="Black" />
-                    <!-- Change to the desired color -->
-                </InkCanvas.DefaultDrawingAttributes>
-            </InkCanvas>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" Height="490" Width="650">
+                    <Image x:Name="ImageHolder"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-            <Image x:Name="ImageHolder" HorizontalAlignment="Left" Height="509" Margin="10,10,0,0" VerticalAlignment="Top" Width="583" Stretch="Fill" RenderTransformOrigin="-1.256,0.534"/>
 
-            <!--Potrebujeme tedy ten toolbartray, nebo ne?-->
-            <ToolBarTray HorizontalAlignment="Right" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical">
+                    <!-- InkCanvas control -->
+                    <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
+                         Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp" StrokeCollected="inkCanvas_StrokeCollected">
+                        <InkCanvas.DefaultDrawingAttributes>
+                            <DrawingAttributes Color="Black" />
+                            <!-- Change to the desired color -->
+                        </InkCanvas.DefaultDrawingAttributes>
+                    </InkCanvas>
+
+                    <Image x:Name="previewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                </Grid>
+            </ScrollViewer>
+
+
+            <ToolBarTray HorizontalAlignment="Left" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical">
                 <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top" HorizontalAlignment="Right">
                     <Button x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
@@ -154,8 +163,8 @@
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-                <Rectangle Grid.Column="2" Fill="{Binding Background, ElementName=StatusBar}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
-
+            
+            <Rectangle Grid.Column="2" Fill="#FFF0F0F0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
             <Button Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1"/>
@@ -197,7 +206,6 @@
 
             <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1"/>
             <Button x:Name="OpenProject" Content="&#xE188;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1"/>
-            <Image x:Name="previewImage" HorizontalAlignment="Left" Height="182" Margin="10,10,0,0" VerticalAlignment="Top" Width="239"/>
             <Button x:Name="delete" Content="&#xE107;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1"/>
             <Label Grid.Column="1" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
