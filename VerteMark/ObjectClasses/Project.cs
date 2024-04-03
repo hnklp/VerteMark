@@ -27,12 +27,14 @@ namespace VerteMark.ObjectClasses {
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
+        JsonManipulator? jsonManip;
 
 
         public Project() {
             fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
+            jsonManip = new JsonManipulator();
         }
 
 
@@ -79,10 +81,16 @@ namespace VerteMark.ObjectClasses {
 
 
         public void SaveProject() {
-            // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
-            // záležitosti správných složek a správných formátů souborů má na starost filemanager
+            SaveJson(); // Vytvoření jsonu
         }
-        
+        void SaveJson() {
+            List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
+            foreach (Anotace anot in anotaces) {
+                dicts.Add(anot.GetAsDict());
+            }
+            fileManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+        }
+
 
         public void LoginNewUser(string id, bool validator) {
             loggedInUser = new User(id, validator);

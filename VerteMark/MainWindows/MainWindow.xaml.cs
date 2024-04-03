@@ -131,6 +131,7 @@ namespace VerteMark {
                 bitmap = ConvertInkCanvasToBitmap(inkCanvas);
                 utility.SaveBitmapToFile(bitmap, saveFileDialog);
             */
+            utility.SaveProject();
 
         }
 

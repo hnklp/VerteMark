@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -59,6 +60,26 @@ namespace VerteMark.ObjectClasses {
         }
         public void Validate() {
 
+        }
+        List<Tuple<int, int>> BitmapAsList() {
+            List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+            for (int y = 0; y < canvas.PixelHeight; y++) {
+                for (int x = 0; x < canvas.PixelWidth; x++) {
+                    if (x != 0 && y != 0) {
+                        list.Add(new Tuple<int, int>(x, y));
+                    }
+                }
+            }
+            return list;
+        }
+
+        public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
+            Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
+            if(canvas != null) { 
+                List<Tuple<int, int>> bitmap = BitmapAsList();
+                result.Add(Id.ToString(), bitmap);  
+            }
+            return result;
         }
 
     }

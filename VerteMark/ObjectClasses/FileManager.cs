@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using Dicom;
 using Dicom.Imaging;
+using System.Diagnostics;
 
 
 namespace VerteMark.ObjectClasses {
@@ -29,8 +30,8 @@ namespace VerteMark.ObjectClasses {
         }
 
 
-        public void SaveProject() {
-
+        public void SaveJson(string json) {
+            
         }
 
 
