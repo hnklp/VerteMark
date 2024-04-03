@@ -103,7 +103,7 @@
         </DockPanel>
 
 
-        <Grid>
+        <Grid x:Name="Grid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="250"/>
@@ -129,8 +129,10 @@
             </ScrollViewer>
 
 
-            <ToolBarTray HorizontalAlignment="Left" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical">
-                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
+                         PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp">
+                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top"
+                         HorizontalAlignment="Right" AllowDrop="False">
                     <Button x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TCrop.tooltip"/>
@@ -163,7 +165,7 @@
                     </Button>
                 </ToolBar>
             </ToolBarTray>
-            
+
             <Rectangle Grid.Column="2" Fill="#FFF0F0F0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>

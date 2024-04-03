@@ -18,6 +18,7 @@ using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
 using System.Globalization;
+using System.Windows.Controls.Primitives;
 
 
 namespace VerteMark {
@@ -31,6 +32,12 @@ namespace VerteMark {
         Utility utility;
         User? loggedInUser;
         List<CheckBox> CheckBoxes;
+
+        // Toolbar drag and drop
+        bool isDragging = false;
+        Point offset;
+        Thumb grip;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -46,7 +53,7 @@ namespace VerteMark {
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             Loaded += delegate
             {
-               SetCanvasComponentsSize();
+                SetCanvasComponentsSize();
             };
         }
 
@@ -62,7 +69,7 @@ namespace VerteMark {
                 CheckBox.IsChecked = isValidator;
             }
         }
-         
+
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
             inkCanvas.Width = ImageHolder.ActualWidth;
@@ -249,6 +256,59 @@ namespace VerteMark {
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }   
+        }
+
+        private T GetParent<T>(DependencyObject d) where T : class
+        {
+            while (d != null && !(d is T))
+            {
+                d = VisualTreeHelper.GetParent(d);
+            }
+            return d as T;
+
+        }
+
+        private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(ToolBarTray);
+            IInputElement ie = ToolBarTray.InputHitTest(p);
+            grip = GetParent<Thumb>(ie as DependencyObject);
+            if (grip != null)
+            {
+                isDragging = true;
+                offset = e.GetPosition(ToolBarTray);
+                grip.CaptureMouse();
+            }
+        }
+
+        private void Grip_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point currentPoint = e.GetPosition(ToolBarTray);
+
+                if (grip != null && grip.IsMouseCaptured)
+                {
+                    Point newPosition = Mouse.GetPosition(this);
+                    double newX = newPosition.X - offset.X;
+                    double newY = newPosition.Y - offset.Y - 18;
+
+                    // Ensure the ToolBarTray stays within the bounds of the window
+                    newX = Math.Max(0, Math.Min(newX, Grid.ColumnDefinitions[0].ActualWidth - ToolBarTray.ActualWidth));
+                    newY = Math.Max(0, Math.Min(newY, Grid.ActualHeight - ToolBarTray.ActualHeight));
+
+                    ToolBarTray.Margin = new Thickness(newX, newY, 0, 0);
+                }
+            }
+        }
+
+        private void Grip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (grip != null)
+            {
+                isDragging = false;
+                grip.ReleaseMouseCapture();
+            }
         }
     }
 
