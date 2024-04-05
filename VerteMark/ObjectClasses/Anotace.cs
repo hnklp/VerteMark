@@ -71,7 +71,10 @@ namespace VerteMark.ObjectClasses {
             return canvas;
         }
         public void ClearCanvas() {
-            canvas = new WriteableBitmap((int)canvas.Width, (int)canvas.Height, 96, 96, PixelFormats.Bgra32, null);
+            if (canvas != null)
+            {
+                canvas = new WriteableBitmap((int)canvas.Width, (int)canvas.Height, 96, 96, PixelFormats.Bgra32, null);
+            }
         }
         public void Validate() {
 

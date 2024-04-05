@@ -7,8 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
+using VerteMark.ObjectClasses.FolderClasses;
+using System.Diagnostics;
+using System.Windows.Shell;
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
@@ -21,7 +26,7 @@ namespace VerteMark.ObjectClasses {
     internal class Project {
 
         private static Project instance;
-        FileManager fileManager;
+        FolderUtilityManager folderUtilityManager;
         User? loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
@@ -30,57 +35,51 @@ namespace VerteMark.ObjectClasses {
 
 
         public Project() {
-            fileManager = new FileManager();
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
+            folderUtilityManager = new FolderUtilityManager();
         }
 
 
+        // SLOUZI POUZE PRO ZIP FILE
+        // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
-            /**
-            FolderState folderState = fileManager.CheckFolderType(path);
-            switch (folderState) {
-                case FolderState.New:
-                    CreateNewProject(path);
-                    return true;
-                case FolderState.Existing:
-                    LoadProject(path);
-                    return true;
-                case FolderState.Nonfunctional:
-                    return false;
-            }
-            return false;
-            **/
-
-
-            CreateNewProject(path);
+            //CreateNewProject(path);
+            folderUtilityManager.ExtractZip(path);
             return true;
         }
+
         public void CreateNewProject(string path) {
             // Vytvoř čistý metadata
             metadata = new Metadata();
             // Vytvoř čistý anotace
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
-            originalPicture = fileManager.GetPictureAsBitmapImage(path);
+
+            folderUtilityManager.CreateNewProject(path);
+            originalPicture = folderUtilityManager.GetImage();
         }
 
 
         public void LoadProject(string path) {
             // Získej metadata
-        // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
-        // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
-            metadata = fileManager.GetProjectMetada();
+            // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
+            // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             // Získej anotace
-            anotaces = fileManager.GetProjectAnotaces();
+            CreateNewAnotaces(); // - prozatimni reseni!
             // Získej uložený obrázek do projektu
-            //originalPicture = fileManager.GetPictureAsBitmapImage();
+            
+            folderUtilityManager.LoadProject(path);
+            originalPicture = folderUtilityManager.GetImage();
+            // json = folderUtilityManager.GetAnotaces();
         }
 
 
         public void SaveProject() {
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
+            // ZKOUSKA UKLADANI TEMP DO ZIP
+            folderUtilityManager.SaveZip();
         }
         
 
@@ -181,6 +180,40 @@ namespace VerteMark.ObjectClasses {
                 instance = new Project();
             }
             return instance;
+        }
+
+        public List<string> ChooseNewProject()
+        {
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
+            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation()
+        {
+            return folderUtilityManager.ChooseContinueAnotation();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return folderUtilityManager.ChooseValidation();
+        }
+
+        public void Choose(string path, string projectType)
+        {
+            string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
+            if (projectType == "dicoms")
+            {
+                Debug.WriteLine(newPath);
+                CreateNewProject(newPath);
+            }
+            else
+            {
+                LoadProject(newPath);
+            }
+
+            originalPicture = folderUtilityManager.GetImage();
         }
     }
 }
