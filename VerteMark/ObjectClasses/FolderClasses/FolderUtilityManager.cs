@@ -96,5 +96,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         {
             return folderManager.ChooseValidation();
         }
+
+        public void SaveJson(string neco) { }
     }
 }
