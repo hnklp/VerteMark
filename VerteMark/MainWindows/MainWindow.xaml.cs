@@ -18,6 +18,7 @@ using System.Windows.Media.Media3D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
 using System.Windows.Media.Animation;
+using System.Globalization;
 using System.Windows.Controls.Primitives;
 
 
@@ -34,6 +35,11 @@ namespace VerteMark {
         List<CheckBox> CheckBoxes;
         ToggleButton activeButton;
 
+        // Toolbar drag and drop
+        bool isDragging = false;
+        Point offset;
+        Thumb grip;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -43,12 +49,15 @@ namespace VerteMark {
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
             loggedInUser = utility.GetLoggedInUser();
-            SetCanvasComponentsSize();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             SwitchActiveAnot(0);
+            Loaded += delegate
+            {
+                SetCanvasComponentsSize();
+            };
         }
 
         //dialog otevreni souboru s filtrem
@@ -66,11 +75,11 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            inkCanvas.Width = ImageHolder.Width;
-            inkCanvas.Height = ImageHolder.Height;
+            inkCanvas.Width = ImageHolder.ActualWidth;
+            inkCanvas.Height = ImageHolder.ActualHeight;
             inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = ImageHolder.Width;
-            previewImage.Height = ImageHolder.Height;
+            previewImage.Width = ImageHolder.ActualWidth;
+            previewImage.Height = ImageHolder.ActualHeight;
             previewImage.Margin = new Thickness(0);
             Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
@@ -91,10 +100,6 @@ namespace VerteMark {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
-                    /*
-                    inkCanvas.Width = bitmapImage.PixelWidth;
-                    inkCanvas.Height = bitmapImage.PixelHeight;
-                    */
                 }
             }
         }
@@ -260,6 +265,86 @@ namespace VerteMark {
         private void Button_Click_8(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(7);
             SwitchActiveButton(sender as ToggleButton);
+        }
+
+        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ImageHolder != null)
+            {
+                double zoomFactor = ZoomSlider.Value / 100;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
+            }   
+        }
+
+        private T GetParent<T>(DependencyObject d) where T : class
+        {
+            while (d != null && !(d is T))
+            {
+                d = VisualTreeHelper.GetParent(d);
+            }
+            return d as T;
+
+        }
+
+        private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(ToolBarTray);
+            IInputElement ie = ToolBarTray.InputHitTest(p);
+            grip = GetParent<Thumb>(ie as DependencyObject);
+            if (grip != null)
+            {
+                isDragging = true;
+                offset = e.GetPosition(ToolBarTray);
+                grip.CaptureMouse();
+            }
+        }
+
+        private void Grip_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point currentPoint = e.GetPosition(ToolBarTray);
+
+                if (grip != null && grip.IsMouseCaptured)
+                {
+                    Point newPosition = Mouse.GetPosition(this);
+                    double newX = newPosition.X - offset.X;
+                    double newY = newPosition.Y - offset.Y - 18;
+
+                    // Ensure the ToolBarTray stays within the bounds of the window
+                    newX = Math.Max(0, Math.Min(newX, Grid.ColumnDefinitions[0].ActualWidth - ToolBarTray.ActualWidth));
+                    newY = Math.Max(0, Math.Min(newY, Grid.ActualHeight - ToolBarTray.ActualHeight));
+
+                    ToolBarTray.Margin = new Thickness(newX, newY, 0, 0);
+                }
+            }
+        }
+
+        private void Grip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (grip != null)
+            {
+                isDragging = false;
+                grip.ReleaseMouseCapture();
+            }
+        }
+    }
+
+    public class PercentageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || !(value is double))
+                return null;
+
+            double numericValue = (double)value;
+            int intValue = (int)Math.Round(numericValue);
+            return string.Format("{0}%", intValue);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
