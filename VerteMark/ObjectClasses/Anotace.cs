@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -32,32 +33,16 @@ namespace VerteMark.ObjectClasses {
         public void CreateEmptyCanvas(int width, int height) {
             canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
-        public void UpdateCanvas(BitmapSource bitmapSource) {
+        public void UpdateCanvas(WriteableBitmap bitmapSource) {
             if(bitmapSource is WriteableBitmap writableBitmap) {
                 if(canvas == null) {
                     canvas = new WriteableBitmap(writableBitmap.PixelWidth, writableBitmap.PixelHeight, writableBitmap.DpiX, writableBitmap.DpiY, PixelFormats.Bgra32, null);
                 }
-
-                // Get the pixels of both images
-                byte[] canvasPixels = new byte[canvas.PixelWidth * canvas.PixelHeight * 4];
-                byte[] newPixels = new byte[writableBitmap.PixelWidth * writableBitmap.PixelHeight * 4];
-
-                writableBitmap.CopyPixels(new Int32Rect(0, 0, writableBitmap.PixelWidth, writableBitmap.PixelHeight), newPixels, writableBitmap.PixelWidth * 4, 0);
-                canvas.CopyPixels(new Int32Rect(0, 0, canvas.PixelWidth, canvas.PixelHeight), canvasPixels, canvas.PixelWidth * 4, 0);
-
-                // Blend the pixels of the two images
-                for(int i = 0; i < canvasPixels.Length; i += 4) {
-                    byte newAlpha = newPixels[i + 3];
-                    byte invAlpha = (byte)(255 - newAlpha);
-
-                    canvasPixels[i] = (byte)((canvasPixels[i] * invAlpha + newPixels[i] * newAlpha) / 255);
-                    canvasPixels[i + 1] = (byte)((canvasPixels[i + 1] * invAlpha + newPixels[i + 1] * newAlpha) / 255);
-                    canvasPixels[i + 2] = (byte)((canvasPixels[i + 2] * invAlpha + newPixels[i + 2] * newAlpha) / 255);
-                    canvasPixels[i + 3] = (byte)(255 - ((255 - canvasPixels[i + 3]) * (255 - newAlpha)) / 255);
+                try {
+                    canvas = new WriteableBitmap(bitmapSource);
+                } catch(Exception) {
+                    // Handle exception if needed
                 }
-
-                // Update the canvas with the blended pixels
-                canvas.WritePixels(new Int32Rect(0, 0, canvas.PixelWidth, canvas.PixelHeight), canvasPixels, canvas.PixelWidth * 4, 0);
             } else {
                 try {
                     canvas = new WriteableBitmap(bitmapSource);
@@ -65,8 +50,8 @@ namespace VerteMark.ObjectClasses {
                     // Handle exception if needed
                 }
             }
-            VybarviSe();
         }
+
         public WriteableBitmap GetCanvas() {
             return canvas;
         }
@@ -79,30 +64,26 @@ namespace VerteMark.ObjectClasses {
         public void Validate() {
 
         }
-
-        void VybarviSe() {
-            int width = canvas.PixelWidth;
-            int height = canvas.PixelHeight;
-
-            // Get the pixel data as a 1D array of ints
-            int[] pixels = new int[width * height];
-            canvas.CopyPixels(pixels, width * 4, 0);
-
-            // Loop through the pixels and recolor any that are black
-                for(int i = 0; i < pixels.Length; i++) {
-                    int pixel = pixels[i];
-                    int alpha = (pixel >> 24) & 0xFF;
-                    int red = (pixel >> 16) & 0xFF;
-                    int green = (pixel >> 8) & 0xFF;
-                    int blue = pixel & 0xFF;
-
-                    if(red == 0 && green == 0 && blue == 0) {
-                        pixels[i] = (alpha << 24) | (Color.R << 16) | (Color.G << 8) | Color.B;
+        List<Tuple<int, int>> BitmapAsList() {
+            List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+            for (int y = 0; y < canvas.PixelHeight; y++) {
+                for (int x = 0; x < canvas.PixelWidth; x++) {
+                    if (x != 0 && y != 0) {
+                        list.Add(new Tuple<int, int>(x, y));
                     }
                 }
-
-                // Copy the modified pixel data back to the bitmap
-                canvas.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
             }
+            return list;
         }
+
+        public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
+            Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
+            if(canvas != null) { 
+                List<Tuple<int, int>> bitmap = BitmapAsList();
+                result.Add(Id.ToString(), bitmap);  
+            }
+            return result;
+        }
+
     }
+}

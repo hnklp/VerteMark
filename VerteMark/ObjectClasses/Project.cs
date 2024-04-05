@@ -32,12 +32,14 @@ namespace VerteMark.ObjectClasses
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
+        JsonManipulator? jsonManip;
 
 
         public Project() {
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
             folderUtilityManager = new FolderUtilityManager();
+            jsonManip = new JsonManipulator();
         }
 
 
@@ -76,12 +78,21 @@ namespace VerteMark.ObjectClasses
 
 
         public void SaveProject() {
+            SaveJson(); // Vytvoření jsonu
+
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
             // ZKOUSKA UKLADANI TEMP DO ZIP
-            folderUtilityManager.SaveZip();
+            folderUtilityManager.SaveZip(); // bude brat parametr string json 
         }
-        
+        void SaveJson() {
+            List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
+            foreach (Anotace anot in anotaces) {
+                dicts.Add(anot.GetAsDict());
+            }
+            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+        }
+
 
         public void LoginNewUser(string id, bool validator) {
             loggedInUser = new User(id, validator);
@@ -111,7 +122,7 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public void UpdateSelectedAnotaceCanvas(BitmapSource bitmapSource) {
+        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
             if (activeAnotace != null)
             {
                 activeAnotace.UpdateCanvas(bitmapSource);

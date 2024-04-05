@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -45,6 +45,7 @@ namespace VerteMark {
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            SwitchActiveAnot(0);
         }
 
         //dialog otevreni souboru s filtrem
@@ -151,8 +152,8 @@ namespace VerteMark {
                 Stroke lineStroke = new Stroke(points);
 
                 // Set the color and thickness of the connecting line
-                lineStroke.DrawingAttributes.Color = Colors.Black;
-                lineStroke.DrawingAttributes.Width = 3;
+                lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
+                lineStroke.DrawingAttributes.Width = 1;
 
                 // Add the connecting line stroke to the InkCanvas
                 inkCanvas.Strokes.Add(lineStroke);
@@ -178,16 +179,12 @@ namespace VerteMark {
 
         WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
-
             renderBitmap.Render(inkCanvas);
-
             WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
             renderBitmap.CopyPixels(new Int32Rect(0, 0, renderBitmap.PixelWidth, renderBitmap.PixelHeight), writeableBitmap.BackBuffer, writeableBitmap.BackBufferStride * writeableBitmap.PixelHeight, writeableBitmap.BackBufferStride);
-
             writeableBitmap.Lock();
             writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight));
             writeableBitmap.Unlock();
-
             return writeableBitmap;
         }
 
@@ -195,7 +192,7 @@ namespace VerteMark {
         void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
             utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
             previewImage.Source = utility.GetActiveAnotaceImage();
-            inkCanvas.Strokes.Clear();
+        //    inkCanvas.Strokes.Clear();
         }
 
         //Smaže obsah vybrané anotace
@@ -207,8 +204,10 @@ namespace VerteMark {
         /* Přepínání anotací */
         void SwitchActiveAnot(int id) {
             utility.ChangeActiveAnotation(id);
-            previewImage.Source = utility.GetActiveAnotaceImage();
+         //   previewImage.Source = utility.GetActiveAnotaceImage();
             inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
+            inkCanvas.Strokes.Clear();
+            previewImage.Source = utility.GetActiveAnotaceImage();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e) {
