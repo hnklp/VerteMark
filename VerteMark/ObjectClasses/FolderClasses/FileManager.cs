@@ -5,6 +5,7 @@ using System.IO;
 using Dicom;
 using Dicom.Imaging;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 
 namespace VerteMark.ObjectClasses.FolderClasses
@@ -27,11 +28,13 @@ namespace VerteMark.ObjectClasses.FolderClasses
         public string? pngPath;
         public string? jsonPath;
         public string? metaPath;
+        private string key;
 
 
         public FileManager()
         {
             outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            key = "XX";
         }
 
 
@@ -81,29 +84,45 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 return;
             }
 
-
-            string csvFileName = Path.GetFileNameWithoutExtension(dicomPath) + "_metadata.csv";
+            string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
             metaPath = Path.Combine(outputPath, csvFileName);
 
             DicomFile dicomFile = DicomFile.Open(dicomPath);
 
-            // Vytvoření CSV souboru
-            using (StreamWriter writer = new StreamWriter(metaPath))
+            var allMetadata = new Dictionary<string, object>();
+
+            // Uložení metadat DICOM
+            var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
+
+            foreach (DicomItem item in dicomFile.Dataset)
             {
-                // hlavička
-                writer.WriteLine("Tag;Value;VR;Description");
+                var metadataItem = new Dictionary<string, string>();
 
-                foreach (DicomItem item in dicomFile.Dataset)
-                {
+                metadataItem["Tag"] = item.Tag.ToString();
+                metadataItem["Value"] = item.ToString();
+                metadataItem["VR"] = item.ValueRepresentation.Code;
 
-                    string tag = item.Tag.ToString();
-                    string value = item.ToString();
-                    string vr = item.ValueRepresentation.Code;
-                    string description = DicomDictionary.Default[item.Tag].Name;
-
-                    writer.WriteLine($"{tag};{value};{vr};{description}");
-                }
+                string description = DicomDictionary.Default[item.Tag].Name;
+                dicomMetadata[description] = metadataItem;
             }
+
+            allMetadata["DicomMetadata"] = dicomMetadata;
+
+            // Vytvoření slovníku pro ukládání historie
+            var history = new Dictionary<string, Dictionary<string, string>>();
+
+            // Přidání záznamů do historie
+            history["1.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+            history["5.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+            history["10.1.2020"] = new Dictionary<string, string> { { "id", "VALIDATOR1" }, { "action", "VALIDATION" } };
+
+            allMetadata["History"] = history;
+
+            // Konverze do formátu JSON
+            string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+
+            // Uložení do souboru
+            File.WriteAllText(metaPath, jsonAllMetadata);
         }
 
         // nacte obrazek pomoci cesty pngPath
