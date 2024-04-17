@@ -1,23 +1,12 @@
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Shell;
-using System;
-using System.IO;
 using Microsoft.Win32;
 using VerteMark.ObjectClasses;
-using FellowOakDicom;
-using System.Windows.Media.Media3D;
-using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Ink;
-using System.Windows.Media.Animation;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
 
@@ -28,22 +17,30 @@ namespace VerteMark {
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
-    /// TODO: Rozdelit status bar oddelovaci a text s ID dat doprava
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window
+    {
         Utility utility;
         User? loggedInUser;
-        List<CheckBox> CheckBoxes;
-        ToggleButton activeButton;
+        List<CheckBox> checkBoxes;
+        ToggleButton activeAnotButton;
+        ToggleButton activeToolbarButton;
+
+        StateManager stateManager;
 
         // Toolbar drag and drop
         bool isDragging = false;
         Point offset;
         Thumb grip;
 
-        public MainWindow() {
+        // Image crop
+        Point? cropStartPoint = null;
+
+
+        public MainWindow()
+        {
             InitializeComponent();
             utility = new Utility();
-            CheckBoxes = new List<CheckBox>
+            checkBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
@@ -54,6 +51,10 @@ namespace VerteMark {
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             SwitchActiveAnot(0);
+
+            stateManager = new StateManager();
+            stateManager.StateChanged += HandleStateChanged;
+
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -65,8 +66,10 @@ namespace VerteMark {
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
-        void InitializeCheckboxes() {
-            foreach(var CheckBox in CheckBoxes) {
+        void InitializeCheckboxes()
+        {
+            foreach (var CheckBox in checkBoxes)
+            {
                 bool isValidator = loggedInUser.Validator;
                 CheckBox.IsEnabled = isValidator;
                 CheckBox.IsChecked = isValidator;
@@ -75,28 +78,37 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            inkCanvas.Width = ImageHolder.ActualWidth;
-            inkCanvas.Height = ImageHolder.ActualHeight;
-            inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = ImageHolder.ActualWidth;
-            previewImage.Height = ImageHolder.ActualHeight;
-            previewImage.Margin = new Thickness(0);
-            Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
-            Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
+            InkCanvas.Width = ImageHolder.ActualWidth;
+            InkCanvas.Height = ImageHolder.ActualHeight;
+            InkCanvas.Margin = new Thickness(0);
+            PreviewImage.Width = ImageHolder.ActualWidth;
+            PreviewImage.Height = ImageHolder.ActualHeight;
+            PreviewImage.Margin = new Thickness(0);
+            CropCanvas.Width = ImageHolder.ActualWidth;
+            CropCanvas.Height = ImageHolder.ActualHeight;
+            CropCanvas.Margin = new Thickness(0);
+            Grid.SetColumn(InkCanvas, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(InkCanvas, Grid.GetRow(ImageHolder));
+            Grid.SetColumn(PreviewImage, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
+            Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
         }
-        private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
+
+        private void OpenFileItem_Click(object sender, RoutedEventArgs e)
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "open_dialog_title_str";
 
-            if(openFileDialog.ShowDialog() == true) {
+            if (openFileDialog.ShowDialog() == true)
+            {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if(success) {
+                if (success)
+                {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -104,8 +116,126 @@ namespace VerteMark {
             }
         }
 
+        private void OpenProject_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.Multiselect = false; // Allow selecting only one file
+            openFileDialog.Title = "Select a PNG File";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string selectedFilePath = openFileDialog.FileName;
+                bool success = utility.ChooseProjectFolder(selectedFilePath);
+                if (success)
+                {
+                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
+                    BitmapImage bitmapImage = utility.GetOriginalPicture();
+                    ImageHolder.Source = bitmapImage;
+                }
+            }
+        }
+
+        /*
+         * ============
+         *  App states
+         * ============
+         */
+
+        private void HandleStateChanged(object sender, AppState newState)
+        {
+
+            switch (newState)
+            {
+                case AppState.Drawing:
+                case AppState.Erasing:
+
+                    SetInkCanvasMode(newState);
+                    CropCanvas.Visibility = Visibility.Hidden;
+
+                    if (CroppedImage.Source != null)
+                    {
+                        ImageHolder.Visibility = Visibility.Hidden;
+                        PreviewImage.Visibility = Visibility.Hidden;
+
+                        CroppedImage.Visibility = Visibility.Visible;
+                        CroppedPreviewImage.Visibility = Visibility.Visible;
+                    }
+                    break;
+
+                case AppState.Cropping:
+
+                    SetInkCanvasMode(newState);
+                    CropCanvas.Visibility = Visibility.Visible;
+
+                    if (CroppedImage.Source != null)
+                    {
+                        ImageHolder.Visibility = Visibility.Visible;
+                        PreviewImage.Visibility = Visibility.Visible;
+
+                        CroppedImage.Visibility = Visibility.Hidden;
+                        CroppedPreviewImage.Visibility = Visibility.Hidden;
+                    }
+
+                    SetCanvasComponentsSize();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void SetInkCanvasMode(AppState state)
+        {
+            InkCanvas.EditingMode = state == AppState.Drawing ? InkCanvasEditingMode.Ink :
+                                    state == AppState.Erasing ? InkCanvasEditingMode.EraseByPoint :
+                                    InkCanvasEditingMode.None;
+        }
+
+        private void CropTButton_Click(object sender, RoutedEventArgs e)
+        {
+            stateManager.CurrentState = AppState.Cropping;
+            SwitchActiveToolbarButton(sender as ToggleButton);
+        }
+
+        private void DrawTButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                CropImage();
+            }
+            stateManager.CurrentState = AppState.Drawing;
+            SwitchActiveToolbarButton(sender as ToggleButton);
+        }
+
+        private void EraseTButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                CropImage();
+            }
+            stateManager.CurrentState = AppState.Erasing;
+            SwitchActiveToolbarButton(sender as ToggleButton);
+        }
+
+        void SwitchActiveToolbarButton(ToggleButton pressedButton)
+        {
+            if (activeToolbarButton != null)
+            {
+                activeToolbarButton.IsChecked = false;
+            }
+            activeToolbarButton = pressedButton;
+        }
+
+        /*
+         * ======
+         *  Menu
+         * ======
+         */
+
         //kliknuti na o aplikaci
-        private void AboutItem_Click(object sender, RoutedEventArgs e) {
+        private void AboutItem_Click(object sender, RoutedEventArgs e)
+        {
             AboutWindow AboutWindow = new AboutWindow();
 
             // Získání středu původního okna
@@ -120,18 +250,19 @@ namespace VerteMark {
         }
 
         //kliknuti na nastaveni aplikace
-        private void PropertiesItem_Click(object sender, RoutedEventArgs e) {
+        private void PropertiesItem_Click(object sender, RoutedEventArgs e)
+        {
             MessageBox.Show("Properties clicked");
         }
 
         //soubor - zavrit
-        private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e) {
-            System.Windows.Application.Current.Shutdown();   // <- už jsem to opravil, tak jsem to odkomentil -h
+        private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();  
         }
 
-        
-
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
             /* 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
@@ -142,50 +273,45 @@ namespace VerteMark {
             utility.SaveProject();
         }
 
+        /*
+         * =========
+         *  Drawing
+         * =========
+         */
+
         //Spojování linky
-        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
-            // Get the first and last points of the stroke
-            StylusPoint firstPoint = e.Stroke.StylusPoints.First();
-            StylusPoint lastPoint = e.Stroke.StylusPoints.Last();
+        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Drawing)
+            {
+                // Get the first and last points of the stroke
+                StylusPoint firstPoint = e.Stroke.StylusPoints.First();
+                StylusPoint lastPoint = e.Stroke.StylusPoints.Last();
 
-            // Calculate the distance between the first and last points
-            double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
+                // Calculate the distance between the first and last points
+                double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
 
-            // If the distance is less than 5, connect the points with a line
-            if(distance < 100) {
-                // Create a new stroke for the connecting line
-                StylusPointCollection points = new StylusPointCollection();
-                points.Add(firstPoint);
-                points.Add(lastPoint);
-                Stroke lineStroke = new Stroke(points);
+                // If the distance is less than 5, connect the points with a line
+                if (distance < 100)
+                {
+                    // Create a new stroke for the connecting line
+                    StylusPointCollection points = new StylusPointCollection();
+                    points.Add(firstPoint);
+                    points.Add(lastPoint);
+                    Stroke lineStroke = new Stroke(points);
 
-                // Set the color and thickness of the connecting line
-                lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
-                lineStroke.DrawingAttributes.Width = 1;
+                    // Set the color and thickness of the connecting line
+                    lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
+                    lineStroke.DrawingAttributes.Width = 1;
 
-                // Add the connecting line stroke to the InkCanvas
-                inkCanvas.Strokes.Add(lineStroke);
-            }
-        }
-
-        private void OpenProject_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "Select a PNG File";
-            if(openFileDialog.ShowDialog() == true) {
-                string selectedFilePath = openFileDialog.FileName;
-                bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if(success) {
-                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                    BitmapImage bitmapImage = utility.GetOriginalPicture();
-                    ImageHolder.Source = bitmapImage;
+                    // Add the connecting line stroke to the InkCanvas
+                    InkCanvas.Strokes.Add(lineStroke);
                 }
             }
         }
 
-        WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas) {
+        WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas)
+        {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
             renderBitmap.Render(inkCanvas);
             WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
@@ -197,84 +323,98 @@ namespace VerteMark {
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
-        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
-            utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
-            previewImage.Source = utility.GetActiveAnotaceImage();
-        //    inkCanvas.Strokes.Clear();
+        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Drawing)
+            {
+                utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(InkCanvas));
+
+                if (CroppedImage.Source == null)
+                    PreviewImage.Source = utility.GetActiveAnotaceImage();
+                else
+                    CroppedPreviewImage.Source = utility.GetActiveAnotaceImage();
+            }
         }
 
         //Smaže obsah vybrané anotace
-        void Smazat_butt(object sender, RoutedEventArgs e) {
+        void Smazat_butt(object sender, RoutedEventArgs e)
+        {
             utility.ClearActiveAnotace();
-            previewImage.Source = utility.GetActiveAnotaceImage();
+            PreviewImage.Source = utility.GetActiveAnotaceImage();
         }
 
         /* Přepínání anotací */
-        void SwitchActiveAnot(int id) {
+        void SwitchActiveAnot(int id)
+        {
             utility.ChangeActiveAnotation(id);
-         //   previewImage.Source = utility.GetActiveAnotaceImage();
-            inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
-            inkCanvas.Strokes.Clear();
-            previewImage.Source = utility.GetActiveAnotaceImage();
+            //   previewImage.Source = utility.GetActiveAnotaceImage();
+            InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
+            InkCanvas.Strokes.Clear();
+            PreviewImage.Source = utility.GetActiveAnotaceImage();
         }
 
-        void SwitchActiveButton(ToggleButton pressedButton)
+        void SwitchActiveAnotButton(ToggleButton pressedButton)
         {
-            if (activeButton != null)
+            if (activeAnotButton != null)
             {
-                activeButton.IsChecked = false;
+                activeAnotButton.IsChecked = false;
             }
-            activeButton = pressedButton;
+            activeAnotButton = pressedButton;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(0);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(1);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_3(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(2);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_4(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(3);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_5(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(4);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_6(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(5);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_7(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(6);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void Button_Click_8(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(7);
-            SwitchActiveButton(sender as ToggleButton);
-        }
-
-        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (ImageHolder != null)
-            {
-                double zoomFactor = ZoomSlider.Value / 100;
-                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
-            }   
+            SwitchActiveAnot(0);
+            SwitchActiveAnotButton(sender as ToggleButton);
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(1);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(2);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(3);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(4);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(5);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(6);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            SwitchActiveAnot(7);
+            SwitchActiveAnotButton(sender as ToggleButton);
+        }
+
+        /*
+         * =======================
+         *  Toolbar drop and drag
+         * =======================
+         */
 
         private T GetParent<T>(DependencyObject d) where T : class
         {
@@ -308,8 +448,9 @@ namespace VerteMark {
                 if (grip != null && grip.IsMouseCaptured)
                 {
                     Point newPosition = Mouse.GetPosition(this);
+                    int toolbarOffset = 18;
                     double newX = newPosition.X - offset.X;
-                    double newY = newPosition.Y - offset.Y - 18;
+                    double newY = newPosition.Y - offset.Y - toolbarOffset;
 
                     // Ensure the ToolBarTray stays within the bounds of the window
                     newX = Math.Max(0, Math.Min(newX, Grid.ColumnDefinitions[0].ActualWidth - ToolBarTray.ActualWidth));
@@ -326,6 +467,98 @@ namespace VerteMark {
             {
                 isDragging = false;
                 grip.ReleaseMouseCapture();
+            }
+        }
+
+        /*
+         * ======
+         *  Crop
+         * ======
+         */
+
+        private void CropCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                cropStartPoint = e.GetPosition(CropCanvas);
+                CropRectangle.Width = 0;
+                CropRectangle.Height = 0;
+            }
+        }
+
+        private void CropCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                if (cropStartPoint.HasValue)
+                {
+                    cropStartPoint = null;
+                }
+            }
+        }
+
+        private void CropCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                if (cropStartPoint.HasValue)
+                {
+                    var pos = e.GetPosition(CropCanvas);
+
+                    var x = Math.Min(pos.X, cropStartPoint.Value.X);
+                    var y = Math.Min(pos.Y, cropStartPoint.Value.Y);
+
+                    var width = Math.Max(pos.X, cropStartPoint.Value.X) - x;
+                    var height = Math.Max(pos.Y, cropStartPoint.Value.Y) - y;
+
+                    Canvas.SetLeft(CropRectangle, x);
+                    Canvas.SetTop(CropRectangle, y);
+
+                    CropRectangle.Width = width;
+                    CropRectangle.Height = height;
+                }
+            }
+        }
+
+        private void CropImage()
+        {
+            Int32Rect rect = new Int32Rect((int)Canvas.GetLeft(CropRectangle),
+                                      (int)Canvas.GetTop(CropRectangle),
+                                      (int)CropRectangle.Width,
+                                      (int)CropRectangle.Height);
+
+            if (rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
+                return;
+          
+            BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
+            CroppedImage.Source = croppedImage;
+
+            if (PreviewImage.Source !=  null)
+            {
+                BitmapSource croppedPreviewImage = new CroppedBitmap(PreviewImage.Source as BitmapSource, rect);
+                CroppedPreviewImage.Source = croppedPreviewImage;
+            }
+
+            InkCanvas.Width = CropRectangle.Width;
+            InkCanvas.Height = CropRectangle.Height;
+            PreviewImage.Width = CropRectangle.Width;
+            PreviewImage.Height = CropRectangle.Height;
+            CropCanvas.Width = CropRectangle.Width;
+            CropCanvas.Height = CropRectangle.Height;
+        }
+
+        /*
+         * ======
+         *  Zoom
+         * ======
+         */
+
+        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ImageHolder != null)
+            {
+                double zoomFactor = ZoomSlider.Value / 100;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }
         }
     }
@@ -347,4 +580,5 @@ namespace VerteMark {
             throw new NotImplementedException();
         }
     }
+
 }
