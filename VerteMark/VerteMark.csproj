@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Resource Include="Pictures\icon.png" />
+	<Resource Include="Resources\Icons\draw_icon.ico" />
     <Resource Include="Pictures\textboxbackground.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
