@@ -10,10 +10,24 @@
 
   <ItemGroup>
     <Resource Include="Pictures\icon.png" />
-	<Resource Include="Resources\Icons\draw_icon.ico" />
     <Resource Include="Pictures\textboxbackground.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Cursors\Crop_Cursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Cursors\Draw_Cursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Cursors\Erase_Cursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\*.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="Resources\Cursors\Crop_Cursor.cur" />
+    <None Remove="Resources\Cursors\Draw_Cursor.cur" />
+    <None Remove="Resources\Cursors\Erase_Cursor.cur" />
     <PackageReference Include="fo-dicom" Version="5.1.2" />
     <PackageReference Include="fo-dicom.Desktop" Version="4.0.8" />
     <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />

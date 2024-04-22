@@ -69,15 +69,7 @@
                     <TextBlock x:Name="UserIDStatus" Text="User ID"/>
                 </StatusBarItem>
 
-                <Separator Grid.Column="1">
-                    <Separator.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFABADB3" Offset="0.5"/>
-                            <GradientStop Color="#FFF0F0F0" Offset="1"/>
-                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                        </LinearGradientBrush>
-                    </Separator.Background>
-                </Separator>
+                <Separator Grid.Column="1" Background="#FFD0D0D0"/>
 
                 <StatusBarItem Grid.Column="2">
                     <TextBlock x:Name="RoleStatus" Text="Role"/>
@@ -86,7 +78,7 @@
                 <StatusBarItem Grid.Column="3">
                     <Label>
                         <Label.Content>
-                            <Image Source="../Resources/Icons/unzoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Label.Content>
                     </Label>
                 </StatusBarItem>
@@ -99,7 +91,7 @@
                 <StatusBarItem Grid.Column="5">
                     <Label>
                         <Label.Content>
-                            <Image Source="../Resources/Icons/zoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Label.Content>
                     </Label>
                 </StatusBarItem>
@@ -137,16 +129,18 @@
             </ScrollViewer>
 
 
-            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="195" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
+            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="200" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
                          PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp">
-                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top"
-                         HorizontalAlignment="Right" AllowDrop="False">
-                    <Button x:Name="CropTButton" HorizontalAlignment="Right" Width="30" Height="30">
+                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="235" VerticalAlignment="Top"
+                         HorizontalAlignment="Center" AllowDrop="False">
+                    <!--Zde je boobietrap na Sabinu haha-->
+                    <!--Právě jste narazili na merge conflict! Potřebuji, aby se po kliknutí na tlačítko přepnul kurzor na tužtičku (to zvládneš :-) )-->
+                    <Button x:Name="CropTButton" HorizontalAlignment="Right" Width="30" Height="30" Click="CropClicked">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TCrop.tooltip"/>
                         </Button.ToolTip>
                         <Button.Content>
-                            <Image Source="../Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button.Content>
                     </Button>
                     <Button x:Name="DrawTButton" HorizontalAlignment="Right" Width="30" Height="30">
@@ -154,7 +148,7 @@
                             <ToolTip Content ="str_TDraw.tooltip"/>
                         </Button.ToolTip>
                         <Button.Content>
-                            <Image Source="../Resources/Icons/draw_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/draw_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
                     </Button>
                     <Button x:Name="EraseTButton" HorizontalAlignment="Right" Width="30" Height="30">
@@ -162,28 +156,21 @@
                             <ToolTip Content ="str_TErase.tooltip"/>
                         </Button.ToolTip>
                         <Button.Content>
-                            <Image Source="../Resources/Icons/erase_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/erase_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
                     </Button>
-                    <Button x:Name="ZoomTButton" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
-                            <ToolTip Content ="str_TZoom.tooltip"/>
-                        </Button.ToolTip>
-                        <Button.Content>
-                            <Image Source="../Resources/Icons/zoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Button.Content>
-                    </Button>
+
                     <Button x:Name="UndoTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TUndo.tooltip"/>
                         </Button.ToolTip>
-                        <Image Source="../Resources/Icons/undo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="/Resources/Icons/undo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="RedoTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TRedo.tooltip"/>
                         </Button.ToolTip>
-                        <Image Source="../Resources/Icons/redo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="/Resources/Icons/redo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </ToolBar>
             </ToolBarTray>

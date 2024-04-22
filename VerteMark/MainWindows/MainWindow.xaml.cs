@@ -328,6 +328,15 @@ namespace VerteMark {
                 grip.ReleaseMouseCapture();
             }
         }
+
+        private void CropClicked(object sender, RoutedEventArgs e)
+        {
+            //plz fix
+            //Cursor cropCursor = new Cursor("../Resources/Cursors/Crop_Cursor.cur");
+
+
+            //Mouse.OverrideCursor = cropCursor;
+        }
     }
 
     public class PercentageConverter : IValueConverter
