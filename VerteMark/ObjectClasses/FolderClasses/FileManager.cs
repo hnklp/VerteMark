@@ -66,8 +66,13 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
             Bitmap bmp = image.RenderImage().As<Bitmap>();
 
-            string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
-            pngPath = Path.Combine(outputPath, outputFileName);
+            string fileName = Path.GetFileNameWithoutExtension(dicomPath);
+
+            string outputPngName = fileName + ".png";
+            pngPath = Path.Combine(outputPath, outputPngName);
+
+            string outputJsonName = fileName + ".json";
+            jsonPath = Path.Combine(outputPath, outputJsonName);
 
             // Uložení obrázku jako PNG
             bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
@@ -136,8 +141,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 bitmapImage.BeginInit();
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                Debug.WriteLine(pngPath);
-                Debug.WriteLine("----------------PNGPATH-------------------");
                 bitmapImage.UriSource = new Uri(pngPath);
                 bitmapImage.EndInit();
 
@@ -195,13 +198,5 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 return bitmapImage;
             }
         }
-    }
-
-
-    public enum FolderState
-    {
-        New,
-        Existing,
-        Nonfunctional
     }
 }

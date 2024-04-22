@@ -11,6 +11,9 @@ using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using Newtonsoft.Json;
+using System.Windows.Annotations;
+using Newtonsoft.Json.Linq;
 
 namespace VerteMark.ObjectClasses
 {
@@ -32,7 +35,7 @@ namespace VerteMark.ObjectClasses
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
-        JsonManipulator? jsonManip;
+        JsonManipulator jsonManip;
 
 
         public Project() {
@@ -68,29 +71,46 @@ namespace VerteMark.ObjectClasses
             // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
             // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             // Získej anotace
-            CreateNewAnotaces(); // - prozatimni reseni!
+            //CreateNewAnotaces(); // - prozatimni reseni!
             // Získej uložený obrázek do projektu
             
-            folderUtilityManager.LoadProject(path);
+            string jsonContent = folderUtilityManager.LoadProject(path);
+            Debug.WriteLine(jsonContent);
+            Debug.WriteLine("--------JSON-------------");
+
+
             originalPicture = folderUtilityManager.GetImage();
-            // json = folderUtilityManager.GetAnotaces();
+
+            JObject jsonObject = JObject.Parse(jsonContent);
+
+            // Získání seznamu anotací ze zpracovaného JObject
+            JArray annotationsArray = (JArray)jsonObject["Annotations"];
+
+            // Předání seznamu anotací pro další zpracování
+            LoadAnnotations(annotationsArray);
         }
 
 
-        public void SaveProject() {
-            SaveJson(); // Vytvoření jsonu
+        public void SaveProject()
+        {
 
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
             // ZKOUSKA UKLADANI TEMP DO ZIP
-            folderUtilityManager.SaveZip(); // bude brat parametr string json 
+            SaveJson();
+            folderUtilityManager.Save(); // bude brat parametr string json 
         }
+
+
         void SaveJson() {
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
-            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+
+            string json = jsonManip.ExportJson(loggedInUser, dicts);
+
+            folderUtilityManager.SaveJson(json);
         }
 
 
@@ -120,6 +140,44 @@ namespace VerteMark.ObjectClasses
             anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.DeepPink));
             SelectActiveAnotace(0);
         }
+
+        void LoadAnnotations(JArray annotationsArray)
+        {
+            foreach (JObject annotationObj in annotationsArray)
+            {
+                foreach (var annotation in annotationObj)
+                {
+                    int anotaceId = int.Parse(annotation.Key);
+                    Debug.WriteLine(anotaceId);
+                    Debug.WriteLine("-------------ANOTACE ID-----------");
+
+                    // Vytvoření nového objektu Anotace s daným ID a názvem (zatím výchozí název)
+                    Anotace novaAnotace = new Anotace(anotaceId, "C1", System.Drawing.Color.Red);
+
+                    // Přidání nově vytvořené anotace do seznamu anotací
+                    anotaces.Add(novaAnotace);
+
+                    // Získání seznamu pixelů pro danou anotaci
+                    JArray pixelsArray = (JArray)annotation.Value;
+
+                    // Vytvoření prázdného plátna pro anotaci
+                    novaAnotace.CreateEmptyCanvas(1920, 1080);
+
+                    // Nastavení pixelů na plátno anotace
+                    foreach (JObject pixelObj in pixelsArray)
+                    {
+                        int x = (int)pixelObj["Item1"];
+                        int y = (int)pixelObj["Item2"];
+
+                        // Nastavení pixelu na dané pozici
+                        novaAnotace.SetPixel(x, y, novaAnotace.Color);
+                    }
+                }
+            }
+        }
+
+
+
 
 
         public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
@@ -195,9 +253,6 @@ namespace VerteMark.ObjectClasses
 
         public List<string> ChooseNewProject()
         {
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
-            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
             return folderUtilityManager.ChooseNewProject();
         }
 
@@ -216,7 +271,6 @@ namespace VerteMark.ObjectClasses
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
             if (projectType == "dicoms")
             {
-                Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
             else

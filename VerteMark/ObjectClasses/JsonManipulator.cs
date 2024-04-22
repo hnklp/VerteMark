@@ -53,21 +53,5 @@ namespace VerteMark.ObjectClasses {
 
                 return createdJson;
             }
-
-            // InvertedJson
-            /*
-            public List<T> InvertedJson(string createdJson)
-            {
-                JsonManipulator loadedJson = JsonManipulator.InvertedJson(createdJson);
-                List<T> returnValues = new List<T>;
-
-                returnValues.add(loadedJson.AnnotatorID);
-                returnValues.add(loadedJson.ValidatorID);
-                returnValues.add(loadedJson.Annotations);
-
-                return returnValues;
-            }
-            */
-
     }
 }

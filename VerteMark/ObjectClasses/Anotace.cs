@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -61,26 +62,64 @@ namespace VerteMark.ObjectClasses {
                 canvas = new WriteableBitmap((int)canvas.Width, (int)canvas.Height, 96, 96, PixelFormats.Bgra32, null);
             }
         }
+
+        public void SetPixel(int x, int y, System.Drawing.Color color)
+        {
+            if (canvas != null)
+            {
+                // Převod barvy do formátu používaného ve WriteableBitmap
+                System.Windows.Media.Color wpfColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+
+                // Vypočítání indexu pixelu v bufferu
+                int bytesPerPixel = (canvas.Format.BitsPerPixel + 7) / 8;
+                int stride = canvas.PixelWidth * bytesPerPixel;
+                int index = y * stride + x * bytesPerPixel;
+
+                // Nastavení hodnoty pixelu na daných souřadnicích
+                canvas.Lock();
+                Marshal.Copy(new byte[] { wpfColor.B, wpfColor.G, wpfColor.R, wpfColor.A }, 0, canvas.BackBuffer + index, bytesPerPixel);
+                canvas.AddDirtyRect(new Int32Rect(x, y, 1, 1));
+                canvas.Unlock();
+            }
+        }
+
         public void Validate() {
 
         }
-        List<Tuple<int, int>> BitmapAsList() {
+        private List<Tuple<int, int>> BitmapAsList()
+        {
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-            for (int y = 0; y < canvas.PixelHeight; y++) {
-                for (int x = 0; x < canvas.PixelWidth; x++) {
-                    if (x != 0 && y != 0) {
-                        list.Add(new Tuple<int, int>(x, y));
+            if (canvas != null)
+            {
+                int stride = canvas.PixelWidth * 4;
+                int size = canvas.PixelHeight * stride;
+                byte[] pixels = new byte[size];
+                canvas.CopyPixels(pixels, stride, 0);
+
+                for (int y = 0; y < canvas.PixelHeight; y++)
+                {
+                    for (int x = 0; x < canvas.PixelWidth; x++)
+                    {
+                        int index = y * stride + 4 * x;
+                        byte alpha = pixels[index + 3]; // Alpha kanál (průhlednost)
+                        if (alpha > 0) // Kontrola průhlednosti
+                        {
+                            list.Add(Tuple.Create(x, y));
+                        }
                     }
                 }
             }
             return list;
         }
 
-        public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
-            Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
-            if(canvas != null) { 
+
+        public Dictionary<string, List<Tuple<int, int>>> GetAsDict()
+        {
+            Dictionary<string, List<Tuple<int, int>>> result = new Dictionary<string, List<Tuple<int, int>>>();
+            if (canvas != null)
+            {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
-                result.Add(Id.ToString(), bitmap);  
+                result.Add(Id.ToString(), bitmap);
             }
             return result;
         }

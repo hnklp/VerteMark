@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Net.Http.Json;
 
 namespace VerteMark.ObjectClasses.FolderClasses
 {
@@ -24,13 +25,19 @@ namespace VerteMark.ObjectClasses.FolderClasses
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
+        public void Save()
+        {
+
+            SaveZip();
+        }
+
         public void ExtractZip(string path)
         {
             zipManager.LoadZip(path);
         }
 
 
-        public void SaveZip()
+        private void SaveZip()
         {
             zipManager.UpdateZipFromTempFolder();
         }
@@ -52,7 +59,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        public void LoadProject(string path)
+        public string LoadProject(string path)
         {
             try
             {
@@ -61,25 +68,34 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
                 // Filtrace souborů podle přípon
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
-                // string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
+                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
 
                 // Kontrola existence souborů
-                if (pngFile == null )//|| jsonFile == null)
+                if (pngFile == null || jsonFile == null)//|| jsonFile == null)
                 {
                     throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
                 }
+                else
+                {
 
-                // Nastavení cest
-                fileManager.pngPath = pngFile;
-                // fileManager.jsonPath = jsonFile;
-                fileManager.outputPath = path;
+                    // Nastavení cest
+                    fileManager.pngPath = pngFile;
+                    fileManager.jsonPath = jsonFile;
+                    // fileManager.jsonPath = jsonFile;
 
-                Debug.WriteLine("Soubory načteny úspěšně.");
+                    fileManager.outputPath = path;
+
+                    string jsonContent = File.ReadAllText(jsonFile);
+                    Debug.WriteLine(jsonContent.Length);
+
+                    return jsonContent;
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Chyba při načítání projektu: {ex.Message}");
             }
+            return "";
         }
     
          public List<string> ChooseNewProject()
@@ -97,6 +113,13 @@ namespace VerteMark.ObjectClasses.FolderClasses
             return folderManager.ChooseValidation();
         }
 
-        public void SaveJson(string neco) { }
+
+        public void SaveJson(string neco)
+        {
+            using (StreamWriter sw = new StreamWriter(fileManager.jsonPath))
+            {
+                sw.Write(neco);
+            }
+        }
     }
 }
