@@ -23,10 +23,10 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
 
 ### Autoři
 
-Alex Schönfelder\
-Sabina Ajksnerová\
-Hynek Půta\
-Josef Bér\
+Alex Schönfelder -  GUI, Backend\
+Sabina Ajksnerová - GUI, Backend\
+Hynek Půta - GUI, Backend, Kompatibilita, Installer\
+Josef Bér - Backend\
 Jakub Kepič\
 Matěj Ježek
 
