@@ -28,7 +28,7 @@ Sabina Ajksnerová\
 Hynek Půta\
 Josef Bér\
 Jakub Kepič\
-Matěj Ježek\
+Matěj Ježek
 
 ##
 
