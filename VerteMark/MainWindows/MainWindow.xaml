@@ -69,22 +69,18 @@
                     <TextBlock x:Name="UserIDStatus" Text="User ID"/>
                 </StatusBarItem>
 
-                <Separator Grid.Column="1">
-                    <Separator.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFABADB3" Offset="0.5"/>
-                            <GradientStop Color="#FFF0F0F0" Offset="1"/>
-                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                        </LinearGradientBrush>
-                    </Separator.Background>
-                </Separator>
+                <Separator Grid.Column="1" Background="#FFD0D0D0"/>
 
                 <StatusBarItem Grid.Column="2">
                     <TextBlock x:Name="RoleStatus" Text="Role"/>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="3">
-                    <Label Content="&#xE1A4;" FontFamily="Segoe UI Symbol"/>
+                    <Label>
+                        <Label.Content>
+                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Label.Content>
+                    </Label>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="4">
@@ -93,7 +89,11 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="5">
-                    <Label Content="&#xE12E;" FontFamily="Segoe UI Symbol"/>
+                    <Label>
+                        <Label.Content>
+                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Label.Content>
+                    </Label>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="6">
@@ -129,39 +129,48 @@
             </ScrollViewer>
 
 
-            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
+            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="200" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
                          PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp">
-                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top"
-                         HorizontalAlignment="Right" AllowDrop="False">
-                    <Button x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="235" VerticalAlignment="Top"
+                         HorizontalAlignment="Center" AllowDrop="False">
+                    <!--Zde je boobietrap na Sabinu haha-->
+                    <!--Právě jste narazili na merge conflict! Potřebuji, aby se po kliknutí na tlačítko přepnul kurzor na tužtičku (to zvládneš :-) )-->
+                    <Button x:Name="CropTButton" HorizontalAlignment="Right" Width="30" Height="30" Click="CropClicked">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TCrop.tooltip"/>
                         </Button.ToolTip>
+                        <Button.Content>
+                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button.Content>
                     </Button>
-                    <Button x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                    <Button x:Name="DrawTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TDraw.tooltip"/>
                         </Button.ToolTip>
+                        <Button.Content>
+                            <Image Source="/Resources/Icons/draw_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
                     </Button>
-                    <Button x:Name="EraseTButton" Content="&#x1f5fb;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                    <Button x:Name="EraseTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TErase.tooltip"/>
                         </Button.ToolTip>
+                        <Button.Content>
+                            <Image Source="/Resources/Icons/erase_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
                     </Button>
-                    <Button x:Name="ZoomTButton" Content="&#xE12E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
-                            <ToolTip Content ="str_TZoom.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="UndoTButton" Content="&#xE10E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+
+                    <Button x:Name="UndoTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TUndo.tooltip"/>
                         </Button.ToolTip>
+                        <Image Source="/Resources/Icons/undo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
-                    <Button x:Name="RedoTButton" Content="&#xE10D;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                    <Button x:Name="RedoTButton" HorizontalAlignment="Right" Width="30" Height="30">
                         <Button.ToolTip>
                             <ToolTip Content ="str_TRedo.tooltip"/>
                         </Button.ToolTip>
+                        <Image Source="/Resources/Icons/redo_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </ToolBar>
             </ToolBarTray>
@@ -200,9 +209,21 @@
             <ToggleButton Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
             <CheckBox Name="CheckBox8" Grid.Column="2" Content="" Margin="205,271,0,0"/>
 
-            <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1"/>
-            <Button x:Name="OpenProject" Content="&#xE188;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1"/>
-            <Button x:Name="delete" Content="&#xE107;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1"/>
+            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1">
+                <Button.Content>
+                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button.Content>
+            </Button>
+            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1">
+                <Button.Content>
+                    <Image Source="../Resources/Icons/folder_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button.Content>
+            </Button>
+            <Button x:Name="delete" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1">
+                <Button.Content>
+                    <Image Source="../Resources/Icons/bin_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button.Content>
+            </Button>
             <Label Grid.Column="1" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
         </Grid>
