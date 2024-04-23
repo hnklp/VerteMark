@@ -20,6 +20,7 @@ using System.Windows.Ink;
 using System.Windows.Media.Animation;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics;
 
 
 namespace VerteMark {
@@ -40,6 +41,10 @@ namespace VerteMark {
         Point offset;
         Thumb grip;
 
+        // Connecting the line
+        int minConnectDistance;
+        int maxConnectDistance;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -54,6 +59,7 @@ namespace VerteMark {
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             SwitchActiveAnot(0);
+            SetCanvasAttributes();
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -75,6 +81,7 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
+            
             inkCanvas.Width = ImageHolder.ActualWidth;
             inkCanvas.Height = ImageHolder.ActualHeight;
             inkCanvas.Margin = new Thickness(0);
@@ -85,6 +92,13 @@ namespace VerteMark {
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
             Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
             Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
+            
+        }
+        // šířka pera, vzdálenosti pro doplnění
+        void SetCanvasAttributes() {
+            inkCanvas.DefaultDrawingAttributes.Width = 1;
+            minConnectDistance = 5;
+            maxConnectDistance = 100;
         }
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -151,8 +165,8 @@ namespace VerteMark {
             // Calculate the distance between the first and last points
             double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
 
-            // If the distance is less than 5, connect the points with a line
-            if(distance < 100) {
+            Debug.WriteLine(distance);
+            if(minConnectDistance <= distance && distance <= maxConnectDistance) {
                 // Create a new stroke for the connecting line
                 StylusPointCollection points = new StylusPointCollection();
                 points.Add(firstPoint);
