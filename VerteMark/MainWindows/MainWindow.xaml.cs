@@ -64,7 +64,7 @@ namespace VerteMark {
             InitializeComponent();
             Debug.WriteLine($"Správný konstruktor zavolán.");
             utility = new Utility();
-            utility.LoginUser("debuger nebo něco", true);
+            utility.LoginUser("Debugger", true);
             utility.DebugProjectStart();
             CheckBoxes = new List<CheckBox>
             {
