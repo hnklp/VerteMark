@@ -148,8 +148,6 @@ namespace VerteMark.ObjectClasses
                 foreach (var annotation in annotationObj)
                 {
                     int anotaceId = int.Parse(annotation.Key);
-                    Debug.WriteLine(anotaceId);
-                    Debug.WriteLine("-------------ANOTACE ID-----------");
 
                     // Vytvoření nového objektu Anotace s daným ID a názvem (zatím výchozí název)
                     Anotace novaAnotace = new Anotace(anotaceId, "C1", System.Drawing.Color.Red);
@@ -161,7 +159,7 @@ namespace VerteMark.ObjectClasses
                     JArray pixelsArray = (JArray)annotation.Value;
 
                     // Vytvoření prázdného plátna pro anotaci
-                    novaAnotace.CreateEmptyCanvas(1920, 1080);
+                    novaAnotace.CreateEmptyCanvas(originalPicture.PixelHeight, originalPicture.PixelWidth);
 
                     // Nastavení pixelů na plátno anotace
                     foreach (JObject pixelObj in pixelsArray)

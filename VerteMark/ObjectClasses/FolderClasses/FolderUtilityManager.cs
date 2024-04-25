@@ -48,14 +48,14 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        public void CreateNewProject(string path)
+        async public void CreateNewProject(string path)
         {
             string folderName = Path.GetFileNameWithoutExtension(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
             fileManager.dicomPath = path;
             fileManager.CreateOutputFile(folderName);
             fileManager.ExtractImageFromDicom();
-            fileManager.ExtractAndSaveMetadata();
+            await fileManager.ExtractAndSaveMetadata();
         }
 
 

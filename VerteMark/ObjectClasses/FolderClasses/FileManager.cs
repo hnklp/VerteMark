@@ -81,53 +81,56 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
         // extrahuje metadata do csv souboru do output slozky
         // nastavi instanci metaPath
-        public void ExtractAndSaveMetadata()
+        public async Task ExtractAndSaveMetadata()
         {
-            if (!File.Exists(dicomPath))
+            await Task.Run(() =>
             {
-                Console.WriteLine("Zadaný DICOM soubor neexistuje.");
-                return;
-            }
+                if (!File.Exists(dicomPath))
+                {
+                    Console.WriteLine("Zadaný DICOM soubor neexistuje.");
+                    return;
+                }
 
-            string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
-            metaPath = Path.Combine(outputPath, csvFileName);
+                string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
+                metaPath = Path.Combine(outputPath, csvFileName);
 
-            DicomFile dicomFile = DicomFile.Open(dicomPath);
+                DicomFile dicomFile = DicomFile.Open(dicomPath);
 
-            var allMetadata = new Dictionary<string, object>();
+                var allMetadata = new Dictionary<string, object>();
 
-            // Uložení metadat DICOM
-            var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
+                // Uložení metadat DICOM
+                var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
 
-            foreach (DicomItem item in dicomFile.Dataset)
-            {
-                var metadataItem = new Dictionary<string, string>();
+                foreach (DicomItem item in dicomFile.Dataset)
+                {
+                    var metadataItem = new Dictionary<string, string>();
 
-                metadataItem["Tag"] = item.Tag.ToString();
-                metadataItem["Value"] = item.ToString();
-                metadataItem["VR"] = item.ValueRepresentation.Code;
+                    metadataItem["Tag"] = item.Tag.ToString();
+                    metadataItem["Value"] = item.ToString();
+                    metadataItem["VR"] = item.ValueRepresentation.Code;
 
-                string description = DicomDictionary.Default[item.Tag].Name;
-                dicomMetadata[description] = metadataItem;
-            }
+                    string description = DicomDictionary.Default[item.Tag].Name;
+                    dicomMetadata[description] = metadataItem;
+                }
 
-            allMetadata["DicomMetadata"] = dicomMetadata;
+                allMetadata["DicomMetadata"] = dicomMetadata;
 
-            // Vytvoření slovníku pro ukládání historie
-            var history = new Dictionary<string, Dictionary<string, string>>();
+                // Vytvoření slovníku pro ukládání historie
+                var history = new Dictionary<string, Dictionary<string, string>>();
 
-            // Přidání záznamů do historie
-            history["1.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
-            history["5.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
-            history["10.1.2020"] = new Dictionary<string, string> { { "id", "VALIDATOR1" }, { "action", "VALIDATION" } };
+                // Přidání záznamů do historie
+                history["1.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+                history["5.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+                history["10.1.2020"] = new Dictionary<string, string> { { "id", "VALIDATOR1" }, { "action", "VALIDATION" } };
 
-            allMetadata["History"] = history;
+                allMetadata["History"] = history;
 
-            // Konverze do formátu JSON
-            string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+                // Konverze do formátu JSON
+                string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
 
-            // Uložení do souboru
-            File.WriteAllText(metaPath, jsonAllMetadata);
+                // Uložení do souboru
+                File.WriteAllText(metaPath, jsonAllMetadata);
+            });
         }
 
         // nacte obrazek pomoci cesty pngPath
@@ -146,7 +149,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
                 // Ensure the BitmapImage is fully loaded before returning
                 bitmapImage.Freeze();
-
                 return bitmapImage;
             }
 
