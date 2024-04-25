@@ -97,5 +97,19 @@ namespace VerteMark
 
             this.Close();
         }
+
+        private void DebugStart(object sender, RoutedEventArgs e) {
+            // Check if the MainWindow is already open
+            var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+
+            if(mainWindow == null) {
+                // MainWindow is not open, so create and show it
+                mainWindow = new MainWindow(true);
+                mainWindow.Show();
+            }
+
+            // Close the MainWindow
+            this.Close();
+        }
     }
 }
