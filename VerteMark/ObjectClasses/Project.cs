@@ -14,6 +14,8 @@ using System.Windows.Shell;
 using Newtonsoft.Json;
 using System.Windows.Annotations;
 using Newtonsoft.Json.Linq;
+using System.Windows;
+using System.Runtime.InteropServices;
 
 namespace VerteMark.ObjectClasses
 {
@@ -34,7 +36,6 @@ namespace VerteMark.ObjectClasses
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
-        Metadata? metadata; // Metadata projektu
         JsonManipulator jsonManip;
 
 
@@ -56,7 +57,6 @@ namespace VerteMark.ObjectClasses
 
         public void CreateNewProject(string path) {
             // Vytvoř čistý metadata
-            metadata = new Metadata();
             // Vytvoř čistý anotace
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
@@ -75,9 +75,6 @@ namespace VerteMark.ObjectClasses
             // Získej uložený obrázek do projektu
             
             string jsonContent = folderUtilityManager.LoadProject(path);
-            Debug.WriteLine(jsonContent);
-            Debug.WriteLine("--------JSON-------------");
-
 
             originalPicture = folderUtilityManager.GetImage();
 
@@ -91,18 +88,18 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public void SaveProject()
+        public async void SaveProject()
         {
 
             // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
             // záležitosti správných složek a správných formátů souborů má na starost filemanager
             // ZKOUSKA UKLADANI TEMP DO ZIP
             SaveJson();
-            folderUtilityManager.Save(); // bude brat parametr string json 
+            await folderUtilityManager.Save(); // bude brat parametr string json 
         }
 
 
-        void SaveJson() {
+        async void SaveJson() {
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
@@ -110,7 +107,7 @@ namespace VerteMark.ObjectClasses
 
             string json = jsonManip.ExportJson(loggedInUser, dicts);
 
-            folderUtilityManager.SaveJson(json);
+            await folderUtilityManager.SaveJson(json);
         }
 
 
@@ -130,52 +127,127 @@ namespace VerteMark.ObjectClasses
 
 
         void CreateNewAnotaces() {
-            anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Orange));
-            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Yellow));
-            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Lime));
-            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Aquamarine));
-            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.Aqua));
-            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.BlueViolet));
-            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.DeepPink));
+            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
+            foreach (int id in allIds)
+            {
+                CreateAnnotation(id);
+            }
             SelectActiveAnotace(0);
         }
 
+
         void LoadAnnotations(JArray annotationsArray)
         {
+            List<int> createdIds = new List<int>();
+
             foreach (JObject annotationObj in annotationsArray)
             {
                 foreach (var annotation in annotationObj)
                 {
                     int anotaceId = int.Parse(annotation.Key);
+                    createdIds.Add(anotaceId);
+                    CreateAnnotation(anotaceId);
+                    SelectActiveAnotace(anotaceId);
 
-                    // Vytvoření nového objektu Anotace s daným ID a názvem (zatím výchozí název)
-                    Anotace novaAnotace = new Anotace(anotaceId, "C1", System.Drawing.Color.Red);
-
-                    // Přidání nově vytvořené anotace do seznamu anotací
-                    anotaces.Add(novaAnotace);
-
-                    // Získání seznamu pixelů pro danou anotaci
                     JArray pixelsArray = (JArray)annotation.Value;
 
-                    // Vytvoření prázdného plátna pro anotaci
-                    novaAnotace.CreateEmptyCanvas(originalPicture.PixelHeight, originalPicture.PixelWidth);
+                    // Vytvoření pole pixelů
+                    byte[] pixels = new byte[originalPicture.PixelWidth * originalPicture.PixelHeight * 4];
 
-                    // Nastavení pixelů na plátno anotace
                     foreach (JObject pixelObj in pixelsArray)
                     {
                         int x = (int)pixelObj["Item1"];
                         int y = (int)pixelObj["Item2"];
 
-                        // Nastavení pixelu na dané pozici
-                        novaAnotace.SetPixel(x, y, novaAnotace.Color);
+                        // Nastavení barev pixelu
+                        int index = (y * originalPicture.PixelWidth + x) * 4;
+                        pixels[index] = activeAnotace.Color.B;
+                        pixels[index + 1] = activeAnotace.Color.G;
+                        pixels[index + 2] = activeAnotace.Color.R;
+                        pixels[index + 3] = activeAnotace.Color.A;
                     }
+
+                    // Vytvoření nového WriteableBitmap
+                    WriteableBitmap newBitmap = new WriteableBitmap(originalPicture.PixelWidth, originalPicture.PixelHeight, 96, 96, PixelFormats.Bgra32, null);
+                    // Zkopírování pole pixelů do nového WriteableBitmap
+                    newBitmap.WritePixels(new Int32Rect(0, 0, originalPicture.PixelWidth, originalPicture.PixelHeight), pixels, originalPicture.PixelWidth * 4, 0);
+
+                    // Aktualizace canvasu pomocí metody UpdateCanvas
+                    activeAnotace.UpdateCanvas(newBitmap);
                 }
             }
+            AddMissingAnnotations(createdIds);
+            SelectActiveAnotace(0);
+
         }
 
 
 
+        void CreateAnnotation(int id)
+        {
+                // Barva odpovídající danému ID
+                System.Drawing.Color color;
+                string name;
+                switch (id)
+                {
+                    case 0:
+                        color = System.Drawing.Color.Red;
+                        name = "C" + id;
+                        break;
+                    case 1:
+                        color = System.Drawing.Color.Orange;
+                        name = "C" + id;
+                        break;
+                    case 2:
+                        color = System.Drawing.Color.Yellow;
+                        name = "C" + id;
+                        break;
+                    case 3:
+                        color = System.Drawing.Color.Lime;
+                        name = "C" + id;
+                        break;
+                    case 4:
+                        color = System.Drawing.Color.Aquamarine;
+                        name = "C" + id;
+                        break;
+                    case 5:
+                        color = System.Drawing.Color.Aqua;
+                        name = "C" + id;
+                        break;
+                    case 6:
+                        color = System.Drawing.Color.BlueViolet;
+                        name = "C" + id;
+                        break;
+                    case 7:
+                        color = System.Drawing.Color.DeepPink;
+                        name = "Implantát";
+                        break;
+                    default:
+                        // Pokud je ID mimo rozsah, použije se defaultní barva a název
+                        color = System.Drawing.Color.Black;
+                        name = "Unknown";
+                        break;
+                }
+
+                // Vytvoření nové anotace s odpovídající barvou a názvem
+                anotaces.Add(new Anotace(id, name, color));
+        }
+
+
+        void AddMissingAnnotations(List<int> existingIds)
+        {
+            // Seznam všech možných ID od 0 do 7
+            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+            // Pro každé ID, které není v seznamu existingIds, přidej novou anotaci
+            foreach (int id in allIds)
+            {
+                if (!existingIds.Contains(id))
+                {
+                    CreateAnnotation(id);
+                }
+            }
+        }
 
 
         public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {

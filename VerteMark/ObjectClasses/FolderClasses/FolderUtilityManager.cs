@@ -25,10 +25,13 @@ namespace VerteMark.ObjectClasses.FolderClasses
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        public void Save()
+        public async Task Save()
         {
+            await Task.Run(() =>
+            {
 
-            SaveZip();
+                SaveZip();
+            });
         }
 
         public void ExtractZip(string path)
@@ -58,6 +61,19 @@ namespace VerteMark.ObjectClasses.FolderClasses
             await fileManager.ExtractAndSaveMetadata();
         }
 
+        async public void ReadyToValidate()
+        {
+            if (fileManager.dicomPath != null)
+            {
+                fileManager.outputPath = Path.Combine(tempPath, "to_validate");
+                string folderName = Path.GetFileNameWithoutExtension(fileManager.dicomPath);
+                fileManager.CreateOutputFile(folderName);
+                fileManager.ExtractImageFromDicom();
+                await fileManager.ExtractAndSaveMetadata();
+            }
+
+        }
+
 
         public string LoadProject(string path)
         {
@@ -71,7 +87,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
 
                 // Kontrola existence souborů
-                if (pngFile == null || jsonFile == null)//|| jsonFile == null)
+                if (pngFile == null || jsonFile == null)
                 {
                     throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
                 }
@@ -99,9 +115,9 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
     
          public List<string> ChooseNewProject()
-        {
+         {
             return folderManager.ChooseNewProject();
-        }
+         }
 
         public List<string> ChooseContinueAnotation()
         {
@@ -114,12 +130,15 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        public void SaveJson(string neco)
+        public async Task SaveJson(string neco)
         {
-            using (StreamWriter sw = new StreamWriter(fileManager.jsonPath))
-            {
-                sw.Write(neco);
-            }
+            await Task.Run(() =>
+              {
+                  using (StreamWriter sw = new StreamWriter(fileManager.jsonPath))
+                  {
+                      sw.Write(neco);
+                  }
+              });
         }
     }
 }

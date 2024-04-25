@@ -161,13 +161,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        // nevim, jestli bude potreba - data o pacientovy nejsou potreba
-        public Metadata GetProjectMetada()
-        {
-            return null;
-        }
-
-
         // pujde do funkce JSON maker - ulozeni do output slozky
         public List<Anotace> GetProjectAnotaces()
         {
