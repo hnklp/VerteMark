@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png">
 
+	<Window.InputBindings>
+		<KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
+		<KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
+	</Window.InputBindings>
+
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenFileItem_Click"/>

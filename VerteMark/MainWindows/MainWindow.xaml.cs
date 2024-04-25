@@ -46,6 +46,17 @@ namespace VerteMark {
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             SwitchActiveAnot(0);
+
+            CommandBinding openCommandBinding = new CommandBinding(
+                ApplicationCommands.Open,
+                OpenFileItem_Click);  // Již existující metoda
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                utility.SaveProject());  // Již existující metoda
+            this.CommandBindings.Add(saveCommandBinding);
         }
 
         //dialog otevreni souboru s filtrem
@@ -74,6 +85,8 @@ namespace VerteMark {
             Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
             Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
         }
+
+        //OTEVRENI FOLDERU PRO NACTENI
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
