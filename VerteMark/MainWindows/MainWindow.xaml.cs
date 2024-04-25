@@ -80,6 +80,22 @@ namespace VerteMark {
             Loaded += delegate {
                 SetCanvasComponentsSize();
             };
+
+            // Přidání CommandBinding pro Open
+            CommandBinding openCommandBinding = new CommandBinding(
+                ApplicationCommands.Open,
+                OpenFileItem_Click
+            );
+
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Button_Click
+            );
+
+            this.CommandBindings.Add(saveCommandBinding);
         }
 
         //dialog otevreni souboru s filtrem
