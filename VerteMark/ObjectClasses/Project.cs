@@ -127,12 +127,9 @@ namespace VerteMark.ObjectClasses
 
 
         void CreateNewAnotaces() {
-            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
-            foreach (int id in allIds)
-            {
-                CreateAnnotation(id);
+            for(int i = 0; i <= 7; i++) {
+                CreateAnnotation(i);
             }
-            SelectActiveAnotace(0);
         }
 
 
