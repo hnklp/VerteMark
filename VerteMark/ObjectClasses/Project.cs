@@ -144,10 +144,10 @@ namespace VerteMark.ObjectClasses
             {
                 foreach (var annotation in annotationObj)
                 {
-                    int anotaceId = int.Parse(annotation.Key);
-                    createdIds.Add(anotaceId);
-                    CreateAnnotation(anotaceId);
-                    SelectActiveAnotace(anotaceId);
+                    int annotationId = int.Parse(annotation.Key);
+                    createdIds.Add(annotationId);
+                    CreateAnnotation(annotationId);
+                    SelectActiveAnotace(annotationId);
 
                     JArray pixelsArray = (JArray)annotation.Value;
 
@@ -170,7 +170,7 @@ namespace VerteMark.ObjectClasses
                     // Vytvoření nového WriteableBitmap
                     WriteableBitmap newBitmap = new WriteableBitmap(originalPicture.PixelWidth, originalPicture.PixelHeight, 96, 96, PixelFormats.Bgra32, null);
                     // Zkopírování pole pixelů do nového WriteableBitmap
-                    newBitmap.WritePixels(new Int32Rect(0, 0, originalPicture.PixelWidth, originalPicture.PixelHeight), pixels, originalPicture.PixelWidth * 4, 0);
+                    newBitmap.WritePixels(new Int32Rect(0, 0, newBitmap.PixelWidth, newBitmap.PixelHeight), pixels, newBitmap.PixelWidth * 4, 0);
 
                     // Aktualizace canvasu pomocí metody UpdateCanvas
                     activeAnotace.UpdateCanvas(newBitmap);
@@ -178,8 +178,8 @@ namespace VerteMark.ObjectClasses
             }
             AddMissingAnnotations(createdIds);
             SelectActiveAnotace(0);
-
         }
+
 
 
 

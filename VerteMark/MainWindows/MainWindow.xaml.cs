@@ -206,6 +206,7 @@ namespace VerteMark {
         //Smaže obsah vybrané anotace
         void Smazat_butt(object sender, RoutedEventArgs e) {
             utility.ClearActiveAnotace();
+            inkCanvas.Strokes.Clear();
             previewImage.Source = utility.GetActiveAnotaceImage();
         }
 

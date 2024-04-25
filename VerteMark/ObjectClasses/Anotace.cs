@@ -77,7 +77,7 @@ namespace VerteMark.ObjectClasses {
                 int stride = canvas.PixelWidth * 4;
                 int size = canvas.PixelHeight * stride;
                 byte[] pixels = new byte[size];
-                canvas.CopyPixels(pixels, stride, 0);
+                canvas.CopyPixels(new Int32Rect(0, 0, canvas.PixelWidth, canvas.PixelHeight), pixels, stride, 0);
 
                 for (int y = 0; y < canvas.PixelHeight; y++)
                 {
@@ -85,15 +85,16 @@ namespace VerteMark.ObjectClasses {
                     {
                         int index = y * stride + 4 * x;
                         byte alpha = pixels[index + 3]; // Alpha kanál (průhlednost)
-                        if (alpha > 0) // Kontrola průhlednosti
+                        if (alpha == 255) // Pokud je alfa hodnota 1 (plná průhlednost)
                         {
-                            list.Add(Tuple.Create(x, y));
+                            list.Add(Tuple.Create(x, y)); // Uložit pozici pixelu
                         }
                     }
                 }
             }
             return list;
         }
+
 
 
         public Dictionary<string, List<Tuple<int, int>>> GetAsDict()

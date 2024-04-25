@@ -29,7 +29,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         {
             await Task.Run(() =>
             {
-
+                fileManager.ExtractAndSaveMetadata();
                 SaveZip();
             });
         }
@@ -51,17 +51,16 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        async public void CreateNewProject(string path)
+        public void CreateNewProject(string path)
         {
             string folderName = Path.GetFileNameWithoutExtension(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
             fileManager.dicomPath = path;
             fileManager.CreateOutputFile(folderName);
             fileManager.ExtractImageFromDicom();
-            await fileManager.ExtractAndSaveMetadata();
         }
 
-        async public void ReadyToValidate()
+        public void ReadyToValidate()
         {
             if (fileManager.dicomPath != null)
             {
@@ -69,7 +68,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 string folderName = Path.GetFileNameWithoutExtension(fileManager.dicomPath);
                 fileManager.CreateOutputFile(folderName);
                 fileManager.ExtractImageFromDicom();
-                await fileManager.ExtractAndSaveMetadata();
             }
 
         }
