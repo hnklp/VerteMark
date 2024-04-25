@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.Windows.Shell;
 using System.Windows.Shapes;
 using System.IO;
+using FellowOakDicom.Imaging.Reconstruction;
+using System.Reflection;
 
 namespace VerteMark.ObjectClasses
 {
@@ -47,11 +49,14 @@ namespace VerteMark.ObjectClasses
             metadata = new Metadata();
             CreateNewAnotaces();
             // folderUtilityManager.CreateNewProject(path);
-
-            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string picturePath = System.IO.Path.Combine(documentsPath, @"GitHub\VerteMark\VerteMark\Pictures\CapyJedi.png");
-            if(File.Exists(picturePath)) {
-                originalPicture = DebugLoadBitmap(picturePath);
+            string assemblyDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string projectDirectory = Directory.GetParent(assemblyDirectory).Parent.Parent.FullName;
+            string relativeImagePath = System.IO.Path.Combine("Pictures", "CapyJedi.png");
+            string imagePath = System.IO.Path.Combine(projectDirectory, relativeImagePath);
+            if(File.Exists(imagePath)) {
+                // Load the image and set it as the source for your image control
+                BitmapImage bitmap = new BitmapImage(new Uri(imagePath));
+                originalPicture = bitmap;
             }
         }
 
