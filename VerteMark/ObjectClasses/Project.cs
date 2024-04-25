@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using System.Windows.Shapes;
+using System.IO;
 
 namespace VerteMark.ObjectClasses
 {
@@ -40,6 +41,18 @@ namespace VerteMark.ObjectClasses
             originalPicture = new BitmapImage();
             folderUtilityManager = new FolderUtilityManager();
             jsonManip = new JsonManipulator();
+        }
+
+        public void DebugProjectStart() {
+            metadata = new Metadata();
+            CreateNewAnotaces();
+            // folderUtilityManager.CreateNewProject(path);
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string picturePath = System.IO.Path.Combine(documentsPath, @"GitHub\VerteMark\VerteMark\Pictures\CapyJedi.png");
+            if(File.Exists(picturePath)) {
+                originalPicture = DebugLoadBitmap(picturePath);
+            }
         }
 
 
@@ -213,7 +226,7 @@ namespace VerteMark.ObjectClasses
 
         public void Choose(string path, string projectType)
         {
-            string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
+            string newPath = System.IO.Path.Combine(folderUtilityManager.tempPath, projectType, path);
             if (projectType == "dicoms")
             {
                 Debug.WriteLine(newPath);
@@ -225,6 +238,25 @@ namespace VerteMark.ObjectClasses
             }
 
             originalPicture = folderUtilityManager.GetImage();
+        }
+        BitmapImage DebugLoadBitmap(string imagePath) {
+            BitmapImage bitmap = new BitmapImage();
+            try {
+                // Create a FileStream to read the image file
+                using(FileStream stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read)) {
+                    // Set the bitmap image source to the FileStream
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad; // Load the image immediately
+                    bitmap.StreamSource = stream;
+                    bitmap.EndInit();
+                }
+            } catch(Exception ex) {
+                // Handle any exceptions that may occur during image loading
+                Debug.WriteLine($"Error loading image: {ex.Message}");
+                bitmap = null;
+            }
+            Debug.WriteLine("Image loaded as bitmap succesfuly");
+            return bitmap;
         }
     }
 }

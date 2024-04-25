@@ -35,6 +35,7 @@
             </GridSplitter.Background>
         </GridSplitter>
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
+        <Button x:Name="debug_tlacitko" Content="Debug" HorizontalAlignment="Left" Margin="671,290,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="DebugStart" IsEnabled="True" IsDefault="True" Cursor="Hand"/>
 
     </Grid>
 

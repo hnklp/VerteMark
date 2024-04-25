@@ -20,6 +20,7 @@ using System.Windows.Ink;
 using System.Windows.Media.Animation;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics;
 
 
 namespace VerteMark {
@@ -56,6 +57,27 @@ namespace VerteMark {
             SwitchActiveAnot(0);
             Loaded += delegate
             {
+                SetCanvasComponentsSize();
+            };
+        }
+        public MainWindow(bool debugging) {
+            InitializeComponent();
+            Debug.WriteLine($"Správný konstruktor zavolán.");
+            utility = new Utility();
+            utility.LoginUser("debuger nebo něco", true);
+            utility.DebugProjectStart();
+            CheckBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+            loggedInUser = utility.GetLoggedInUser();
+            InitializeCheckboxes();
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            SwitchActiveAnot(0);
+            Loaded += delegate {
                 SetCanvasComponentsSize();
             };
         }
@@ -355,5 +377,7 @@ namespace VerteMark {
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }
