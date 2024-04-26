@@ -20,6 +20,7 @@ using System.Windows.Ink;
 using System.Windows.Media.Animation;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics;
 
 
 namespace VerteMark {
@@ -75,17 +76,24 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            inkCanvas.Width = ImageHolder.ActualWidth;
-            inkCanvas.Height = ImageHolder.ActualHeight;
+            inkCanvas.Width = utility.GetOriginalPicture().Width;
+            inkCanvas.Height = utility.GetOriginalPicture().Height;
             inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = ImageHolder.ActualWidth;
-            previewImage.Height = ImageHolder.ActualHeight;
+            previewImage.Width = utility.GetOriginalPicture().Width;
+            previewImage.Height = utility.GetOriginalPicture().Height;
             previewImage.Margin = new Thickness(0);
             Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
             Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
             Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
+            Debug.WriteLine("--------------------------");
+            Debug.WriteLine("IMAGE HOLDER WIDTH , HEIGHT");
+            Debug.WriteLine(ImageHolder.ActualWidth);
+            Debug.WriteLine(ImageHolder.ActualHeight);
+            Debug.WriteLine("--------------------------");
         }
+
+
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";

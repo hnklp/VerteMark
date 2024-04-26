@@ -148,6 +148,7 @@ namespace VerteMark.ObjectClasses
                     createdIds.Add(annotationId);
                     CreateAnnotation(annotationId);
                     SelectActiveAnotace(annotationId);
+                    activeAnotace.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
 
                     JArray pixelsArray = (JArray)annotation.Value;
 
@@ -174,6 +175,10 @@ namespace VerteMark.ObjectClasses
 
                     // Aktualizace canvasu pomocí metody UpdateCanvas
                     activeAnotace.UpdateCanvas(newBitmap);
+                    Debug.WriteLine("---ORIGINAL PICTURE LOAD WIDTH & HEIGHT----");
+                    Debug.WriteLine(originalPicture.PixelWidth);
+                    Debug.WriteLine(originalPicture.PixelHeight);
+                    Debug.WriteLine("-------------------");
                 }
             }
             AddMissingAnnotations(createdIds);
@@ -309,6 +314,11 @@ namespace VerteMark.ObjectClasses
 
         public BitmapImage? GetOriginalPicture()
         {
+            Debug.WriteLine("--------------------------");
+            Debug.WriteLine("ORIGINAL PICTURE WIDTH , HEIGHT");
+            Debug.WriteLine(originalPicture.PixelWidth);
+            Debug.WriteLine(originalPicture.PixelHeight);
+            Debug.WriteLine("--------------------------");
             return originalPicture;
         }
 
