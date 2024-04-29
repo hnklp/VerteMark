@@ -92,7 +92,8 @@ namespace VerteMark {
             // Přidání CommandBinding pro Save
             CommandBinding saveCommandBinding = new CommandBinding(
                 ApplicationCommands.Save,
-                utility.SaveProject());  // Již existující metoda
+                Save_Click);  // Již existující metoda
+
             this.CommandBindings.Add(saveCommandBinding);
         }
 
@@ -174,7 +175,7 @@ namespace VerteMark {
 
         
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        private void Save_Click(object sender, RoutedEventArgs e) {
             /* 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";

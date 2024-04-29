@@ -50,7 +50,6 @@ namespace VerteMark.ObjectClasses
         }
 
         public void DebugProjectStart() {
-            metadata = new Metadata();
             CreateNewAnotaces();
             // folderUtilityManager.CreateNewProject(path);
             string assemblyDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

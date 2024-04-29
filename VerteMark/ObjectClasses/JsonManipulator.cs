@@ -70,9 +70,9 @@ namespace VerteMark.ObjectClasses
             JsonManipulator loadedJson = JsonConvert.DeserializeObject<JsonManipulator>(createdJson);
             List<object> returnValues = new List<object>();
 
-            returnValues.add(loadedJson.AnnotatorID);
-            returnValues.add(loadedJson.ValidatorID);
-            returnValues.add(loadedJson.Annotations);
+            returnValues.Add(loadedJson.AnnotatorID);
+            returnValues.Add(loadedJson.ValidatorID);
+            returnValues.Add(loadedJson.Annotations);
 
             return returnValues;
         }
