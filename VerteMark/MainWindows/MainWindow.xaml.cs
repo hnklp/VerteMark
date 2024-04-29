@@ -92,9 +92,7 @@ namespace VerteMark {
             // Přidání CommandBinding pro Save
             CommandBinding saveCommandBinding = new CommandBinding(
                 ApplicationCommands.Save,
-                Button_Click
-            );
-
+                utility.SaveProject());  // Již existující metoda
             this.CommandBindings.Add(saveCommandBinding);
         }
 
@@ -130,7 +128,7 @@ namespace VerteMark {
             Debug.WriteLine("--------------------------");
         }
 
-
+        //OTEVRENI FOLDERU PRO NACTENI
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
