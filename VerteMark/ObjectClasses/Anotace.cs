@@ -110,68 +110,6 @@ namespace VerteMark.ObjectClasses {
             return list;
         }
 
-
-public void SaveBitmapAsPng(List<Tuple<int, int>> pixelList)
-    {
-        if (pixelList == null || pixelList.Count == 0)
-        {
-            // Pokud není k dispozici žádný seznam pixelů, není co ukládat
-            return;
-        }
-
-        // Zjistit rozměry obrazu
-        int width = pixelList.Max(p => p.Item1) + 1; // Maximální hodnota x + 1
-        int height = pixelList.Max(p => p.Item2) + 1; // Maximální hodnota y + 1
-
-        // Vytvořit nový obraz s průhledností
-        WriteableBitmap bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
-
-        // Vytvořit byte array pro pixely obrazu
-        byte[] pixels = new byte[width * height * 4];
-
-        // Nastavit pixely na průhledné (Transparent)
-        for (int i = 0; i < pixels.Length; i += 4)
-        {
-            pixels[i + 3] = 0; // Alpha kanál
-        }
-
-        // Nastavit pixely podle seznamu pixelů
-        foreach (var pixel in pixelList)
-        {
-            int x = pixel.Item1;
-            int y = pixel.Item2;
-
-            // Vypočítat index v byte array pro aktuální pixel
-            int index = (y * width + x) * 4;
-
-            // Nastavit černou barvu pixelu (RGBA: 0, 0, 0, 255)
-            pixels[index] = 0; // R
-            pixels[index + 1] = 0; // G
-            pixels[index + 2] = 0; // B
-            pixels[index + 3] = 255; // Alpha
-        }
-
-        // Nastavit pixely obrazu
-        Int32Rect rect = new Int32Rect(0, 0, width, height);
-        int stride = width * 4;
-        bitmap.WritePixels(rect, pixels, stride, 0);
-
-        // Uložit obraz jako soubor PNG na plochu
-        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        string filePath = Path.Combine(desktopPath, "obraz.png");
-
-        using (FileStream stream = new FileStream(filePath, FileMode.Create))
-        {
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            encoder.Save(stream);
-        }
-    }
-
-
-
-
-
     public Dictionary<string, List<Tuple<int, int>>> GetAsDict()
         {
             Dictionary<string, List<Tuple<int, int>>> result = new Dictionary<string, List<Tuple<int, int>>>();
@@ -179,7 +117,6 @@ public void SaveBitmapAsPng(List<Tuple<int, int>> pixelList)
             {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
                 result.Add(Id.ToString(), bitmap);
-                SaveBitmapAsPng(bitmap);
             }
             Debug.WriteLine("---MAX LIST TUPLE LENGHT----");
             Debug.WriteLine(result.Count); ;
