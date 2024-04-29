@@ -41,6 +41,10 @@ namespace VerteMark {
         Point offset;
         Thumb grip;
 
+        // Connecting the line
+        int minConnectDistance;
+        int maxConnectDistance;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -55,6 +59,7 @@ namespace VerteMark {
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             SwitchActiveAnot(0);
+            SetCanvasAttributes();
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -122,11 +127,13 @@ namespace VerteMark {
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
             Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
             Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
-            Debug.WriteLine("--------------------------");
-            Debug.WriteLine("IMAGE HOLDER WIDTH , HEIGHT");
-            Debug.WriteLine(ImageHolder.ActualWidth);
-            Debug.WriteLine(ImageHolder.ActualHeight);
-            Debug.WriteLine("--------------------------");
+            
+        }
+        // šířka pera, vzdálenosti pro doplnění
+        void SetCanvasAttributes() {
+            inkCanvas.DefaultDrawingAttributes.Width = 1;
+            minConnectDistance = 5;
+            maxConnectDistance = 100;
         }
 
         //OTEVRENI FOLDERU PRO NACTENI
@@ -195,8 +202,8 @@ namespace VerteMark {
             // Calculate the distance between the first and last points
             double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
 
-            // If the distance is less than 5, connect the points with a line
-            if(distance < 100) {
+            Debug.WriteLine(distance);
+            if(minConnectDistance <= distance && distance <= maxConnectDistance) {
                 // Create a new stroke for the connecting line
                 StylusPointCollection points = new StylusPointCollection();
                 points.Add(firstPoint);
