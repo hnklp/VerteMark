@@ -60,6 +60,43 @@ namespace VerteMark {
                 SetCanvasComponentsSize();
             };
         }
+        public MainWindow(bool debugging) {
+            InitializeComponent();
+            Debug.WriteLine($"Správný konstruktor zavolán.");
+            utility = new Utility();
+            utility.LoginUser("Debugger", true);
+            utility.DebugProjectStart();
+            CheckBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+            loggedInUser = utility.GetLoggedInUser();
+            InitializeCheckboxes();
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            SwitchActiveAnot(0);
+            Loaded += delegate {
+                SetCanvasComponentsSize();
+            };
+
+            // Přidání CommandBinding pro Open
+            CommandBinding openCommandBinding = new CommandBinding(
+                ApplicationCommands.Open,
+                OpenFileItem_Click
+            );
+
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Button_Click
+            );
+
+            this.CommandBindings.Add(saveCommandBinding);
+        }
 
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
@@ -337,6 +374,15 @@ namespace VerteMark {
                 grip.ReleaseMouseCapture();
             }
         }
+
+        private void CropClicked(object sender, RoutedEventArgs e)
+        {
+            //plz fix
+            //Cursor cropCursor = new Cursor("../Resources/Cursors/Crop_Cursor.cur");
+
+
+            //Mouse.OverrideCursor = cropCursor;
+        }
     }
 
     public class PercentageConverter : IValueConverter
@@ -355,5 +401,7 @@ namespace VerteMark {
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

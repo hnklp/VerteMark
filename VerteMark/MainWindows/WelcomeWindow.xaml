@@ -18,8 +18,8 @@
         <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="455,140,0,0" VerticalAlignment="Top" Height="36" Width="101" FontSize="18"/>
         <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
 
-        <Button x:Name="SignInButton" Content="Přihlásit se" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="SignInButton_Click" IsEnabled="False" IsDefault="True"/>
-        <Button Name="SettingsButtonUI" Content="&#xE115;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="625,331,0,0" VerticalAlignment="Top" Height="27" Width="27"/>
+        <Button x:Name="SignInButton" Content="Přihlásit se" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="SignInButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand"/>
+        <Button Name="SettingsButtonUI" Content="&#xE115;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="625,331,0,0" VerticalAlignment="Top" Height="27" Width="27" Cursor="Hand"/>
         <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="462,210,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
         <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="586,210,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
 
@@ -35,6 +35,7 @@
             </GridSplitter.Background>
         </GridSplitter>
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
+        <Button x:Name="debug_tlacitko" Content="&#x1f491;" HorizontalAlignment="Left" Margin="41,331,0,0" VerticalAlignment="Top" Height="27" Width="27" Click="DebugStart" IsEnabled="True" IsDefault="True" Cursor="Hand" FontFamily="Segoe UI Symbol"/>
 
     </Grid>
 

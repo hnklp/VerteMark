@@ -88,40 +88,43 @@ namespace VerteMark.ObjectClasses {
             project.Choose(path, projectType);
         }
 
-        /*
-        public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
-        {
-            // Create a SaveFileDialog to prompt the user for file save location
-            // Show the dialog and get the result
-            if (saveFileDialog.ShowDialog() == true)
+        public void DebugProjectStart() {
+            project.DebugProjectStart();
+        }
+            /*
+            public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
             {
-                // Create a BitmapEncoder based on the selected file format
-                BitmapEncoder encoder = null;
-                switch (System.IO.Path.GetExtension(saveFileDialog.FileName).ToUpper())
+                // Create a SaveFileDialog to prompt the user for file save location
+                // Show the dialog and get the result
+                if (saveFileDialog.ShowDialog() == true)
                 {
-                    case ".PNG":
-                        encoder = new PngBitmapEncoder();
-                        break;
-                    case ".JPG":
-                        encoder = new JpegBitmapEncoder();
-                        break;
-                    case ".BMP":
-                        encoder = new BmpBitmapEncoder();
-                        break;
-                    default:
-                        // Unsupported file format
-                        return;
+                    // Create a BitmapEncoder based on the selected file format
+                    BitmapEncoder encoder = null;
+                    switch (System.IO.Path.GetExtension(saveFileDialog.FileName).ToUpper())
+                    {
+                        case ".PNG":
+                            encoder = new PngBitmapEncoder();
+                            break;
+                        case ".JPG":
+                            encoder = new JpegBitmapEncoder();
+                            break;
+                        case ".BMP":
+                            encoder = new BmpBitmapEncoder();
+                            break;
+                        default:
+                            // Unsupported file format
+                            return;
+                    }
+
+                    // Encode and save the bitmap to the selected file path
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    using (FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                    {
+                        encoder.Save(stream);
+                    }
                 }
-
-                // Encode and save the bitmap to the selected file path
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                using (FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.Create))
-                {
-                    encoder.Save(stream);
-                }
-            }
-        }*/
+            }*/
 
 
-    }
+        }
 }
