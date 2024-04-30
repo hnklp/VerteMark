@@ -87,7 +87,8 @@ namespace VerteMark.ObjectClasses.FolderClasses
             {
                 if (!File.Exists(dicomPath))
                 {
-                    Console.WriteLine("Zadaný DICOM soubor neexistuje.");
+                    Debug.WriteLine(dicomPath);
+                    Debug.WriteLine("Zadaný DICOM soubor neexistuje.");
                     return;
                 }
 
@@ -131,6 +132,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 // Uložení do souboru
                 File.WriteAllText(metaPath, jsonAllMetadata);
             });
+            Debug.WriteLine("METADATA ULOZENA");
         }
 
         // nacte obrazek pomoci cesty pngPath

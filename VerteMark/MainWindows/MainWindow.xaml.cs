@@ -29,17 +29,18 @@ namespace VerteMark {
         StateManager stateManager;
 
         // Toolbar drag and drop
+
         bool isDragging = false;
         Point offset;
         Thumb grip;
+        Point? cropStartPoint = null;
 
         // Connecting the line
         int minConnectDistance;
         int maxConnectDistance;
 
         public MainWindow() {
-        // Image crop
-            Point? cropStartPoint = null;
+           
             InitializeComponent();
             utility = new Utility();
             checkBoxes = new List<CheckBox>
@@ -69,7 +70,7 @@ namespace VerteMark {
             utility = new Utility();
             utility.LoginUser("Debugger", true);
             utility.DebugProjectStart();
-            CheckBoxes = new List<CheckBox>
+            checkBoxes = new List<CheckBox>
             {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
@@ -120,13 +121,13 @@ namespace VerteMark {
             inkCanvas.Width = utility.GetOriginalPicture().Width;
             inkCanvas.Height = utility.GetOriginalPicture().Height;
             inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = utility.GetOriginalPicture().Width;
-            previewImage.Height = utility.GetOriginalPicture().Height;
-            previewImage.Margin = new Thickness(0);
+            PreviewImage.Width = utility.GetOriginalPicture().Width;
+            PreviewImage.Height = utility.GetOriginalPicture().Height;
+            PreviewImage.Margin = new Thickness(0);
             Grid.SetColumn(inkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(inkCanvas, Grid.GetRow(ImageHolder));
-            Grid.SetColumn(previewImage, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(previewImage, Grid.GetRow(ImageHolder));
+            Grid.SetColumn(PreviewImage, Grid.GetColumn(ImageHolder));
+            Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
             
         }
         // šířka pera, vzdálenosti pro doplnění
@@ -135,21 +136,6 @@ namespace VerteMark {
             inkCanvas.DefaultDrawingAttributes.Height = 1;
             minConnectDistance = 2;
             maxConnectDistance = 10;
-            inkCanvas.Width = ImageHolder.ActualWidth;
-            inkCanvas.Height = ImageHolder.ActualHeight;
-            inkCanvas.Margin = new Thickness(0);
-            previewImage.Width = ImageHolder.ActualWidth;
-            previewImage.Height = ImageHolder.ActualHeight;
-            previewImage.Margin = new Thickness(0);
-            CropCanvas.Width = ImageHolder.ActualWidth;
-            CropCanvas.Height = ImageHolder.ActualHeight;
-            CropCanvas.Margin = new Thickness(0);
-            Grid.SetColumn(InkCanvas, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(InkCanvas, Grid.GetRow(ImageHolder));
-            Grid.SetColumn(PreviewImage, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
-            Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
-            Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
         }
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e)
@@ -244,7 +230,7 @@ namespace VerteMark {
 
         private void SetInkCanvasMode(AppState state)
         {
-            InkCanvas.EditingMode = state == AppState.Drawing ? InkCanvasEditingMode.Ink :
+            inkCanvas.EditingMode = state == AppState.Drawing ? InkCanvasEditingMode.Ink :
                                     state == AppState.Erasing ? InkCanvasEditingMode.EraseByPoint :
                                     InkCanvasEditingMode.None;
         }
@@ -327,6 +313,7 @@ namespace VerteMark {
                 bitmap = ConvertInkCanvasToBitmap(inkCanvas);
                 utility.SaveBitmapToFile(bitmap, saveFileDialog);
             */
+            Debug.WriteLine("VOLAM SAVE PROJECT");
             utility.SaveProject();
         }
 
@@ -362,7 +349,7 @@ namespace VerteMark {
                     lineStroke.DrawingAttributes.Width = 1;
 
                     // Add the connecting line stroke to the InkCanvas
-                    InkCanvas.Strokes.Add(lineStroke);
+                    inkCanvas.Strokes.Add(lineStroke);
                 }
             }
         }
@@ -384,7 +371,7 @@ namespace VerteMark {
         {
             if (stateManager.CurrentState == AppState.Drawing)
             {
-                utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(InkCanvas));
+                utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(inkCanvas));
 
                 if (CroppedImage.Source == null)
                     PreviewImage.Source = utility.GetActiveAnotaceImage();
@@ -398,7 +385,7 @@ namespace VerteMark {
         {
             utility.ClearActiveAnotace();
             inkCanvas.Strokes.Clear();
-            previewImage.Source = utility.GetActiveAnotaceImage();
+            PreviewImage.Source = utility.GetActiveAnotaceImage();
         }
 
         /* Přepínání anotací */
@@ -406,8 +393,8 @@ namespace VerteMark {
         {
             utility.ChangeActiveAnotation(id);
             //   previewImage.Source = utility.GetActiveAnotaceImage();
-            InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
-            InkCanvas.Strokes.Clear();
+            inkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
+            inkCanvas.Strokes.Clear();
             PreviewImage.Source = utility.GetActiveAnotaceImage();
         }
 
@@ -597,8 +584,8 @@ namespace VerteMark {
                 CroppedPreviewImage.Source = croppedPreviewImage;
             }
 
-            InkCanvas.Width = CropRectangle.Width;
-            InkCanvas.Height = CropRectangle.Height;
+            inkCanvas.Width = CropRectangle.Width;
+            inkCanvas.Height = CropRectangle.Height;
             PreviewImage.Width = CropRectangle.Width;
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;

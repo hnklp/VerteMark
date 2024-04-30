@@ -117,6 +117,7 @@
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" Height="490" Width="650">
                     <Grid VerticalAlignment="Center" HorizontalAlignment="center">
                         <Image x:Name="ImageHolder" Margin="0"/>
+                        <Image x:Name="CroppedImage"/>
                         <!-- InkCanvas control -->
                         <InkCanvas x:Name="inkCanvas"
      Panel.ZIndex="99999" Background="Transparent" MouseUp="inkCanvas_MouseUp" StrokeCollected="inkCanvas_StrokeCollected">
@@ -125,14 +126,15 @@
                                 <!-- Change to the desired color -->
                             </InkCanvas.DefaultDrawingAttributes>
                         </InkCanvas>
-                        <Image x:Name="previewImage" />
-                        <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Image x:Name="CroppedPreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        
+                        <Image x:Name="PreviewImage" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image x:Name="CroppedPreviewImage" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
+                        <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Center" VerticalAlignment="Center"
                                 MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp">
                             <Rectangle x:Name="CropRectangle" Width="0" Height="0" Stroke="LightBlue" Fill="#220000FF"/>
                         </Canvas>
+                    </Grid>
                 </Grid>
             </ScrollViewer>
 
