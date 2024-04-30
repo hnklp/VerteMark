@@ -94,7 +94,7 @@ namespace VerteMark.ObjectClasses {
                     {
                         int index = y * stride + 4 * x;
                         byte alpha = pixels[index + 3]; // Alpha kanál (průhlednost)
-                        if (alpha == 255) // Pokud je alfa hodnota 1 (plná průhlednost)
+                        if (alpha > 0) // Pokud je alfa hodnota 1 (plná průhlednost)
                         {
                             list.Add(Tuple.Create(x, y)); // Uložit pozici pixelu
                         }

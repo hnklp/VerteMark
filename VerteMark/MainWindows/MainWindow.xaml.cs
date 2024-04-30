@@ -132,6 +132,7 @@ namespace VerteMark {
         // šířka pera, vzdálenosti pro doplnění
         void SetCanvasAttributes() {
             inkCanvas.DefaultDrawingAttributes.Width = 1;
+            inkCanvas.DefaultDrawingAttributes.Height = 1;
             minConnectDistance = 5;
             maxConnectDistance = 100;
         }
