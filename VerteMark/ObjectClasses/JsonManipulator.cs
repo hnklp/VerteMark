@@ -29,7 +29,7 @@ namespace VerteMark.ObjectClasses
         // naimportovat atributy usera a vsechny anotace
         public void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations)
         {
-            // na�ten� z�kladn�ch atribut�
+            // načtení základních atributů
 
             DateTime theTime = DateTime.Now;
 
@@ -54,7 +54,6 @@ namespace VerteMark.ObjectClasses
             return stringJson;
         }
 
-        
         // pro jednoduchost muze Project vyuzit jen metodu ExportJson, ktera kombinuje predchozi metody
         public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations)
         {
