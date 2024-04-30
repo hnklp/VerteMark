@@ -27,7 +27,9 @@ Alex Schönfelder -  GUI, Backend\
 Sabina Ajksnerová - GUI, Backend\
 Hynek Půta - GUI, Backend, Kompatibilita, Installer\
 Josef Bér - Backend\
-Jakub Kepič\
+Jakub Kepič
+
+### Existující mimo vývoj
 Matěj Ježek
 
 ##
