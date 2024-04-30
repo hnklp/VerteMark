@@ -92,7 +92,7 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="4">
-                    <Slider x:Name="ZoomSlider" Value="100" Minimum="50" Maximum="300" TickPlacement="BottomRight" 
+                    <Slider x:Name="ZoomSlider" Value="100" Minimum="25" Maximum="200" TickPlacement="BottomRight" 
                         Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
@@ -126,7 +126,13 @@
                             </InkCanvas.DefaultDrawingAttributes>
                         </InkCanvas>
                         <Image x:Name="previewImage" />
-                    </Grid>
+                        <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Image x:Name="CroppedPreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                        <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp">
+                            <Rectangle x:Name="CropRectangle" Width="0" Height="0" Stroke="LightBlue" Fill="#220000FF"/>
+                        </Canvas>
                 </Grid>
             </ScrollViewer>
 
@@ -135,36 +141,36 @@
                          PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp">
                 <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top"
                          HorizontalAlignment="Right" AllowDrop="False">
-                    <Button x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                    <ToggleButton x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30" Click="CropTButton_Click">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TCrop.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+                    <ToggleButton x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30" Click="DrawTButton_Click">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TDraw.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="EraseTButton" Content="&#x1f5fb;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+                    <ToggleButton x:Name="EraseTButton" Content="&#x1f5fb;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TErase.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="ZoomTButton" Content="&#xE12E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+                    <ToggleButton x:Name="ZoomTButton" Content="&#xE12E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TZoom.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="UndoTButton" Content="&#xE10E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+                    <ToggleButton x:Name="UndoTButton" Content="&#xE10E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TUndo.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button x:Name="RedoTButton" Content="&#xE10D;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <Button.ToolTip>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+                    <ToggleButton x:Name="RedoTButton" Content="&#xE10D;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
+                        <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TRedo.tooltip"/>
-                        </Button.ToolTip>
-                    </Button>
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
                 </ToolBar>
             </ToolBarTray>
 
