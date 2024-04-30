@@ -256,10 +256,7 @@ namespace VerteMark.ObjectClasses
         void AddMissingAnnotations(List<int> existingIds)
         {
             // Seznam všech možných ID od 0 do 7
-            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
-
-            // Pro každé ID, které není v seznamu existingIds, přidej novou anotaci
-            foreach (int id in allIds)
+            for (int id=0; id<=7; id++)
             {
                 if (!existingIds.Contains(id))
                 {

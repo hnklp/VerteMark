@@ -115,7 +115,7 @@
 
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" Height="490" Width="650">
-                    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="center">
                         <Image x:Name="ImageHolder" Margin="0"/>
                         <!-- InkCanvas control -->
                         <InkCanvas x:Name="inkCanvas"
