@@ -9,6 +9,7 @@ using VerteMark.ObjectClasses;
 using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics;
 
 
 namespace VerteMark {
@@ -17,8 +18,7 @@ namespace VerteMark {
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
-    public partial class MainWindow : Window
-    {
+    public partial class MainWindow : Window {
         Utility utility;
         User? loggedInUser;
         List<CheckBox> checkBoxes;
@@ -35,9 +35,11 @@ namespace VerteMark {
         // Image crop
         Point? cropStartPoint = null;
 
+        // Dont worry about it (canvas)
+        private StylusPoint? firstPoint = null;
+        private StylusPoint? lastPoint = null;
 
-        public MainWindow()
-        {
+        public MainWindow() {
             InitializeComponent();
             utility = new Utility();
             checkBoxes = new List<CheckBox>
@@ -50,14 +52,13 @@ namespace VerteMark {
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
-            SwitchActiveAnot(0);
 
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
 
-            Loaded += delegate
-            {
+            Loaded += delegate {
                 SetCanvasComponentsSize();
+                SwitchActiveAnot(0);
             };
         }
 
@@ -66,10 +67,8 @@ namespace VerteMark {
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
-        void InitializeCheckboxes()
-        {
-            foreach (var CheckBox in checkBoxes)
-            {
+        void InitializeCheckboxes() {
+            foreach(var CheckBox in checkBoxes) {
                 bool isValidator = loggedInUser.Validator;
                 CheckBox.IsEnabled = isValidator;
                 CheckBox.IsChecked = isValidator;
@@ -95,20 +94,17 @@ namespace VerteMark {
             Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
         }
 
-        private void OpenFileItem_Click(object sender, RoutedEventArgs e)
-        {
+        private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "open_dialog_title_str";
 
-            if (openFileDialog.ShowDialog() == true)
-            {
+            if(openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success)
-                {
+                if(success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -116,19 +112,16 @@ namespace VerteMark {
             }
         }
 
-        private void OpenProject_Click(object sender, RoutedEventArgs e)
-        {
+        private void OpenProject_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "Select a PNG File";
-            if (openFileDialog.ShowDialog() == true)
-            {
+            if(openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success)
-                {
+                if(success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -142,19 +135,16 @@ namespace VerteMark {
          * ============
          */
 
-        private void HandleStateChanged(object sender, AppState newState)
-        {
+        private void HandleStateChanged(object sender, AppState newState) {
 
-            switch (newState)
-            {
+            switch(newState) {
                 case AppState.Drawing:
                 case AppState.Erasing:
 
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Hidden;
 
-                    if (CroppedImage.Source != null)
-                    {
+                    if(CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
                         PreviewImage.Visibility = Visibility.Hidden;
 
@@ -168,8 +158,7 @@ namespace VerteMark {
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Visible;
 
-                    if (CroppedImage.Source != null)
-                    {
+                    if(CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
                         PreviewImage.Visibility = Visibility.Visible;
 
@@ -185,43 +174,35 @@ namespace VerteMark {
 
         }
 
-        private void SetInkCanvasMode(AppState state)
-        {
+        private void SetInkCanvasMode(AppState state) {
             InkCanvas.EditingMode = state == AppState.Drawing ? InkCanvasEditingMode.Ink :
                                     state == AppState.Erasing ? InkCanvasEditingMode.EraseByPoint :
                                     InkCanvasEditingMode.None;
         }
 
-        private void CropTButton_Click(object sender, RoutedEventArgs e)
-        {
+        private void CropTButton_Click(object sender, RoutedEventArgs e) {
             stateManager.CurrentState = AppState.Cropping;
             SwitchActiveToolbarButton(sender as ToggleButton);
         }
 
-        private void DrawTButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Cropping)
-            {
+        private void DrawTButton_Click(object sender, RoutedEventArgs e) {
+            if(stateManager.CurrentState == AppState.Cropping) {
                 CropImage();
             }
             stateManager.CurrentState = AppState.Drawing;
             SwitchActiveToolbarButton(sender as ToggleButton);
         }
 
-        private void EraseTButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Cropping)
-            {
+        private void EraseTButton_Click(object sender, RoutedEventArgs e) {
+            if(stateManager.CurrentState == AppState.Cropping) {
                 CropImage();
             }
             stateManager.CurrentState = AppState.Erasing;
             SwitchActiveToolbarButton(sender as ToggleButton);
         }
 
-        void SwitchActiveToolbarButton(ToggleButton pressedButton)
-        {
-            if (activeToolbarButton != null)
-            {
+        void SwitchActiveToolbarButton(ToggleButton pressedButton) {
+            if(activeToolbarButton != null) {
                 activeToolbarButton.IsChecked = false;
             }
             activeToolbarButton = pressedButton;
@@ -234,8 +215,7 @@ namespace VerteMark {
          */
 
         //kliknuti na o aplikaci
-        private void AboutItem_Click(object sender, RoutedEventArgs e)
-        {
+        private void AboutItem_Click(object sender, RoutedEventArgs e) {
             AboutWindow AboutWindow = new AboutWindow();
 
             // Získání středu původního okna
@@ -250,19 +230,16 @@ namespace VerteMark {
         }
 
         //kliknuti na nastaveni aplikace
-        private void PropertiesItem_Click(object sender, RoutedEventArgs e)
-        {
+        private void PropertiesItem_Click(object sender, RoutedEventArgs e) {
             MessageBox.Show("Properties clicked");
         }
 
         //soubor - zavrit
-        private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e)
-        {
-            System.Windows.Application.Current.Shutdown();  
+        private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e) {
+            System.Windows.Application.Current.Shutdown();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click(object sender, RoutedEventArgs e) {
             /* 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
@@ -280,132 +257,130 @@ namespace VerteMark {
          */
 
         //Spojování linky
-        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Drawing)
-            {
-                // Get the first and last points of the stroke
-                StylusPoint firstPoint = e.Stroke.StylusPoints.First();
-                StylusPoint lastPoint = e.Stroke.StylusPoints.Last();
+        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
+            if(firstPoint == null) {
+                firstPoint = e.Stroke.StylusPoints.First();
+            }
+            lastPoint = e.Stroke.StylusPoints.Last();
+        }
 
+        void ConnectStrokeAnotace() {
+            if(stateManager != null && stateManager.CurrentState == AppState.Drawing && firstPoint != null && lastPoint != null) {
                 // Calculate the distance between the first and last points
-                double distance = Math.Sqrt(Math.Pow(lastPoint.X - firstPoint.X, 2) + Math.Pow(lastPoint.Y - firstPoint.Y, 2));
+                double distance = Math.Sqrt(Math.Pow(lastPoint.Value.X - firstPoint.Value.X, 2) + Math.Pow(lastPoint.Value.Y - firstPoint.Value.Y, 2));
 
-                // If the distance is less than 5, connect the points with a line
-                if (distance < 100)
-                {
+                // If the distance is less than 100, connect the points with a line
+                if(distance < 100) {
                     // Create a new stroke for the connecting line
                     StylusPointCollection points = new StylusPointCollection();
-                    points.Add(firstPoint);
-                    points.Add(lastPoint);
+                    points.Add(firstPoint.Value);
+                    points.Add(lastPoint.Value);
                     Stroke lineStroke = new Stroke(points);
 
                     // Set the color and thickness of the connecting line
                     lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
-                    lineStroke.DrawingAttributes.Width = 1;
+                    lineStroke.DrawingAttributes.Width = InkCanvas.DefaultDrawingAttributes.Width;
+                    lineStroke.DrawingAttributes.Height = InkCanvas.DefaultDrawingAttributes.Height;
 
                     // Add the connecting line stroke to the InkCanvas
                     InkCanvas.Strokes.Add(lineStroke);
+                    firstPoint = null;
                 }
             }
         }
+        void UpdateElementsWithAnotace() {
+            InkCanvas.Strokes.Clear();
+            PreviewImage.Source = utility.GetActiveAnotaceImage();
+            InkCanvas.Background = new ImageBrush(utility.GetActiveAnotaceImage());
+        }
 
-        WriteableBitmap ConvertInkCanvasToWriteableBitmap(InkCanvas inkCanvas)
-        {
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
-            renderBitmap.Render(inkCanvas);
-            WriteableBitmap writeableBitmap = new WriteableBitmap(renderBitmap.PixelWidth, renderBitmap.PixelHeight, renderBitmap.DpiX, renderBitmap.DpiY, renderBitmap.Format, renderBitmap.Palette);
-            renderBitmap.CopyPixels(new Int32Rect(0, 0, renderBitmap.PixelWidth, renderBitmap.PixelHeight), writeableBitmap.BackBuffer, writeableBitmap.BackBufferStride * writeableBitmap.PixelHeight, writeableBitmap.BackBufferStride);
-            writeableBitmap.Lock();
-            writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight));
-            writeableBitmap.Unlock();
-            return writeableBitmap;
+        void SaveCanvasIntoAnot(){
+                RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+                rtb.Render(InkCanvas);
+                utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
-        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Drawing)
-            {
+        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
+            if(stateManager.CurrentState == AppState.Drawing) {
+                /*
                 utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(InkCanvas));
-
-                if (CroppedImage.Source == null)
+                if(CroppedImage.Source == null){
                     PreviewImage.Source = utility.GetActiveAnotaceImage();
-                else
+                }else{
                     CroppedPreviewImage.Source = utility.GetActiveAnotaceImage();
+                }
+                */
+
+                // width a height a dpi by mohli dělat bordel při ukládání
+                SaveCanvasIntoAnot();
+                UpdateElementsWithAnotace();
             }
         }
 
         //Smaže obsah vybrané anotace
-        void Smazat_butt(object sender, RoutedEventArgs e)
-        {
+        void Smazat_butt(object sender, RoutedEventArgs e) {
             utility.ClearActiveAnotace();
-            PreviewImage.Source = utility.GetActiveAnotaceImage();
+            UpdateElementsWithAnotace();
         }
 
         /* Přepínání anotací */
-        void SwitchActiveAnot(int id)
-        {
+        void SwitchActiveAnot(int id) {
+            // Stroking the connection (spojení od začátku ke konci)
+            ConnectStrokeAnotace();
+            SaveCanvasIntoAnot();
+            // The rest
+            UpdateElementsWithAnotace();
             utility.ChangeActiveAnotation(id);
             //   previewImage.Source = utility.GetActiveAnotaceImage();
             InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
-            InkCanvas.Strokes.Clear();
-            PreviewImage.Source = utility.GetActiveAnotaceImage();
+            //  InkCanvas.Strokes.Clear();
+            UpdateElementsWithAnotace();
         }
 
-        void SwitchActiveAnotButton(ToggleButton pressedButton)
-        {
-            if (activeAnotButton != null)
-            {
+        void SwitchActiveAnotButton(ToggleButton pressedButton) {
+            if(activeAnotButton != null) {
                 activeAnotButton.IsChecked = false;
             }
             activeAnotButton = pressedButton;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_1(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(0);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_2(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(1);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_3(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(2);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_4(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(3);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_5(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(4);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_6(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(5);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_7(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_7(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(6);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
 
-        private void Button_Click_8(object sender, RoutedEventArgs e)
-        {
+        private void Button_Click_8(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(7);
             SwitchActiveAnotButton(sender as ToggleButton);
         }
@@ -416,37 +391,30 @@ namespace VerteMark {
          * =======================
          */
 
-        private T GetParent<T>(DependencyObject d) where T : class
-        {
-            while (d != null && !(d is T))
-            {
+        private T GetParent<T>(DependencyObject d) where T : class {
+            while(d != null && !(d is T)) {
                 d = VisualTreeHelper.GetParent(d);
             }
             return d as T;
 
         }
 
-        private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             Point p = e.GetPosition(ToolBarTray);
             IInputElement ie = ToolBarTray.InputHitTest(p);
             grip = GetParent<Thumb>(ie as DependencyObject);
-            if (grip != null)
-            {
+            if(grip != null) {
                 isDragging = true;
                 offset = e.GetPosition(ToolBarTray);
                 grip.CaptureMouse();
             }
         }
 
-        private void Grip_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            if (isDragging)
-            {
+        private void Grip_PreviewMouseMove(object sender, MouseEventArgs e) {
+            if(isDragging) {
                 Point currentPoint = e.GetPosition(ToolBarTray);
 
-                if (grip != null && grip.IsMouseCaptured)
-                {
+                if(grip != null && grip.IsMouseCaptured) {
                     Point newPosition = Mouse.GetPosition(this);
                     int toolbarOffset = 18;
                     double newX = newPosition.X - offset.X;
@@ -461,10 +429,8 @@ namespace VerteMark {
             }
         }
 
-        private void Grip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (grip != null)
-            {
+        private void Grip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            if(grip != null) {
                 isDragging = false;
                 grip.ReleaseMouseCapture();
             }
@@ -476,33 +442,25 @@ namespace VerteMark {
          * ======
          */
 
-        private void CropCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Cropping)
-            {
+        private void CropCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            if(stateManager.CurrentState == AppState.Cropping) {
                 cropStartPoint = e.GetPosition(CropCanvas);
                 CropRectangle.Width = 0;
                 CropRectangle.Height = 0;
             }
         }
 
-        private void CropCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Cropping)
-            {
-                if (cropStartPoint.HasValue)
-                {
+        private void CropCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            if(stateManager.CurrentState == AppState.Cropping) {
+                if(cropStartPoint.HasValue) {
                     cropStartPoint = null;
                 }
             }
         }
 
-        private void CropCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (stateManager.CurrentState == AppState.Cropping)
-            {
-                if (cropStartPoint.HasValue)
-                {
+        private void CropCanvas_MouseMove(object sender, MouseEventArgs e) {
+            if(stateManager.CurrentState == AppState.Cropping) {
+                if(cropStartPoint.HasValue) {
                     var pos = e.GetPosition(CropCanvas);
 
                     var x = Math.Min(pos.X, cropStartPoint.Value.X);
@@ -520,21 +478,19 @@ namespace VerteMark {
             }
         }
 
-        private void CropImage()
-        {
+        private void CropImage() {
             Int32Rect rect = new Int32Rect((int)Canvas.GetLeft(CropRectangle),
                                       (int)Canvas.GetTop(CropRectangle),
                                       (int)CropRectangle.Width,
                                       (int)CropRectangle.Height);
 
-            if (rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
+            if(rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
                 return;
-          
+
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
 
-            if (PreviewImage.Source !=  null)
-            {
+            if(PreviewImage.Source != null) {
                 BitmapSource croppedPreviewImage = new CroppedBitmap(PreviewImage.Source as BitmapSource, rect);
                 CroppedPreviewImage.Source = croppedPreviewImage;
             }
@@ -553,21 +509,17 @@ namespace VerteMark {
          * ======
          */
 
-        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (ImageHolder != null)
-            {
+        private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            if(ImageHolder != null) {
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }
         }
     }
 
-    public class PercentageConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || !(value is double))
+    public class PercentageConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if(value == null || !(value is double))
                 return null;
 
             double numericValue = (double)value;
@@ -575,8 +527,7 @@ namespace VerteMark {
             return string.Format("{0}%", intValue);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
         }
     }
