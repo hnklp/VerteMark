@@ -5,7 +5,7 @@ using System.IO;
 using Dicom;
 using Dicom.Imaging;
 using System.Diagnostics;
-
+using Newtonsoft.Json;
 
 namespace VerteMark.ObjectClasses.FolderClasses
 {
@@ -27,84 +27,21 @@ namespace VerteMark.ObjectClasses.FolderClasses
         public string? pngPath;
         public string? jsonPath;
         public string? metaPath;
+        private string key;
 
 
         public FileManager()
         {
             outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
 
         public void SaveProject()
         {
-            // ulozeni vseho do output slozky
+            
         }
 
-        // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
-        public void CreateOutputFile(string outputDirectoryName)
-        {
-            if (outputPath != null)
-            {
-                string fullPath = Path.Combine(outputPath, outputDirectoryName);
-                Directory.CreateDirectory(fullPath);
-                outputPath = fullPath;
-            }
-        }
-
-
-        // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
-        // nastavi instanci pngPath
-        public void ExtractImageFromDicom()
-        {
-
-            DicomFile dicomFile = DicomFile.Open(dicomPath);
-
-            DicomImage image = new DicomImage(dicomFile.Dataset);
-
-            Bitmap bmp = image.RenderImage().As<Bitmap>();
-
-            string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
-            pngPath = Path.Combine(outputPath, outputFileName);
-
-            // Uložení obrázku jako PNG
-            bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
-        }
-
-
-        // extrahuje metadata do csv souboru do output slozky
-        // nastavi instanci metaPath
-        public void ExtractAndSaveMetadata()
-        {
-            if (!File.Exists(dicomPath))
-            {
-                Console.WriteLine("Zadaný DICOM soubor neexistuje.");
-                return;
-            }
-
-
-            string csvFileName = Path.GetFileNameWithoutExtension(dicomPath) + "_metadata.csv";
-            metaPath = Path.Combine(outputPath, csvFileName);
-
-            DicomFile dicomFile = DicomFile.Open(dicomPath);
-
-            // Vytvoření CSV souboru
-            using (StreamWriter writer = new StreamWriter(metaPath))
-            {
-                // hlavička
-                writer.WriteLine("Tag;Value;VR;Description");
-
-                foreach (DicomItem item in dicomFile.Dataset)
-                {
-
-                    string tag = item.Tag.ToString();
-                    string value = item.ToString();
-                    string vr = item.ValueRepresentation.Code;
-                    string description = DicomDictionary.Default[item.Tag].Name;
-
-                    writer.WriteLine($"{tag};{value};{vr};{description}");
-                }
-            }
-        }
 
         // nacte obrazek pomoci cesty pngPath
         public BitmapImage LoadBitmapImage()
@@ -117,8 +54,6 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 bitmapImage.BeginInit();
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                Debug.WriteLine(pngPath);
-                Debug.WriteLine("----------------PNGPATH-------------------");
                 bitmapImage.UriSource = new Uri(pngPath);
                 bitmapImage.EndInit();
 
@@ -136,12 +71,23 @@ namespace VerteMark.ObjectClasses.FolderClasses
             }
         }
 
-
-        // nevim, jestli bude potreba - data o pacientovy nejsou potreba
-        public Metadata GetProjectMetada()
+        // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
+        public void CreateOutputFile(string outputDirectoryName)
         {
-            return null;
+            if (outputPath != null)
+            {
+                string fullPath = Path.Combine(outputPath, outputDirectoryName);
+                Directory.CreateDirectory(fullPath);
+                outputPath = fullPath;
+            }
         }
+
+
+        /*
+        * ============================================
+        * Specialne pri nacitani rozdelaneho projektu:
+        * ============================================
+        */
 
 
         // pujde do funkce JSON maker - ulozeni do output slozky
@@ -150,39 +96,64 @@ namespace VerteMark.ObjectClasses.FolderClasses
             return null;
         }
 
-        //Prozatimní funkce, používám ji při testování těch anotací
-        public BitmapImage PEPEGetPictureAsBitmap(string path)
+        /*
+        * ======================================
+        *  Specialne pri nacitani dicom souboru:
+        * ======================================
+        */
+
+        // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
+        // nastavi instanci pngPath
+        public void ExtractImageFromDicom()
         {
-            // Check if the file exists
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("File not found", path);
-            }
 
-            // Load the image using System.Drawing
-            using (var bitmap = new Bitmap(path))
-            {
-                // Convert System.Drawing.Bitmap to System.Windows.Media.Imaging.BitmapImage
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                MemoryStream memoryStream = new MemoryStream();
-                // Save to a memory stream
-                bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                // Load the bitmap from memory stream
-                bitmapImage.StreamSource = memoryStream;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                return bitmapImage;
-            }
+            DicomFile dicomFile = DicomFile.Open(dicomPath);
+
+            DicomImage image = new DicomImage(dicomFile.Dataset);
+
+            Bitmap bmp = image.RenderImage().As<Bitmap>();
+
+            string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
+            pngPath = Path.Combine(outputPath, outputFileName);
+
+            bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
         }
-    }
 
 
-    public enum FolderState
-    {
-        New,
-        Existing,
-        Nonfunctional
+        // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
+        public void ExtractAndSaveMetadata()
+        {
+            if (!File.Exists(dicomPath))
+            {
+                return;
+            }
+
+            string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
+            metaPath = Path.Combine(outputPath, csvFileName);
+
+            DicomFile dicomFile = DicomFile.Open(dicomPath);
+
+            var allMetadata = new Dictionary<string, object>();
+            var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
+            foreach (DicomItem item in dicomFile.Dataset)
+            {
+                var metadataItem = new Dictionary<string, string>();
+                metadataItem["Tag"] = item.Tag.ToString();
+                metadataItem["Value"] = item.ToString();
+                metadataItem["VR"] = item.ValueRepresentation.Code;
+                string description = DicomDictionary.Default[item.Tag].Name;
+                dicomMetadata[description] = metadataItem;
+            }
+            allMetadata["DicomMetadata"] = dicomMetadata;
+
+            var history = new Dictionary<string, Dictionary<string, string>>();
+            history["1.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+            allMetadata["History"] = history;
+
+            string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+
+
+            File.WriteAllText(metaPath, jsonAllMetadata);
+        }
     }
 }

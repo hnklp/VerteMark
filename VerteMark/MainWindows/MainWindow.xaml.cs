@@ -490,10 +490,11 @@ namespace VerteMark {
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
 
-            if(PreviewImage.Source != null) {
+
+            /*if(PreviewImage.Source != null) {
                 BitmapSource croppedPreviewImage = new CroppedBitmap(PreviewImage.Source as BitmapSource, rect);
                 CroppedPreviewImage.Source = croppedPreviewImage;
-            }
+            }*/
 
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
@@ -531,5 +532,4 @@ namespace VerteMark {
             throw new NotImplementedException();
         }
     }
-
 }

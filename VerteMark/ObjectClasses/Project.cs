@@ -31,7 +31,6 @@ namespace VerteMark.ObjectClasses
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
-        Metadata? metadata; // Metadata projektu
         JsonManipulator? jsonManip;
 
 
@@ -52,9 +51,7 @@ namespace VerteMark.ObjectClasses
         }
 
         public void CreateNewProject(string path) {
-            // Vytvoř čistý metadata
-            metadata = new Metadata();
-            // Vytvoř čistý anotace
+
             CreateNewAnotaces();
             // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
 
@@ -193,24 +190,8 @@ namespace VerteMark.ObjectClasses
             return instance;
         }
 
-        public List<string> ChooseNewProject()
-        {
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
-            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
-            return folderUtilityManager.ChooseNewProject();
-        }
 
-        public List<string> ChooseContinueAnotation()
-        {
-            return folderUtilityManager.ChooseContinueAnotation();
-        }
-
-        public List<string> ChooseValidation()
-        {
-            return folderUtilityManager.ChooseValidation();
-        }
-
+        // Zavisi na vybranem souboru v FolderbrowserWindow
         public void Choose(string path, string projectType)
         {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
@@ -225,6 +206,24 @@ namespace VerteMark.ObjectClasses
             }
 
             originalPicture = folderUtilityManager.GetImage();
+        }
+
+
+
+        // Vola se z FolderbrowserWindow - vraci vsechny soubory, ktere jsou k dispozici
+        public List<string> ChooseNewProject()
+        {
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation()
+        {
+            return folderUtilityManager.ChooseContinueAnotation();
+        }
+
+        public List<string> ChooseValidation()
+        {
+            return folderUtilityManager.ChooseValidation();
         }
     }
 }
