@@ -33,11 +33,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        public void SaveProject() {
-            
-        }
-
-
         // nacte obrazek pomoci cesty pngPath
         public BitmapImage LoadBitmapImage() {
             try {
@@ -79,44 +74,27 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         public void AddUserActionToMetadata(User user) {
+            Debug.WriteLine("ono se TO VOLA JEN TO NIC NEDELA!!");
             if (!File.Exists(metaPath)) {
-                // .meta file doesn't exist, cannot add user action
+                Debug.WriteLine("METAPATH NEEXISTUJE!!");
                 return;
             }
-
             DateTime currentTime = DateTime.Now;
-
-            // Load existing metadata from .meta file
             string jsonMetadata = File.ReadAllText(metaPath);
             JObject allMetadata = JObject.Parse(jsonMetadata);
-
-            // Check if 'History' already exists, if not, create it
             if (allMetadata["History"] == null) {
                 allMetadata["History"] = new JObject();
             }
-
-            // Create new history entry key with date and time
             string historyEntryKey = currentTime.ToString("dd. MM. yyyy HH:mm:ss");
-
-            // Check if the same key already exists in history
             if (((JObject)allMetadata["History"]).ContainsKey(historyEntryKey)) {
-                // If the same key exists, append milliseconds to make it unique
                 historyEntryKey += "." + currentTime.Millisecond.ToString();
             }
-
-            // Create new history entry
             JObject newEntry = new JObject(
                 new JProperty("id", user.UserID),
                 new JProperty("action", user.Validator ? "VALIDATION" : "ANNOTATION")
             );
-
-            // Add new history entry to existing ones
             ((JObject)allMetadata["History"]).Add(historyEntryKey, newEntry);
-
-            // Serialize updated metadata back to JSON
             string updatedJsonMetadata = allMetadata.ToString(Formatting.Indented);
-
-            // Write updated metadata back to .meta file
             File.WriteAllText(metaPath, updatedJsonMetadata);
         }
 

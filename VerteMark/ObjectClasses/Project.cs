@@ -81,7 +81,7 @@ namespace VerteMark.ObjectClasses
                 dicts.Add(anot.GetAsDict());
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
-            folderUtilityManager.Save(loggedInUser); // bude brat parametr string json 
+            folderUtilityManager.Save(loggedInUser, newProject); // bude brat parametr string json 
         }
 
 

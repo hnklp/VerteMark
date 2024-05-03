@@ -21,8 +21,8 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        public void Save(User user) {
-            if (user.Validator) {
+        public void Save(User user, bool newProject) {
+            if (newProject) {
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
