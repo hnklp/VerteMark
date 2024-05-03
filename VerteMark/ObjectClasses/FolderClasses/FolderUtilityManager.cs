@@ -22,7 +22,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
         public void Save(User user, bool newProject) {
-            if (newProject) {
+            if (!newProject) {
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
@@ -81,7 +81,11 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        public void SaveJson(string neco) { }
+        public void SaveJson(string neco) {
+            using (StreamWriter sw = new StreamWriter(fileManager.jsonPath)) {
+                sw.Write(neco);
+            }
+        }
 
         /*
         * =============================

@@ -66,10 +66,20 @@ namespace VerteMark.ObjectClasses {
         }
         List<Tuple<int, int>> BitmapAsList() {
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-            for (int y = 0; y < canvas.PixelHeight; y++) {
-                for (int x = 0; x < canvas.PixelWidth; x++) {
-                    if (x != 0 && y != 0) {
-                        list.Add(new Tuple<int, int>(x, y));
+            if (canvas != null) {
+                int stride = canvas.PixelWidth * 4;
+                int size = canvas.PixelHeight * stride;
+                byte[] pixels = new byte[size];
+                canvas.CopyPixels(pixels, stride, 0);
+
+                for (int y = 0; y < canvas.PixelHeight; y++) {
+                    for (int x = 0; x < canvas.PixelWidth; x++) {
+                        int index = y * stride + 4 * x;
+                        byte alpha = pixels[index + 3]; // Alpha kanál (průhlednost)
+                        if (alpha > 0) // Kontrola průhlednosti
+                        {
+                            list.Add(Tuple.Create(x, y));
+                        }
                     }
                 }
             }

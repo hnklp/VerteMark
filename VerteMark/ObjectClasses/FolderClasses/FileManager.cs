@@ -74,7 +74,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         public void AddUserActionToMetadata(User user) {
-            Debug.WriteLine("ono se TO VOLA JEN TO NIC NEDELA!!");
             if (!File.Exists(metaPath)) {
                 Debug.WriteLine("METAPATH NEEXISTUJE!!");
                 return;
@@ -120,8 +119,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             DicomFile dicomFile = DicomFile.Open(dicomPath);
             DicomImage image = new DicomImage(dicomFile.Dataset);
             Bitmap bmp = image.RenderImage().As<Bitmap>();
-            string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
-            pngPath = Path.Combine(outputPath, outputFileName);
+
+            string fileName = Path.GetFileNameWithoutExtension(dicomPath);
+            pngPath = Path.Combine(outputPath, fileName + ".png");
+            jsonPath = Path.Combine(outputPath, fileName + ".json");
             bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
         }
 
