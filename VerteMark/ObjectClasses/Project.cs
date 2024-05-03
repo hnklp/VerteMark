@@ -11,6 +11,7 @@ using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using System.Diagnostics.Contracts;
 
 namespace VerteMark.ObjectClasses
 {
@@ -32,6 +33,7 @@ namespace VerteMark.ObjectClasses
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         JsonManipulator? jsonManip;
+        bool newProject;
 
 
         public Project() {
@@ -39,34 +41,31 @@ namespace VerteMark.ObjectClasses
             originalPicture = new BitmapImage();
             folderUtilityManager = new FolderUtilityManager();
             jsonManip = new JsonManipulator();
+            newProject = false;
         }
 
 
         // SLOUZI POUZE PRO ZIP FILE
         // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
-            //CreateNewProject(path);
-            folderUtilityManager.ExtractZip(path);
-            return true;
+            return folderUtilityManager.ExtractZip(path);
         }
 
         public void CreateNewProject(string path) {
-
+            newProject = true;
             CreateNewAnotaces();
-            // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
-
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
         }
 
 
         public void LoadProject(string path) {
+            newProject = true;
             // Získej metadata
             // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
             // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
             // Získej anotace
             CreateNewAnotaces(); // - prozatimni reseni!
-            // Získej uložený obrázek do projektu
             
             folderUtilityManager.LoadProject(path);
             originalPicture = folderUtilityManager.GetImage();
@@ -82,6 +81,8 @@ namespace VerteMark.ObjectClasses
             // ZKOUSKA UKLADANI TEMP DO ZIP
             folderUtilityManager.SaveZip(); // bude brat parametr string json 
         }
+
+
         void SaveJson() {
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {

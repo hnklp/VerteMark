@@ -12,15 +12,8 @@ namespace VerteMark.ObjectClasses {
             public string? LastEditDate { get; private set; } // automaticky se doplní ve chvíli kdy export
             public string? ValidationDate { get; private set; }
 
-            public Tuple<int, int> ImageDimension { get; private set; } // jeden tuple List<int, int> (75,99)
-
             public List<Dictionary<string, List<Tuple<int, int>>>> Annotations { get; private set; }
 
-
-            public JsonManipulator() {
-                ImageDimension = new Tuple<int, int>(1920, 1080);
-                // rozmery obrazku, prijme od projektu posledni zmeny velikosti
-            }
 
             // naimportovat atributy usera a vsechny anotace
             void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations) {
@@ -54,20 +47,17 @@ namespace VerteMark.ObjectClasses {
                 return createdJson;
             }
 
-            // InvertedJson
-            /*
-            public List<T> InvertedJson(string createdJson)
+            // UnpackJson - lepsi funkce pro rozbaleni json stringu
+            public List<object> UnpackJson(string createdJson)
             {
-                JsonManipulator loadedJson = JsonManipulator.InvertedJson(createdJson);
-                List<T> returnValues = new List<T>;
+                JsonManipulator loadedJson = JsonConvert.DeserializeObject<JsonManipulator>(createdJson);
+                List<object> returnValues = new List<object>();
 
-                returnValues.add(loadedJson.AnnotatorID);
-                returnValues.add(loadedJson.ValidatorID);
-                returnValues.add(loadedJson.Annotations);
+                returnValues.Add(loadedJson.AnnotatorID);
+                returnValues.Add(loadedJson.ValidatorID);
+                returnValues.Add(loadedJson.Annotations);
 
                 return returnValues;
             }
-            */
-
     }
 }

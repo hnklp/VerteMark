@@ -7,8 +7,7 @@ using Dicom.Imaging;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace VerteMark.ObjectClasses.FolderClasses
-{
+namespace VerteMark.ObjectClasses.FolderClasses {
     /// <summary>
     /// Správa a manipulace se soubory pro projekt.
     /// 
@@ -18,10 +17,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
     /// * Ukládání projektu a souvisejících souborů.
     /// </summary>
     /// 
-    // sračka
-    internal class FileManager
-    {
-
+    internal class FileManager {
         public string outputPath;
         public string? dicomPath;
         public string? pngPath;
@@ -30,24 +26,20 @@ namespace VerteMark.ObjectClasses.FolderClasses
         private string key;
 
 
-        public FileManager()
-        {
+        public FileManager() {
             outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
 
-        public void SaveProject()
-        {
+        public void SaveProject() {
             
         }
 
 
         // nacte obrazek pomoci cesty pngPath
-        public BitmapImage LoadBitmapImage()
-        {
-            try
-            {
+        public BitmapImage LoadBitmapImage() {
+            try {
                 BitmapImage bitmapImage = new BitmapImage();
 
                 // Set BitmapImage properties
@@ -63,22 +55,10 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 return bitmapImage;
             }
 
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 // Handle any exceptions, e.g., file not found or invalid image format
                 Console.WriteLine("Error loading image: " + ex.Message);
                 return null;
-            }
-        }
-
-        // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
-        public void CreateOutputFile(string outputDirectoryName)
-        {
-            if (outputPath != null)
-            {
-                string fullPath = Path.Combine(outputPath, outputDirectoryName);
-                Directory.CreateDirectory(fullPath);
-                outputPath = fullPath;
             }
         }
 
@@ -91,9 +71,32 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
 
         // pujde do funkce JSON maker - ulozeni do output slozky
-        public List<Anotace> GetProjectAnotaces()
-        {
+        public List<Anotace> GetProjectAnotaces() {
             return null;
+        }
+
+
+        public void AddUserActionToMetadata(User user) {
+            if (!File.Exists(metaPath)) {
+                return;
+            }
+            DateTime currentTime = DateTime.Now;
+
+            string jsonMetadata = File.ReadAllText(metaPath);
+            var allMetadata = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonMetadata);
+
+            if (!allMetadata.ContainsKey("History")) {
+                allMetadata["History"] = new Dictionary<string, Dictionary<string, string>>();
+            }
+            var history = (Dictionary<string, Dictionary<string, string>>)allMetadata["History"];
+            history[currentTime.ToString("dd. MM. yyyy")] = new Dictionary<string, string>{
+                        { "id", user.UserID },
+                        { "action", user.Validator ? "validation" : "annotation" }
+                        };
+
+            string updatedJsonMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+
+            File.WriteAllText(metaPath, updatedJsonMetadata);
         }
 
         /*
@@ -102,32 +105,33 @@ namespace VerteMark.ObjectClasses.FolderClasses
         * ======================================
         */
 
+        // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
+        public void CreateOutputFile(string outputDirectoryName) {
+            if (outputPath != null) {
+                string fullPath = Path.Combine(outputPath, outputDirectoryName);
+                Directory.CreateDirectory(fullPath);
+                outputPath = fullPath;
+            }
+        }
+
+
         // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
         // nastavi instanci pngPath
-        public void ExtractImageFromDicom()
-        {
-
+        public void ExtractImageFromDicom() {
             DicomFile dicomFile = DicomFile.Open(dicomPath);
-
             DicomImage image = new DicomImage(dicomFile.Dataset);
-
             Bitmap bmp = image.RenderImage().As<Bitmap>();
-
             string outputFileName = Path.GetFileNameWithoutExtension(dicomPath) + ".png";
             pngPath = Path.Combine(outputPath, outputFileName);
-
             bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
         }
 
 
         // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
-        public void ExtractAndSaveMetadata()
-        {
-            if (!File.Exists(dicomPath))
-            {
+        public void ExtractAndSaveMetadata() {
+            if (!File.Exists(dicomPath)) {
                 return;
             }
-
             string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
             metaPath = Path.Combine(outputPath, csvFileName);
 
@@ -135,8 +139,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
 
             var allMetadata = new Dictionary<string, object>();
             var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
-            foreach (DicomItem item in dicomFile.Dataset)
-            {
+            foreach (DicomItem item in dicomFile.Dataset) {
                 var metadataItem = new Dictionary<string, string>();
                 metadataItem["Tag"] = item.Tag.ToString();
                 metadataItem["Value"] = item.ToString();
@@ -146,12 +149,13 @@ namespace VerteMark.ObjectClasses.FolderClasses
             }
             allMetadata["DicomMetadata"] = dicomMetadata;
 
+            DateTime theTime = DateTime.Now;
+
             var history = new Dictionary<string, Dictionary<string, string>>();
-            history["1.1.2020"] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+            history[theTime.ToString("dd. MM. yyyy")] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
             allMetadata["History"] = history;
 
             string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
-
 
             File.WriteAllText(metaPath, jsonAllMetadata);
         }
