@@ -21,7 +21,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
         }
 
 
-        public bool CheckTempFolder()
+        public void CheckTempFolder()
         // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
         {
             string[] requiredFolders = { "dicoms", "to_validate", "to_anotate", "validated" };
@@ -31,16 +31,14 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 string folderPath = Path.Combine(tempFolderPath, folderName);
                 if (!Directory.Exists(folderPath))
                 {
-                    return false;
+                    Directory.CreateDirectory(folderPath);
                 }
             }
-            return true;
         }
 
         // vrati list dicomu, pro ktere jeste neni vytvoren projekt
         public List<string> ChooseNewProject()
         {
-            Debug.WriteLine("VOLA SE CHOOSENEWPROJECT!!");
             List<string> dicomFiles = GetDicomFiles();
             List<string> anotatedProjects = GetSubfolders("to_anotate");
             List<string> validatedProjects = GetSubfolders("validated");
