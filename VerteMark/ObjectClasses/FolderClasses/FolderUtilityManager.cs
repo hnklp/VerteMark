@@ -21,6 +21,15 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
+        public void Save(User user) {
+            if (user.Validator) {
+                fileManager.AddUserActionToMetadata(user);
+            }
+            else {
+                fileManager.ExtractAndSaveMetadata(user);
+            }
+            SaveZip();
+        }
 
         public bool ExtractZip(string path){
             try {
@@ -33,7 +42,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        public void SaveZip(){
+        void SaveZip(){
             zipManager.UpdateZipFromTempFolder();
         }
 
@@ -49,7 +58,6 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             fileManager.dicomPath = path;
             fileManager.CreateOutputFile(folderName);
             fileManager.ExtractImageFromDicom();
-            fileManager.ExtractAndSaveMetadata();
         }
 
 
@@ -58,10 +66,13 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                 string[] files = Directory.GetFiles(path);
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
                 // string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
+                string? metaFile = files.FirstOrDefault(f => f.EndsWith(".meta"));
 
-                if (pngFile == null )/*|| jsonFile == null)*/{
+                if (pngFile == null  || metaFile == null )/*|| jsonFile == null)*/{
                     throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");}
 
+                Debug.WriteLine(metaFile);
+                fileManager.metaPath = metaFile;
                 fileManager.pngPath = pngFile;
                 // fileManager.jsonPath = jsonFile;
                 fileManager.outputPath = path;}

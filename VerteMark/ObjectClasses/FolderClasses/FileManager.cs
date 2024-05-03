@@ -6,6 +6,7 @@ using Dicom;
 using Dicom.Imaging;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace VerteMark.ObjectClasses.FolderClasses {
     /// <summary>
@@ -76,26 +77,46 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
+
         public void AddUserActionToMetadata(User user) {
             if (!File.Exists(metaPath)) {
+                // .meta file doesn't exist, cannot add user action
                 return;
             }
+
             DateTime currentTime = DateTime.Now;
 
+            // Load existing metadata from .meta file
             string jsonMetadata = File.ReadAllText(metaPath);
-            var allMetadata = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonMetadata);
+            JObject allMetadata = JObject.Parse(jsonMetadata);
 
-            if (!allMetadata.ContainsKey("History")) {
-                allMetadata["History"] = new Dictionary<string, Dictionary<string, string>>();
+            // Check if 'History' already exists, if not, create it
+            if (allMetadata["History"] == null) {
+                allMetadata["History"] = new JObject();
             }
-            var history = (Dictionary<string, Dictionary<string, string>>)allMetadata["History"];
-            history[currentTime.ToString("dd. MM. yyyy")] = new Dictionary<string, string>{
-                        { "id", user.UserID },
-                        { "action", user.Validator ? "validation" : "annotation" }
-                        };
 
-            string updatedJsonMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+            // Create new history entry key with date and time
+            string historyEntryKey = currentTime.ToString("dd. MM. yyyy HH:mm:ss");
 
+            // Check if the same key already exists in history
+            if (((JObject)allMetadata["History"]).ContainsKey(historyEntryKey)) {
+                // If the same key exists, append milliseconds to make it unique
+                historyEntryKey += "." + currentTime.Millisecond.ToString();
+            }
+
+            // Create new history entry
+            JObject newEntry = new JObject(
+                new JProperty("id", user.UserID),
+                new JProperty("action", user.Validator ? "VALIDATION" : "ANNOTATION")
+            );
+
+            // Add new history entry to existing ones
+            ((JObject)allMetadata["History"]).Add(historyEntryKey, newEntry);
+
+            // Serialize updated metadata back to JSON
+            string updatedJsonMetadata = allMetadata.ToString(Formatting.Indented);
+
+            // Write updated metadata back to .meta file
             File.WriteAllText(metaPath, updatedJsonMetadata);
         }
 
@@ -128,7 +149,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
-        public void ExtractAndSaveMetadata() {
+        public void ExtractAndSaveMetadata(User user) {
             if (!File.Exists(dicomPath)) {
                 return;
             }
@@ -152,7 +173,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             DateTime theTime = DateTime.Now;
 
             var history = new Dictionary<string, Dictionary<string, string>>();
-            history[theTime.ToString("dd. MM. yyyy")] = new Dictionary<string, string> { { "id", "ANOTATOR1" }, { "action", "ANNOTATION" } };
+            history[theTime.ToString("dd. MM. yyyy HH:mm:ss")] = new Dictionary<string, string>{ 
+                { "id", user.UserID }, { "action", user.Validator ? "VALIDATION" : "ANNOTATION" } };
             allMetadata["History"] = history;
 
             string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);

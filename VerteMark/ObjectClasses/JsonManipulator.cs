@@ -21,12 +21,12 @@ namespace VerteMark.ObjectClasses {
 
                 DateTime theTime = DateTime.Now;
 
-                if (user.Validator == true) {
+                if (user.Validator) {
                     ValidatorID = user.UserID;
-                    ValidationDate = theTime.ToString("dd. MM. yyyy");
+                    ValidationDate = theTime.ToString("dd. MM. yyyy HH:mm:ss");
                 } else {
                     AnnotatorID = user.UserID;
-                    LastEditDate = theTime.ToString("dd. MM. yyyy");
+                    LastEditDate = theTime.ToString("dd. MM. yyyy HH:mm:ss");
                 }
 
                 Annotations = programAnnotations;

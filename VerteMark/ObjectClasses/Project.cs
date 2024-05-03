@@ -74,22 +74,16 @@ namespace VerteMark.ObjectClasses
 
 
         public void SaveProject() {
-            SaveJson(); // Vytvoření jsonu
 
-            // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
-            // záležitosti správných složek a správných formátů souborů má na starost filemanager
-            // ZKOUSKA UKLADANI TEMP DO ZIP
-            folderUtilityManager.SaveZip(); // bude brat parametr string json 
-        }
-
-
-        void SaveJson() {
+            // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+            folderUtilityManager.Save(loggedInUser); // bude brat parametr string json 
         }
+
 
 
         public void LoginNewUser(string id, bool validator) {
