@@ -30,9 +30,13 @@ namespace VerteMark.ObjectClasses {
             this.Name = name;
             this.Color = color;
         }
+
+
         public void CreateEmptyCanvas(int width, int height) {
             canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
+
+
         public void UpdateCanvas(WriteableBitmap bitmapSource) {
             if(bitmapSource is WriteableBitmap writableBitmap) {
                 if(canvas == null) {
@@ -52,8 +56,29 @@ namespace VerteMark.ObjectClasses {
             }
         }
 
+
+        public void SetPixel(int x, int y, System.Drawing.Color color) {
+            if (canvas != null) {
+                // Převod barvy do formátu používaného ve WriteableBitmap
+                System.Windows.Media.Color wpfColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+
+                // Vypočítání indexu pixelu v bufferu
+                int bytesPerPixel = (canvas.Format.BitsPerPixel + 7) / 8;
+                int stride = canvas.PixelWidth * bytesPerPixel;
+                int index = y * stride + x * bytesPerPixel;
+
+                // Nastavení hodnoty pixelu na daných souřadnicích
+                canvas.Lock();
+                Marshal.Copy(new byte[] { wpfColor.B, wpfColor.G, wpfColor.R, wpfColor.A }, 0, canvas.BackBuffer + index, bytesPerPixel);
+                canvas.AddDirtyRect(new Int32Rect(x, y, 1, 1));
+                canvas.Unlock();
+            }
+        }
+
+
         public WriteableBitmap GetCanvas() {
             return canvas;
+            
         }
         public void ClearCanvas() {
             if (canvas != null)

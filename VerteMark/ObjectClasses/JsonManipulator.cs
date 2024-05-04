@@ -33,7 +33,7 @@ namespace VerteMark.ObjectClasses {
             }
 
             // vytvoreni jsonu na zaklade metody ImportAttributes
-            public string CreateJson() {
+            string CreateJson() {
                 string stringJson = JsonConvert.SerializeObject(this);
                 return stringJson;
             }
@@ -47,14 +47,13 @@ namespace VerteMark.ObjectClasses {
                 return createdJson;
             }
 
+
             // UnpackJson - lepsi funkce pro rozbaleni json stringu
             public List<object> UnpackJson(string createdJson)
             {
                 JsonManipulator loadedJson = JsonConvert.DeserializeObject<JsonManipulator>(createdJson);
-                List<object> returnValues = new List<object>();
+                List<Object> returnValues = new List<Object>();
 
-                returnValues.Add(loadedJson.AnnotatorID);
-                returnValues.Add(loadedJson.ValidatorID);
                 returnValues.Add(loadedJson.Annotations);
 
                 return returnValues;

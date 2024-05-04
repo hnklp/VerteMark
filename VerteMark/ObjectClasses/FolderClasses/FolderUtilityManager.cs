@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Net.Http.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VerteMark.ObjectClasses.FolderClasses{
     internal class FolderUtilityManager{
@@ -61,29 +63,40 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        public void LoadProject(string path){
-            try{
+        public string LoadProject(string path){
+            try {
                 string[] files = Directory.GetFiles(path);
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
-                // string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
+                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
                 string? metaFile = files.FirstOrDefault(f => f.EndsWith(".meta"));
 
-                if (pngFile == null  || metaFile == null )/*|| jsonFile == null)*/{
-                    throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");}
+                if (pngFile == null || metaFile == null || jsonFile == null) {
+                    return "";
+                    throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
+                }
+                else {
+                    fileManager.metaPath = metaFile;
+                    fileManager.pngPath = pngFile;
+                    fileManager.jsonPath = jsonFile;
+                    fileManager.outputPath = path;
 
-                Debug.WriteLine(metaFile);
-                fileManager.metaPath = metaFile;
-                fileManager.pngPath = pngFile;
-                // fileManager.jsonPath = jsonFile;
-                fileManager.outputPath = path;}
-            catch (Exception ex){
-                Debug.WriteLine($"Chyba při načítání projektu: {ex.Message}");}
+                    string jsonContent = File.ReadAllText(jsonFile);
+                    return jsonContent;
+                }
+            }
+            catch (Exception ex) {
+                Debug.WriteLine($"Chyba při načítání projektu: {ex.Message}");
+                return "";
+            }
         }
 
 
         public void SaveJson(string neco) {
-            using (StreamWriter sw = new StreamWriter(fileManager.jsonPath)) {
-                sw.Write(neco);
+            string? path = fileManager.jsonPath;
+            if (path != null) {
+                using (StreamWriter sw = new StreamWriter(path)) {
+                    sw.Write(neco);
+                }
             }
         }
 

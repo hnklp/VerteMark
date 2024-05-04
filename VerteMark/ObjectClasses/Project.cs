@@ -13,8 +13,7 @@ using System.Diagnostics;
 using System.Windows.Shell;
 using System.Diagnostics.Contracts;
 
-namespace VerteMark.ObjectClasses
-{
+namespace VerteMark.ObjectClasses {
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
@@ -45,13 +44,12 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        // SLOUZI POUZE PRO ZIP FILE
-        // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
             return folderUtilityManager.ExtractZip(path);
         }
 
-        public void CreateNewProject(string path) {
+
+        void CreateNewProject(string path) {
             newProject = true;
             CreateNewAnotaces();
             folderUtilityManager.CreateNewProject(path);
@@ -59,31 +57,161 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public void LoadProject(string path) {
+        void LoadProject(string path) {
             newProject = true;
-            // Získej metadata
-            // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
-            // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
-            // Získej anotace
-            CreateNewAnotaces(); // - prozatimni reseni!
-            
-            folderUtilityManager.LoadProject(path);
+            //CreateNewAnotaces(); // - prozatimni reseni!
+            string jsonString = folderUtilityManager.LoadProject(path);
+            List<object> annotations = jsonManip.UnpackJson(jsonString);
             originalPicture = folderUtilityManager.GetImage();
+
             // json = folderUtilityManager.GetAnotaces();
         }
 
 
         public void SaveProject() {
-
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
-            folderUtilityManager.Save(loggedInUser, newProject); // bude brat parametr string json 
+            folderUtilityManager.Save(loggedInUser, newProject); // bere tyto parametry pro ulozeni metadat
         }
 
+
+
+        void CreateNewAnotaces() {
+            for (int i = 0; i < 8; i++) {
+                CreateNewAnnotation(i);
+            }
+            SelectActiveAnotace(0);
+        }
+
+
+
+        public BitmapImage? GetOriginalPicture() {
+            return originalPicture;
+        }
+
+
+        // Singleton metoda
+        public static Project GetInstance() {
+            if (instance == null) {
+                instance = new Project();
+            }
+            return instance;
+        }
+
+
+        /*
+        * ===========
+        * ANOTACE
+        * ===========
+        */
+
+        void CreateNewAnnotation(int id) {
+            // Barva odpovídající danému ID
+            System.Drawing.Color color;
+            string name;
+            switch (id) {
+                case 0:
+                    color = System.Drawing.Color.Red;
+                    name = "C" + id;
+                    break;
+                case 1:
+                    color = System.Drawing.Color.Orange;
+                    name = "C" + id;
+                    break;
+                case 2:
+                    color = System.Drawing.Color.Yellow;
+                    name = "C" + id;
+                    break;
+                case 3:
+                    color = System.Drawing.Color.Lime;
+                    name = "C" + id;
+                    break;
+                case 4:
+                    color = System.Drawing.Color.Aquamarine;
+                    name = "C" + id;
+                    break;
+                case 5:
+                    color = System.Drawing.Color.Aqua;
+                    name = "C" + id;
+                    break;
+                case 6:
+                    color = System.Drawing.Color.BlueViolet;
+                    name = "C" + id;
+                    break;
+                case 7:
+                    color = System.Drawing.Color.DeepPink;
+                    name = "Implantát";
+                    break;
+                default:
+                    // Pokud je ID mimo rozsah, použije se defaultní barva a název
+                    color = System.Drawing.Color.Black;
+                    name = "Unknown";
+                    break;
+            }
+
+            // Vytvoření nové anotace s odpovídající barvou a názvem
+            anotaces.Add(new Anotace(id, name, color));
+        }
+
+
+        public WriteableBitmap ActiveAnotaceImage() {
+            return activeAnotace.GetCanvas();
+        }
+
+
+        Anotace FindAnotaceById(int idAnotace) {
+            Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
+            if (foundAnotace != null) {
+                return foundAnotace;
+            }
+            else {
+                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
+                return null;
+            }
+        }
+
+
+        public void SelectActiveAnotace(int id) {
+            activeAnotace = FindAnotaceById(id);
+        }
+
+
+        public string ActiveAnotaceId() {
+            if (activeAnotace != null) {
+                return activeAnotace.Id.ToString();
+            }
+            return null;
+        }
+
+
+        public System.Windows.Media.Color ActiveAnotaceColor() {
+            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
+        }
+
+
+        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
+            if (activeAnotace != null) {
+                activeAnotace.UpdateCanvas(bitmapSource);
+            }
+        }
+
+
+        public void ClearActiveAnotace() {
+            if (activeAnotace != null) {
+                activeAnotace.ClearCanvas();
+            }
+        }
+
+
+        /*
+        * ===========
+        * User metody
+        * ===========
+        */
 
 
         public void LoginNewUser(string id, bool validator) {
@@ -100,125 +228,37 @@ namespace VerteMark.ObjectClasses
             return loggedInUser;
         }
 
+        /*
+        * =============================
+        * Pouziti v FolderbrowserWindow
+        * =============================
+        */
 
-        void CreateNewAnotaces() {
-            anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Orange));
-            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Yellow));
-            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Lime));
-            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Aquamarine));
-            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.Aqua));
-            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.BlueViolet));
-            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.DeepPink));
-            SelectActiveAnotace(0);
-        }
-
-
-
-        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
-            if (activeAnotace != null)
-            {
-                activeAnotace.UpdateCanvas(bitmapSource);
-            }
-        }
-
-
-        public void ClearActiveAnotace() {
-            if (activeAnotace != null)
-            {
-                activeAnotace.ClearCanvas();
-            }
-        }
-
-
-        public void SelectActiveAnotace(int id)
-        {
-            activeAnotace = FindAnotaceById(id);
-        }
-
-
-        public string ActiveAnotaceId() {
-            if (activeAnotace != null)
-            {
-                return activeAnotace.Id.ToString();
-            }
-            return null;
-        }
-        public System.Windows.Media.Color ActiveAnotaceColor() {
-            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
-        }
-        public WriteableBitmap ActiveAnotaceImage() {
-            return activeAnotace.GetCanvas();
-        }
-
-
-        Anotace FindAnotaceById(int idAnotace)
-        {
-            Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
-            if (foundAnotace != null)
-            {
-                return foundAnotace;
-            }
-            else
-            {
-// !!!!!!
-// POUZE SE ZOBRAZÍ PRÁZDNÝ CANVAS!!
-// NEVYHODÍ VÝJIMKU
-
-                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
-                return null;
-
-            }
-        }
-
-
-        public BitmapImage? GetOriginalPicture()
-        {
-            return originalPicture;
-        }
-
-
-        public static Project GetInstance()
-        {
-            if (instance == null) {
-                instance = new Project();
-            }
-            return instance;
-        }
-
-
+        // ZDE JE VYBRANI CREATE NEBO LOAD !!
         // Zavisi na vybranem souboru v FolderbrowserWindow
-        public void Choose(string path, string projectType)
-        {
+        public void Choose(string path, string projectType) {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
-            if (projectType == "dicoms")
-            {
+            if (projectType == "dicoms") {
                 Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
-            else
-            {
+            else {
                 LoadProject(newPath);
             }
-
             originalPicture = folderUtilityManager.GetImage();
         }
 
 
-
         // Vola se z FolderbrowserWindow - vraci vsechny soubory, ktere jsou k dispozici
-        public List<string> ChooseNewProject()
-        {
+        public List<string> ChooseNewProject() {
             return folderUtilityManager.ChooseNewProject();
         }
 
-        public List<string> ChooseContinueAnotation()
-        {
+        public List<string> ChooseContinueAnotation() {
             return folderUtilityManager.ChooseContinueAnotation();
         }
 
-        public List<string> ChooseValidation()
-        {
+        public List<string> ChooseValidation() {
             return folderUtilityManager.ChooseValidation();
         }
     }
