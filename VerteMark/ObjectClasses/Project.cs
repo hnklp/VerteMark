@@ -58,13 +58,14 @@ namespace VerteMark.ObjectClasses {
 
 
         void LoadProject(string path) {
-            newProject = true;
+            newProject = false;
             //CreateNewAnotaces(); // - prozatimni reseni!
             string jsonString = folderUtilityManager.LoadProject(path);
             List<object> annotations = jsonManip.UnpackJson(jsonString);
             originalPicture = folderUtilityManager.GetImage();
 
             // json = folderUtilityManager.GetAnotaces();
+            AddMissingAnnotations(new List<int>());         // DOPLNIT LIST
         }
 
 
@@ -85,6 +86,11 @@ namespace VerteMark.ObjectClasses {
                 CreateNewAnnotation(i);
             }
             SelectActiveAnotace(0);
+        }
+
+
+        void LoadAnnotations(List<object> annotations) {
+            List<int> createdIds = new List<int>();
         }
 
 
@@ -109,7 +115,20 @@ namespace VerteMark.ObjectClasses {
         * ===========
         */
 
-        void CreateNewAnnotation(int id) {
+        void AddMissingAnnotations(List<int> existingIds) {
+            // Seznam všech možných ID od 0 do 7
+            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+            foreach (int id in allIds) {
+                if (!existingIds.Contains(id)) {
+                    CreateNewAnnotation(id);
+                }
+            }
+            SelectActiveAnotace(0);
+        }
+
+
+            void CreateNewAnnotation(int id) {
             // Barva odpovídající danému ID
             System.Drawing.Color color;
             string name;

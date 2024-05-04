@@ -49,14 +49,10 @@ namespace VerteMark.ObjectClasses {
 
 
             // UnpackJson - lepsi funkce pro rozbaleni json stringu
-            public List<object> UnpackJson(string createdJson)
+            public object UnpackJson(string createdJson)
             {
                 JsonManipulator loadedJson = JsonConvert.DeserializeObject<JsonManipulator>(createdJson);
-                List<Object> returnValues = new List<Object>();
-
-                returnValues.Add(loadedJson.Annotations);
-
-                return returnValues;
+                return loadedJson.Annotations;
             }
     }
 }
