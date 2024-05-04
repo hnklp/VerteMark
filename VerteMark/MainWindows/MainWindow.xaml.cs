@@ -65,7 +65,6 @@ namespace VerteMark {
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
-
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
 
@@ -74,6 +73,7 @@ namespace VerteMark {
                 SetCanvasComponentsSize();
                 SwitchActiveAnot(0);
             };
+            utility.ChangeActiveAnotation(0);
         }
 
         //dialog otevreni souboru s filtrem
@@ -91,14 +91,14 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            InkCanvas.Width = ImageHolder.ActualWidth;
-            InkCanvas.Height = ImageHolder.ActualHeight;
+            InkCanvas.Width = utility.GetOriginalPicture().PixelWidth;
+            InkCanvas.Height = utility.GetOriginalPicture().PixelHeight;
             InkCanvas.Margin = new Thickness(0);
-            PreviewImage.Width = ImageHolder.ActualWidth;
-            PreviewImage.Height = ImageHolder.ActualHeight;
+            PreviewImage.Width = utility.GetOriginalPicture().PixelWidth;
+            PreviewImage.Height = utility.GetOriginalPicture().PixelHeight;
             PreviewImage.Margin = new Thickness(0);
-            CropCanvas.Width = ImageHolder.ActualWidth;
-            CropCanvas.Height = ImageHolder.ActualHeight;
+            CropCanvas.Width = utility.GetOriginalPicture().PixelWidth;
+            CropCanvas.Height = utility.GetOriginalPicture().PixelHeight;
             CropCanvas.Margin = new Thickness(0);
             Grid.SetColumn(InkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(InkCanvas, Grid.GetRow(ImageHolder));

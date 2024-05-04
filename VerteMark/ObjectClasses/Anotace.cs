@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -38,57 +39,66 @@ namespace VerteMark.ObjectClasses {
 
 
         public void UpdateCanvas(WriteableBitmap bitmapSource) {
-            if(bitmapSource is WriteableBitmap writableBitmap) {
-                if(canvas == null) {
+            if (bitmapSource is WriteableBitmap writableBitmap) {
+                if (canvas == null) {
                     canvas = new WriteableBitmap(writableBitmap.PixelWidth, writableBitmap.PixelHeight, writableBitmap.DpiX, writableBitmap.DpiY, PixelFormats.Bgra32, null);
                 }
                 try {
                     canvas = new WriteableBitmap(bitmapSource);
-                } catch(Exception) {
+                }
+                catch (Exception) {
                     // Handle exception if needed
                 }
-            } else {
+            }
+            else {
                 try {
                     canvas = new WriteableBitmap(bitmapSource);
-                } catch(Exception) {
+                }
+                catch (Exception) {
                     // Handle exception if needed
                 }
             }
         }
 
 
-        public void SetPixel(int x, int y, System.Drawing.Color color) {
-            if (canvas != null) {
-                // Převod barvy do formátu používaného ve WriteableBitmap
-                System.Windows.Media.Color wpfColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-
-                // Vypočítání indexu pixelu v bufferu
-                int bytesPerPixel = (canvas.Format.BitsPerPixel + 7) / 8;
-                int stride = canvas.PixelWidth * bytesPerPixel;
-                int index = y * stride + x * bytesPerPixel;
-
-                // Nastavení hodnoty pixelu na daných souřadnicích
-                canvas.Lock();
-                Marshal.Copy(new byte[] { wpfColor.B, wpfColor.G, wpfColor.R, wpfColor.A }, 0, canvas.BackBuffer + index, bytesPerPixel);
-                canvas.AddDirtyRect(new Int32Rect(x, y, 1, 1));
-                canvas.Unlock();
+        public void LoadAnnotationCanvas(JArray pixelsArray, int width, int height) {
+            // Vytvoření pole pixelů
+            byte[] pixels = new byte[width * height * 4];
+            foreach (JObject pixelObj in pixelsArray) {
+                int x = (int)pixelObj["Item1"];
+                int y = (int)pixelObj["Item2"];
+                // Nastavení barev pixelu
+                int index = (y * width + x) * 4;
+                pixels[index] = this.Color.B;
+                pixels[index + 1] = this.Color.G;
+                pixels[index + 2] = this.Color.R;
+                pixels[index + 3] = this.Color.A;
             }
+            // Vytvoření nového WriteableBitmap
+            WriteableBitmap newBitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            // Zkopírování pole pixelů do nového WriteableBitmap
+            newBitmap.WritePixels(new Int32Rect(0, 0, newBitmap.PixelWidth, newBitmap.PixelHeight), pixels, newBitmap.PixelWidth * 4, 0);
+            this.UpdateCanvas(newBitmap);
         }
 
 
         public WriteableBitmap GetCanvas() {
             return canvas;
-            
+
         }
+
+
         public void ClearCanvas() {
-            if (canvas != null)
-            {
+            if (canvas != null) {
                 canvas = new WriteableBitmap((int)canvas.Width, (int)canvas.Height, 96, 96, PixelFormats.Bgra32, null);
             }
         }
-        public void Validate() {
 
+        public void Validate(bool validate) {
+            IsValidated = validate;
         }
+
+
         List<Tuple<int, int>> BitmapAsList() {
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
             if (canvas != null) {
@@ -111,11 +121,12 @@ namespace VerteMark.ObjectClasses {
             return list;
         }
 
+
         public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
             Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
-            if(canvas != null) { 
+            if (canvas != null) {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
-                result.Add(Id.ToString(), bitmap);  
+                result.Add(Id.ToString(), bitmap);
             }
             return result;
         }

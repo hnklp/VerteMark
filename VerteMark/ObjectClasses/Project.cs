@@ -12,6 +12,8 @@ using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
 using System.Diagnostics.Contracts;
+using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -61,15 +63,27 @@ namespace VerteMark.ObjectClasses {
             newProject = false;
             //CreateNewAnotaces(); // - prozatimni reseni!
             string jsonString = folderUtilityManager.LoadProject(path);
-            object annotations = jsonManip.UnpackJson(jsonString);
-            originalPicture = folderUtilityManager.GetImage();
 
-            // json = folderUtilityManager.GetAnotaces();
-            AddMissingAnnotations(new List<int>());         // DOPLNIT LIST
+            JArray annotations = jsonManip.UnpackJson(jsonString);
+            if (annotations != null || annotations.Count > 0) {
+
+                originalPicture = folderUtilityManager.GetImage();
+                List<int> created = LoadAnnotations(annotations);
+                AddMissingAnnotations(created);
+            }
+            else {
+                // UPOZORNENI, ZE ANOTACE NEBYLY NACTENY - NEMOHL SE IDENTIFIKOVAT SOUBOR
+            }
         }
 
 
         public void SaveProject() {
+
+            // pred ulozenim - pokud je uzivatel anotator:
+                    // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
+            
+
+
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
@@ -77,20 +91,6 @@ namespace VerteMark.ObjectClasses {
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
             folderUtilityManager.Save(loggedInUser, newProject); // bere tyto parametry pro ulozeni metadat
-        }
-
-
-
-        void CreateNewAnotaces() {
-            for (int i = 0; i < 8; i++) {
-                CreateNewAnnotation(i);
-            }
-            SelectActiveAnotace(0);
-        }
-
-
-        void LoadAnnotations(List<object> annotations) {
-            List<int> createdIds = new List<int>();
         }
 
 
@@ -115,6 +115,35 @@ namespace VerteMark.ObjectClasses {
         * ===========
         */
 
+
+        List<int> LoadAnnotations(JArray annotations) {
+            List<int> createdIds = new List<int>();
+
+            foreach (JObject annotationObj in annotations) {
+                foreach (var annotation in annotationObj) {
+                    int annotationId = int.Parse(annotation.Key);
+                    Debug.WriteLine(annotationId);
+                    Debug.WriteLine("ANOTACNI ID KTERE SE NACETLO");
+                    createdIds.Add(annotationId);
+                    CreateNewAnnotation(annotationId);
+
+                    Anotace createdAnnotation = FindAnotaceById(annotationId);
+
+                    createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                }
+            }
+            return createdIds;
+        }
+
+
+        void CreateNewAnotaces() {
+            for (int i = 0; i < 8; i++) {
+                CreateNewAnnotation(i);
+            }
+        }
+
+
         void AddMissingAnnotations(List<int> existingIds) {
             // Seznam všech možných ID od 0 do 7
             List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -122,9 +151,9 @@ namespace VerteMark.ObjectClasses {
             foreach (int id in allIds) {
                 if (!existingIds.Contains(id)) {
                     CreateNewAnnotation(id);
+                    Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
-            SelectActiveAnotace(0);
         }
 
 
@@ -190,6 +219,17 @@ namespace VerteMark.ObjectClasses {
             else {
                 //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
                 return null;
+            }
+        }
+
+
+        public void ValidateAnnotationByID(int id) {
+            Anotace anotace = FindAnotaceById(id);
+            if (anotace.IsValidated) {
+                anotace.Validate(false);
+            }
+            else {
+                anotace.Validate(true);
             }
         }
 

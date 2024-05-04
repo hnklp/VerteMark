@@ -23,6 +23,7 @@ namespace VerteMark.ObjectClasses {
             project = Project.GetInstance();
         }
 
+
         // fotka krku
         public BitmapImage? GetOriginalPicture() {
             return project.GetOriginalPicture();
@@ -37,8 +38,6 @@ namespace VerteMark.ObjectClasses {
             project.SaveProject();
         }
 
-        public void ChangeSelectedAnotation(int id) { 
-        }
 
         public WriteableBitmap GetActiveAnotaceImage() {
             return project.ActiveAnotaceImage();
@@ -61,6 +60,7 @@ namespace VerteMark.ObjectClasses {
         }
 
         public void SwitchAnotationValidation(int id) {
+            project.ValidateAnnotationByID(id);
         }
 
         public void ChangeActiveAnotation(int id) {

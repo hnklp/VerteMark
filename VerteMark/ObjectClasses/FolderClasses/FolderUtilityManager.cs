@@ -81,6 +81,8 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                     fileManager.outputPath = path;
 
                     string jsonContent = File.ReadAllText(jsonFile);
+                    Debug.WriteLine(jsonContent);
+                    Debug.WriteLine("JSON CONTENT FROM FOL UT MAN -------------");
                     return jsonContent;
                 }
             }

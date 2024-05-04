@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace VerteMark.ObjectClasses {
     internal class JsonManipulator {
@@ -12,7 +14,7 @@ namespace VerteMark.ObjectClasses {
             public string? LastEditDate { get; private set; } // automaticky se doplní ve chvíli kdy export
             public string? ValidationDate { get; private set; }
 
-            public List<Dictionary<string, List<Tuple<int, int>>>> Annotations { get; private set; }
+            public List<Dictionary<string, List<Tuple<int, int>>>>? Annotations { get; private set; }
 
 
             // naimportovat atributy usera a vsechny anotace
@@ -48,11 +50,12 @@ namespace VerteMark.ObjectClasses {
             }
 
 
-            // UnpackJson - lepsi funkce pro rozbaleni json stringu
-            public object UnpackJson(string createdJson)
-            {
-                JsonManipulator loadedJson = JsonConvert.DeserializeObject<JsonManipulator>(createdJson);
-                return loadedJson.Annotations;
-            }
+        // UnpackJson - lepsi funkce pro rozbaleni json stringu
+            public JArray? UnpackJson(string createdJson) {
+            JObject jsonObject = JObject.Parse(createdJson);
+            // Získání seznamu anotací ze zpracovaného JObject
+            JArray annotationsArray = (JArray)jsonObject["Annotations"];
+            return annotationsArray;
+        }
     }
 }
