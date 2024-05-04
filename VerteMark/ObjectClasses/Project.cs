@@ -61,7 +61,7 @@ namespace VerteMark.ObjectClasses {
             newProject = false;
             //CreateNewAnotaces(); // - prozatimni reseni!
             string jsonString = folderUtilityManager.LoadProject(path);
-            List<object> annotations = jsonManip.UnpackJson(jsonString);
+            object annotations = jsonManip.UnpackJson(jsonString);
             originalPicture = folderUtilityManager.GetImage();
 
             // json = folderUtilityManager.GetAnotaces();
