@@ -23,6 +23,21 @@ namespace VerteMark.ObjectClasses {
             project = Project.GetInstance();
         }
 
+        public void CropOriginalPicture(BitmapSource image) {
+            BitmapImage bitmapImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream()) {
+                PngBitmapEncoder encoder = new PngBitmapEncoder(); // nebo jiný vhodný encoder podle vašich potřeb
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+            }
+            project.SetOriginalPicture(bitmapImage);
+        }
+
+
 
         // fotka krku
         public BitmapImage? GetOriginalPicture() {

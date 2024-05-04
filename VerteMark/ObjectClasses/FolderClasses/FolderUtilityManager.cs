@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 
 namespace VerteMark.ObjectClasses.FolderClasses{
     internal class FolderUtilityManager{
@@ -23,7 +24,8 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        public void Save(User user, bool newProject) {
+        public void Save(User user, bool newProject, BitmapImage image) {
+            fileManager.SaveCroppedImage(image);
             if (!newProject) {
                 fileManager.AddUserActionToMetadata(user);
             }

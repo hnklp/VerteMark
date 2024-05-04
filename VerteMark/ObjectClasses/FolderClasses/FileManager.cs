@@ -32,6 +32,15 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
+        public void SaveCroppedImage(BitmapImage image) {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+            using (FileStream stream = new FileStream(pngPath, FileMode.Create)) {
+                // Uložení bitmapy do souboru pomocí encoderu
+                encoder.Save(stream);
+            }
+        }
+
 
         // nacte obrazek pomoci cesty pngPath
         public BitmapImage LoadBitmapImage() {

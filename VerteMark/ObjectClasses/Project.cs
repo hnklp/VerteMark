@@ -91,13 +91,17 @@ namespace VerteMark.ObjectClasses {
                 dicts.Add(anot.GetAsDict());
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
-            folderUtilityManager.Save(loggedInUser, newProject); // bere tyto parametry pro ulozeni metadat
+            folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
         }
 
 
 
         public BitmapImage? GetOriginalPicture() {
             return originalPicture;
+        }
+
+        public void SetOriginalPicture(BitmapImage image) {
+            originalPicture = image;
         }
 
 

@@ -509,6 +509,8 @@ namespace VerteMark {
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
+
+            utility.CropOriginalPicture(croppedImage);
         }
 
         /*
