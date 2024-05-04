@@ -73,6 +73,7 @@ namespace VerteMark.ObjectClasses {
             }
             else {
                 // UPOZORNENI, ZE ANOTACE NEBYLY NACTENY - NEMOHL SE IDENTIFIKOVAT SOUBOR
+                CreateNewAnotaces();
             }
         }
 
@@ -129,7 +130,7 @@ namespace VerteMark.ObjectClasses {
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    //createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
                     createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                 }
             }
@@ -207,6 +208,9 @@ namespace VerteMark.ObjectClasses {
 
 
         public WriteableBitmap ActiveAnotaceImage() {
+            if (activeAnotace == null) {
+                SelectActiveAnotace(0);
+            }
             return activeAnotace.GetCanvas();
         }
 

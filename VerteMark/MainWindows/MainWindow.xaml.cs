@@ -73,7 +73,7 @@ namespace VerteMark {
                 SetCanvasComponentsSize();
                 SwitchActiveAnot(0);
             };
-            utility.ChangeActiveAnotation(0);
+            
         }
 
         //dialog otevreni souboru s filtrem
