@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png">
+        Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
+		PreviewMouseWheel="Window_PreviewMouseWheel">
 
 	<Window.InputBindings>
 		<KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>

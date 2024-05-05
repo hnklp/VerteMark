@@ -592,11 +592,38 @@ namespace VerteMark {
             CropCanvas.Height = CropRectangle.Height;
         }
 
-        /*
-         * ======
-         *  Zoom
-         * ======
-         */
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Delta > 0)
+                {
+                    ZoomIn();
+                }
+                else if (e.Delta < 0)
+                {
+                    ZoomOut();
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void ZoomIn()
+        {
+            if (ZoomSlider.Value < ZoomSlider.Maximum)
+            {
+                ZoomSlider.Value += 10;
+            }
+        }
+
+        private void ZoomOut()
+        {
+            if (ZoomSlider.Value > ZoomSlider.Minimum)
+            {
+                ZoomSlider.Value -= 10;
+            }
+        }
 
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
