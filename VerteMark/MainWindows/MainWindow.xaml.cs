@@ -56,9 +56,16 @@ namespace VerteMark {
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
 
+            activeAnotButton = Button1;
+            activeToolbarButton = DrawTButton;
+
             Loaded += delegate {
                 SetCanvasComponentsSize();
                 SwitchActiveAnot(0);
+
+                // start at 25% zoom
+                double zoomFactor = 0.25;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
         }
 
@@ -139,17 +146,18 @@ namespace VerteMark {
 
             switch(newState) {
                 case AppState.Drawing:
-                case AppState.Erasing:
 
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Hidden;
+                    CropLabel.Visibility = Visibility.Collapsed;
+                    CropConfirmButton.Visibility = Visibility.Collapsed;
+                    CropCancelButton.Visibility = Visibility.Collapsed;
 
-                    if(CroppedImage.Source != null) {
+                    if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
                         PreviewImage.Visibility = Visibility.Hidden;
 
                         CroppedImage.Visibility = Visibility.Visible;
-                        CroppedPreviewImage.Visibility = Visibility.Visible;
                     }
                     break;
 
@@ -157,13 +165,15 @@ namespace VerteMark {
 
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Visible;
+                    CropLabel.Visibility = Visibility.Visible;
+                    CropConfirmButton.Visibility = Visibility.Visible;
+                    CropCancelButton.Visibility = Visibility.Visible;
 
-                    if(CroppedImage.Source != null) {
+                    if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
                         PreviewImage.Visibility = Visibility.Visible;
 
                         CroppedImage.Visibility = Visibility.Hidden;
-                        CroppedPreviewImage.Visibility = Visibility.Hidden;
                     }
 
                     SetCanvasComponentsSize();
@@ -176,13 +186,13 @@ namespace VerteMark {
 
         private void SetInkCanvasMode(AppState state) {
             InkCanvas.EditingMode = state == AppState.Drawing ? InkCanvasEditingMode.Ink :
-                                    state == AppState.Erasing ? InkCanvasEditingMode.EraseByPoint :
                                     InkCanvasEditingMode.None;
         }
 
         private void CropTButton_Click(object sender, RoutedEventArgs e) {
             stateManager.CurrentState = AppState.Cropping;
             SwitchActiveToolbarButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void DrawTButton_Click(object sender, RoutedEventArgs e) {
@@ -191,19 +201,13 @@ namespace VerteMark {
             }
             stateManager.CurrentState = AppState.Drawing;
             SwitchActiveToolbarButton(sender as ToggleButton);
-        }
-
-        private void EraseTButton_Click(object sender, RoutedEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
-                CropImage();
-            }
-            stateManager.CurrentState = AppState.Erasing;
-            SwitchActiveToolbarButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         void SwitchActiveToolbarButton(ToggleButton pressedButton) {
             if(activeToolbarButton != null) {
                 activeToolbarButton.IsChecked = false;
+                pressedButton.IsChecked = true;
             }
             activeToolbarButton = pressedButton;
         }
@@ -290,14 +294,17 @@ namespace VerteMark {
         }
         void UpdateElementsWithAnotace() {
             InkCanvas.Strokes.Clear();
-            PreviewImage.Source = utility.GetActiveAnotaceImage();
-            InkCanvas.Background = new ImageBrush(utility.GetActiveAnotaceImage());
+
+            WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
+
+            PreviewImage.Source = activeAnotaceImage;
+            InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
         void SaveCanvasIntoAnot(){
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
-                rtb.Render(InkCanvas);
-                utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(InkCanvas);
+            utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
@@ -315,6 +322,9 @@ namespace VerteMark {
                 // width a height a dpi by mohli dělat bordel při ukládání
                 SaveCanvasIntoAnot();
                 UpdateElementsWithAnotace();
+
+                utility.SetActiveAnotaceIsAnotated(true);
+                CropTButton.IsEnabled = !utility.GetIsAnotated();
             }
         }
 
@@ -322,6 +332,9 @@ namespace VerteMark {
         void Smazat_butt(object sender, RoutedEventArgs e) {
             utility.ClearActiveAnotace();
             UpdateElementsWithAnotace();
+
+            utility.SetActiveAnotaceIsAnotated(false);
+            CropTButton.IsEnabled = !utility.GetIsAnotated();
         }
 
         /* Přepínání anotací */
@@ -338,9 +351,11 @@ namespace VerteMark {
             UpdateElementsWithAnotace();
         }
 
-        void SwitchActiveAnotButton(ToggleButton pressedButton) {
+        void SwitchActiveAnotButton(ToggleButton pressedButton) { 
+
             if(activeAnotButton != null) {
                 activeAnotButton.IsChecked = false;
+                pressedButton.IsChecked = true;
             }
             activeAnotButton = pressedButton;
         }
@@ -348,41 +363,49 @@ namespace VerteMark {
         private void Button_Click_1(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(0);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(1);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(2);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(3);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(4);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(5);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_7(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(6);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e) {
             SwitchActiveAnot(7);
             SwitchActiveAnotButton(sender as ToggleButton);
+            e.Handled = true;
         }
 
         /*
@@ -433,6 +456,21 @@ namespace VerteMark {
             if(grip != null) {
                 isDragging = false;
                 grip.ReleaseMouseCapture();
+            }
+        }
+
+        private void ToolBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToolBar toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = Visibility.Collapsed;
+            }
+            var mainPanelBorder = toolBar.Template.FindName("MainPanelBorder", toolBar) as FrameworkElement;
+            if (mainPanelBorder != null)
+            {
+                mainPanelBorder.Margin = new Thickness();
             }
         }
 
@@ -490,17 +528,31 @@ namespace VerteMark {
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
 
-            if(PreviewImage.Source != null) {
-                BitmapSource croppedPreviewImage = new CroppedBitmap(PreviewImage.Source as BitmapSource, rect);
-                CroppedPreviewImage.Source = croppedPreviewImage;
-            }
-
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
             PreviewImage.Width = CropRectangle.Width;
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
+        }
+
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                CropImage();
+            }
+
+            stateManager.CurrentState = AppState.Drawing;
+            SwitchActiveToolbarButton(DrawTButton);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            CroppedImage.Source = null;
+
+            stateManager.CurrentState = AppState.Drawing;
+            SwitchActiveToolbarButton(DrawTButton);
         }
 
         /*

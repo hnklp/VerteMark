@@ -11,6 +11,7 @@ using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using System.Security.RightsManagement;
 
 namespace VerteMark.ObjectClasses
 {
@@ -33,6 +34,7 @@ namespace VerteMark.ObjectClasses
         BitmapImage? originalPicture; // Fotka toho krku
         Metadata? metadata; // Metadata projektu
         JsonManipulator? jsonManip;
+        bool IsAnotated = false;
 
 
         public Project() {
@@ -225,6 +227,34 @@ namespace VerteMark.ObjectClasses
             }
 
             originalPicture = folderUtilityManager.GetImage();
+        }
+
+        public bool GetIsAnotated()
+        {
+            CheckIsAnotated();
+            return this.IsAnotated;
+        }
+
+        private void CheckIsAnotated()
+        {
+            this.IsAnotated = false;
+            foreach (var anotace in anotaces)
+            {
+                if (anotace.IsAnotated)
+                {
+                    this.IsAnotated = true;
+                    break;
+                }
+            }
+        }
+
+        public void SetActiveAnotaceIsAnotated(bool isAnotated)
+        {
+            if (activeAnotace != null)
+            {
+                activeAnotace.SetIsAnotated(isAnotated);
+            }
+            
         }
     }
 }

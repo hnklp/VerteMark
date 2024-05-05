@@ -88,6 +88,16 @@ namespace VerteMark.ObjectClasses {
             project.Choose(path, projectType);
         }
 
+        public bool GetIsAnotated()
+        {
+            return project.GetIsAnotated();
+        }
+
+        public void SetActiveAnotaceIsAnotated(bool isAnotated)
+        {
+            project.SetActiveAnotaceIsAnotated(isAnotated);
+        }
+
         /*
         public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
         {

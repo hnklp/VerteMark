@@ -9,7 +9,6 @@ namespace VerteMark.ObjectClasses
     public enum AppState
     {
         Drawing,
-        Erasing,
         Cropping
     }
 

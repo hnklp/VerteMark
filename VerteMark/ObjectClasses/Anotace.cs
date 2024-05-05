@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dicom.Imaging.LUT;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -23,12 +24,14 @@ namespace VerteMark.ObjectClasses {
         public string Name { get; private set; }
         public System.Drawing.Color Color { get; private set; }
         public bool IsValidated { get; private set; }
+        public bool IsAnotated { get; private set; }
         WriteableBitmap? canvas;
 
         public Anotace(int id, string name, System.Drawing.Color color) {
             this.Id = id;
             this.Name = name;
             this.Color = color;
+            this.IsAnotated = false;
         }
         public void CreateEmptyCanvas(int width, int height) {
             canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
@@ -83,6 +86,11 @@ namespace VerteMark.ObjectClasses {
                 result.Add(Id.ToString(), bitmap);  
             }
             return result;
+        }
+
+        public void SetIsAnotated(bool isAnotated)
+        {
+            this.IsAnotated = isAnotated;
         }
 
     }
