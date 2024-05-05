@@ -11,9 +11,11 @@ using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using System.Diagnostics.Contracts;
+using Newtonsoft.Json.Linq;
+using System.Data;
 
-namespace VerteMark.ObjectClasses
-{
+namespace VerteMark.ObjectClasses {
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
@@ -31,8 +33,8 @@ namespace VerteMark.ObjectClasses
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
-        Metadata? metadata; // Metadata projektu
         JsonManipulator? jsonManip;
+        bool newProject;
 
 
         public Project() {
@@ -40,58 +42,243 @@ namespace VerteMark.ObjectClasses
             originalPicture = new BitmapImage();
             folderUtilityManager = new FolderUtilityManager();
             jsonManip = new JsonManipulator();
+            newProject = false;
         }
 
 
-        // SLOUZI POUZE PRO ZIP FILE
-        // ZALOZENI SLOZKY TEMP V BEHOVEM PROSTREDI
         public bool TryOpeningProject(string path) {
-            //CreateNewProject(path);
-            folderUtilityManager.ExtractZip(path);
-            return true;
+            return folderUtilityManager.ExtractZip(path);
         }
 
-        public void CreateNewProject(string path) {
-            // Vytvoř čistý metadata
-            metadata = new Metadata();
-            // Vytvoř čistý anotace
-            CreateNewAnotaces();
-            // Získej čistý (neoříznutý) obrázek do projektu ((filemanagerrrr))
 
+        void CreateNewProject(string path) {
+            newProject = true;
+            CreateNewAnotaces();
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
         }
 
 
-        public void LoadProject(string path) {
-            // Získej metadata
-            // METADATA PRI LOADOVANI PROJEKTU NEPOTREBUJEME
-            // VSECHNY POTREBNY INFORMACE BUDOU V JSON S ANOTACEMA
-            // Získej anotace
-            CreateNewAnotaces(); // - prozatimni reseni!
-            // Získej uložený obrázek do projektu
-            
-            folderUtilityManager.LoadProject(path);
-            originalPicture = folderUtilityManager.GetImage();
-            // json = folderUtilityManager.GetAnotaces();
+        void LoadProject(string path) {
+            newProject = false;
+            //CreateNewAnotaces(); // - prozatimni reseni!
+            string jsonString = folderUtilityManager.LoadProject(path);
+
+            JArray annotations = jsonManip.UnpackJson(jsonString);
+            if (annotations != null || annotations.Count > 0) {
+
+                originalPicture = folderUtilityManager.GetImage();
+                List<int> created = LoadAnnotations(annotations);
+                AddMissingAnnotations(created);
+            }
+            else {
+                // UPOZORNENI, ZE ANOTACE NEBYLY NACTENY - NEMOHL SE IDENTIFIKOVAT SOUBOR
+                CreateNewAnotaces();
+            }
         }
 
 
         public void SaveProject() {
-            SaveJson(); // Vytvoření jsonu
 
-            // zavolá filemanager aby uložil všechny instance (bude na to možná pomocná třída co to dá dohromady jako 1 json a 1 csv)
-            // záležitosti správných složek a správných formátů souborů má na starost filemanager
-            // ZKOUSKA UKLADANI TEMP DO ZIP
-            folderUtilityManager.SaveZip(); // bude brat parametr string json 
-        }
-        void SaveJson() {
+            // pred ulozenim - pokud je uzivatel anotator:
+                    // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
+            
+
+
+            // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+            folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
         }
+
+
+
+        public BitmapImage? GetOriginalPicture() {
+            return originalPicture;
+        }
+
+        public void SetOriginalPicture(BitmapImage image) {
+            originalPicture = image;
+        }
+
+
+        // Singleton metoda
+        public static Project GetInstance() {
+            if (instance == null) {
+                instance = new Project();
+            }
+            return instance;
+        }
+
+
+        /*
+        * ===========
+        * ANOTACE
+        * ===========
+        */
+
+
+        List<int> LoadAnnotations(JArray annotations) {
+            List<int> createdIds = new List<int>();
+
+            foreach (JObject annotationObj in annotations) {
+                foreach (var annotation in annotationObj) {
+                    int annotationId = int.Parse(annotation.Key);
+                    Debug.WriteLine(annotationId);
+                    Debug.WriteLine("ANOTACNI ID KTERE SE NACETLO");
+                    createdIds.Add(annotationId);
+                    CreateNewAnnotation(annotationId);
+
+                    Anotace createdAnnotation = FindAnotaceById(annotationId);
+
+                    //createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                }
+            }
+            return createdIds;
+        }
+
+
+        void CreateNewAnotaces() {
+            for (int i = 0; i < 8; i++) {
+                CreateNewAnnotation(i);
+            }
+        }
+
+
+        void AddMissingAnnotations(List<int> existingIds) {
+            // Seznam všech možných ID od 0 do 7
+            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+            foreach (int id in allIds) {
+                if (!existingIds.Contains(id)) {
+                    CreateNewAnnotation(id);
+                    Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
+                }
+            }
+        }
+
+
+            void CreateNewAnnotation(int id) {
+            // Barva odpovídající danému ID
+            System.Drawing.Color color;
+            string name;
+            switch (id) {
+                case 0:
+                    color = System.Drawing.Color.Red;
+                    name = "C" + id;
+                    break;
+                case 1:
+                    color = System.Drawing.Color.Orange;
+                    name = "C" + id;
+                    break;
+                case 2:
+                    color = System.Drawing.Color.Yellow;
+                    name = "C" + id;
+                    break;
+                case 3:
+                    color = System.Drawing.Color.Lime;
+                    name = "C" + id;
+                    break;
+                case 4:
+                    color = System.Drawing.Color.Aquamarine;
+                    name = "C" + id;
+                    break;
+                case 5:
+                    color = System.Drawing.Color.Aqua;
+                    name = "C" + id;
+                    break;
+                case 6:
+                    color = System.Drawing.Color.BlueViolet;
+                    name = "C" + id;
+                    break;
+                case 7:
+                    color = System.Drawing.Color.DeepPink;
+                    name = "Implantát";
+                    break;
+                default:
+                    // Pokud je ID mimo rozsah, použije se defaultní barva a název
+                    color = System.Drawing.Color.Black;
+                    name = "Unknown";
+                    break;
+            }
+
+            // Vytvoření nové anotace s odpovídající barvou a názvem
+            anotaces.Add(new Anotace(id, name, color));
+        }
+
+
+        public WriteableBitmap ActiveAnotaceImage() {
+            if (activeAnotace == null) {
+                SelectActiveAnotace(0);
+            }
+            return activeAnotace.GetCanvas();
+        }
+
+
+        Anotace FindAnotaceById(int idAnotace) {
+            Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
+            if (foundAnotace != null) {
+                return foundAnotace;
+            }
+            else {
+                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
+                return null;
+            }
+        }
+
+
+        public void ValidateAnnotationByID(int id) {
+            Anotace anotace = FindAnotaceById(id);
+            if (anotace.IsValidated) {
+                anotace.Validate(false);
+            }
+            else {
+                anotace.Validate(true);
+            }
+        }
+
+
+        public void SelectActiveAnotace(int id) {
+            activeAnotace = FindAnotaceById(id);
+        }
+
+
+        public string ActiveAnotaceId() {
+            if (activeAnotace != null) {
+                return activeAnotace.Id.ToString();
+            }
+            return null;
+        }
+
+
+        public System.Windows.Media.Color ActiveAnotaceColor() {
+            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
+        }
+
+
+        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
+            if (activeAnotace != null) {
+                activeAnotace.UpdateCanvas(bitmapSource);
+            }
+        }
+
+
+        public void ClearActiveAnotace() {
+            if (activeAnotace != null) {
+                activeAnotace.ClearCanvas();
+            }
+        }
+
+
+        /*
+        * ===========
+        * User metody
+        * ===========
+        */
 
 
         public void LoginNewUser(string id, bool validator) {
@@ -108,123 +295,38 @@ namespace VerteMark.ObjectClasses
             return loggedInUser;
         }
 
+        /*
+        * =============================
+        * Pouziti v FolderbrowserWindow
+        * =============================
+        */
 
-        void CreateNewAnotaces() {
-            anotaces.Add(new Anotace(0, "C1", System.Drawing.Color.Red));
-            anotaces.Add(new Anotace(1, "C2", System.Drawing.Color.Orange));
-            anotaces.Add(new Anotace(2, "C3", System.Drawing.Color.Yellow));
-            anotaces.Add(new Anotace(3, "C4", System.Drawing.Color.Lime));
-            anotaces.Add(new Anotace(4, "C5", System.Drawing.Color.Aquamarine));
-            anotaces.Add(new Anotace(5, "C6", System.Drawing.Color.Aqua));
-            anotaces.Add(new Anotace(6, "C7", System.Drawing.Color.BlueViolet));
-            anotaces.Add(new Anotace(7, "Implantát", System.Drawing.Color.DeepPink));
-            SelectActiveAnotace(0);
-        }
-
-
-        public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
-            if (activeAnotace != null)
-            {
-                activeAnotace.UpdateCanvas(bitmapSource);
-            }
-        }
-
-
-        public void ClearActiveAnotace() {
-            if (activeAnotace != null)
-            {
-                activeAnotace.ClearCanvas();
-            }
-        }
-
-
-        public void SelectActiveAnotace(int id)
-        {
-            activeAnotace = FindAnotaceById(id);
-        }
-
-
-        public string ActiveAnotaceId() {
-            if (activeAnotace != null)
-            {
-                return activeAnotace.Id.ToString();
-            }
-            return null;
-        }
-        public System.Windows.Media.Color ActiveAnotaceColor() {
-            return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
-        }
-        public WriteableBitmap ActiveAnotaceImage() {
-            return activeAnotace.GetCanvas();
-        }
-
-
-        Anotace FindAnotaceById(int idAnotace)
-        {
-            Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
-            if (foundAnotace != null)
-            {
-                return foundAnotace;
-            }
-            else
-            {
-// !!!!!!
-// POUZE SE ZOBRAZÍ PRÁZDNÝ CANVAS!!
-// NEVYHODÍ VÝJIMKU
-
-                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
-                return null;
-
-            }
-        }
-
-
-        public BitmapImage? GetOriginalPicture()
-        {
-            return originalPicture;
-        }
-
-
-        public static Project GetInstance()
-        {
-            if (instance == null) {
-                instance = new Project();
-            }
-            return instance;
-        }
-
-        public List<string> ChooseNewProject()
-        {
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
-            Debug.WriteLine(folderUtilityManager.ChooseNewProject());
-            Debug.WriteLine("-------------TOTO JE Z PROJECT--------------");
-            return folderUtilityManager.ChooseNewProject();
-        }
-
-        public List<string> ChooseContinueAnotation()
-        {
-            return folderUtilityManager.ChooseContinueAnotation();
-        }
-
-        public List<string> ChooseValidation()
-        {
-            return folderUtilityManager.ChooseValidation();
-        }
-
-        public void Choose(string path, string projectType)
-        {
+        // ZDE JE VYBRANI CREATE NEBO LOAD !!
+        // Zavisi na vybranem souboru v FolderbrowserWindow
+        public void Choose(string path, string projectType) {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
-            if (projectType == "dicoms")
-            {
+            if (projectType == "dicoms") {
                 Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
-            else
-            {
+            else {
                 LoadProject(newPath);
             }
-
             originalPicture = folderUtilityManager.GetImage();
+        }
+
+
+        // Vola se z FolderbrowserWindow - vraci vsechny soubory, ktere jsou k dispozici
+        public List<string> ChooseNewProject() {
+            return folderUtilityManager.ChooseNewProject();
+        }
+
+        public List<string> ChooseContinueAnotation() {
+            return folderUtilityManager.ChooseContinueAnotation();
+        }
+
+        public List<string> ChooseValidation() {
+            return folderUtilityManager.ChooseValidation();
         }
     }
 }

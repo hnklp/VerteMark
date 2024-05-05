@@ -47,19 +47,33 @@ namespace VerteMark {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
+
+
+            CommandBinding openCommandBinding = new CommandBinding(
+                    ApplicationCommands.Open,
+                    OpenFileItem_Click);
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Save_Click);
+            this.CommandBindings.Add(saveCommandBinding);
+
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
-
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
 
-            Loaded += delegate {
+            Loaded += delegate
+            {
                 SetCanvasComponentsSize();
                 SwitchActiveAnot(0);
             };
+            
         }
 
         //dialog otevreni souboru s filtrem
@@ -68,7 +82,7 @@ namespace VerteMark {
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
         void InitializeCheckboxes() {
-            foreach(var CheckBox in checkBoxes) {
+            foreach (var CheckBox in checkBoxes) {
                 bool isValidator = loggedInUser.Validator;
                 CheckBox.IsEnabled = isValidator;
                 CheckBox.IsChecked = isValidator;
@@ -77,14 +91,14 @@ namespace VerteMark {
 
         // Podle velikosti ImageHolder nastaví plátno
         void SetCanvasComponentsSize() {
-            InkCanvas.Width = ImageHolder.ActualWidth;
-            InkCanvas.Height = ImageHolder.ActualHeight;
+            InkCanvas.Width = utility.GetOriginalPicture().PixelWidth;
+            InkCanvas.Height = utility.GetOriginalPicture().PixelHeight;
             InkCanvas.Margin = new Thickness(0);
-            PreviewImage.Width = ImageHolder.ActualWidth;
-            PreviewImage.Height = ImageHolder.ActualHeight;
+            PreviewImage.Width = utility.GetOriginalPicture().PixelWidth;
+            PreviewImage.Height = utility.GetOriginalPicture().PixelHeight;
             PreviewImage.Margin = new Thickness(0);
-            CropCanvas.Width = ImageHolder.ActualWidth;
-            CropCanvas.Height = ImageHolder.ActualHeight;
+            CropCanvas.Width = utility.GetOriginalPicture().PixelWidth;
+            CropCanvas.Height = utility.GetOriginalPicture().PixelHeight;
             CropCanvas.Margin = new Thickness(0);
             Grid.SetColumn(InkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(InkCanvas, Grid.GetRow(ImageHolder));
@@ -101,10 +115,10 @@ namespace VerteMark {
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "open_dialog_title_str";
 
-            if(openFileDialog.ShowDialog() == true) {
+            if (openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if(success) {
+                if (success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -118,10 +132,10 @@ namespace VerteMark {
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
             openFileDialog.Title = "Select a PNG File";
-            if(openFileDialog.ShowDialog() == true) {
+            if (openFileDialog.ShowDialog() == true) {
                 string selectedFilePath = openFileDialog.FileName;
                 bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if(success) {
+                if (success) {
                     //Pokud se vybrala dobrá složka/soubor tak pokračuj
                     BitmapImage bitmapImage = utility.GetOriginalPicture();
                     ImageHolder.Source = bitmapImage;
@@ -137,14 +151,14 @@ namespace VerteMark {
 
         private void HandleStateChanged(object sender, AppState newState) {
 
-            switch(newState) {
+            switch (newState) {
                 case AppState.Drawing:
                 case AppState.Erasing:
 
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Hidden;
 
-                    if(CroppedImage.Source != null) {
+                    if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
                         PreviewImage.Visibility = Visibility.Hidden;
 
@@ -158,7 +172,7 @@ namespace VerteMark {
                     SetInkCanvasMode(newState);
                     CropCanvas.Visibility = Visibility.Visible;
 
-                    if(CroppedImage.Source != null) {
+                    if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
                         PreviewImage.Visibility = Visibility.Visible;
 
@@ -186,7 +200,7 @@ namespace VerteMark {
         }
 
         private void DrawTButton_Click(object sender, RoutedEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
+            if (stateManager.CurrentState == AppState.Cropping) {
                 CropImage();
             }
             stateManager.CurrentState = AppState.Drawing;
@@ -194,7 +208,7 @@ namespace VerteMark {
         }
 
         private void EraseTButton_Click(object sender, RoutedEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
+            if (stateManager.CurrentState == AppState.Cropping) {
                 CropImage();
             }
             stateManager.CurrentState = AppState.Erasing;
@@ -202,7 +216,7 @@ namespace VerteMark {
         }
 
         void SwitchActiveToolbarButton(ToggleButton pressedButton) {
-            if(activeToolbarButton != null) {
+            if (activeToolbarButton != null) {
                 activeToolbarButton.IsChecked = false;
             }
             activeToolbarButton = pressedButton;
@@ -239,14 +253,7 @@ namespace VerteMark {
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
-            /* 
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg)|*.jpg|Bitmap Image (*.bmp)|*.bmp";
-
-                bitmap = ConvertInkCanvasToBitmap(inkCanvas);
-                utility.SaveBitmapToFile(bitmap, saveFileDialog);
-            */
+        private void Save_Click(object sender, RoutedEventArgs e) {
             utility.SaveProject();
         }
 
@@ -258,19 +265,19 @@ namespace VerteMark {
 
         //Spojování linky
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
-            if(firstPoint == null) {
+            if (firstPoint == null) {
                 firstPoint = e.Stroke.StylusPoints.First();
             }
             lastPoint = e.Stroke.StylusPoints.Last();
         }
 
         void ConnectStrokeAnotace() {
-            if(stateManager != null && stateManager.CurrentState == AppState.Drawing && firstPoint != null && lastPoint != null) {
+            if (stateManager != null && stateManager.CurrentState == AppState.Drawing && firstPoint != null && lastPoint != null) {
                 // Calculate the distance between the first and last points
                 double distance = Math.Sqrt(Math.Pow(lastPoint.Value.X - firstPoint.Value.X, 2) + Math.Pow(lastPoint.Value.Y - firstPoint.Value.Y, 2));
 
                 // If the distance is less than 100, connect the points with a line
-                if(distance < 100) {
+                if (distance < 100) {
                     // Create a new stroke for the connecting line
                     StylusPointCollection points = new StylusPointCollection();
                     points.Add(firstPoint.Value);
@@ -294,15 +301,15 @@ namespace VerteMark {
             InkCanvas.Background = new ImageBrush(utility.GetActiveAnotaceImage());
         }
 
-        void SaveCanvasIntoAnot(){
-                RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
-                rtb.Render(InkCanvas);
-                utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
+        void SaveCanvasIntoAnot() {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(InkCanvas);
+            utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
         void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
-            if(stateManager.CurrentState == AppState.Drawing) {
+            if (stateManager.CurrentState == AppState.Drawing) {
                 /*
                 utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(InkCanvas));
                 if(CroppedImage.Source == null){
@@ -339,7 +346,7 @@ namespace VerteMark {
         }
 
         void SwitchActiveAnotButton(ToggleButton pressedButton) {
-            if(activeAnotButton != null) {
+            if (activeAnotButton != null) {
                 activeAnotButton.IsChecked = false;
             }
             activeAnotButton = pressedButton;
@@ -392,7 +399,7 @@ namespace VerteMark {
          */
 
         private T GetParent<T>(DependencyObject d) where T : class {
-            while(d != null && !(d is T)) {
+            while (d != null && !(d is T)) {
                 d = VisualTreeHelper.GetParent(d);
             }
             return d as T;
@@ -403,7 +410,7 @@ namespace VerteMark {
             Point p = e.GetPosition(ToolBarTray);
             IInputElement ie = ToolBarTray.InputHitTest(p);
             grip = GetParent<Thumb>(ie as DependencyObject);
-            if(grip != null) {
+            if (grip != null) {
                 isDragging = true;
                 offset = e.GetPosition(ToolBarTray);
                 grip.CaptureMouse();
@@ -411,10 +418,10 @@ namespace VerteMark {
         }
 
         private void Grip_PreviewMouseMove(object sender, MouseEventArgs e) {
-            if(isDragging) {
+            if (isDragging) {
                 Point currentPoint = e.GetPosition(ToolBarTray);
 
-                if(grip != null && grip.IsMouseCaptured) {
+                if (grip != null && grip.IsMouseCaptured) {
                     Point newPosition = Mouse.GetPosition(this);
                     int toolbarOffset = 18;
                     double newX = newPosition.X - offset.X;
@@ -430,7 +437,7 @@ namespace VerteMark {
         }
 
         private void Grip_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if(grip != null) {
+            if (grip != null) {
                 isDragging = false;
                 grip.ReleaseMouseCapture();
             }
@@ -443,7 +450,7 @@ namespace VerteMark {
          */
 
         private void CropCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
+            if (stateManager.CurrentState == AppState.Cropping) {
                 cropStartPoint = e.GetPosition(CropCanvas);
                 CropRectangle.Width = 0;
                 CropRectangle.Height = 0;
@@ -451,16 +458,16 @@ namespace VerteMark {
         }
 
         private void CropCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
-                if(cropStartPoint.HasValue) {
+            if (stateManager.CurrentState == AppState.Cropping) {
+                if (cropStartPoint.HasValue) {
                     cropStartPoint = null;
                 }
             }
         }
 
         private void CropCanvas_MouseMove(object sender, MouseEventArgs e) {
-            if(stateManager.CurrentState == AppState.Cropping) {
-                if(cropStartPoint.HasValue) {
+            if (stateManager.CurrentState == AppState.Cropping) {
+                if (cropStartPoint.HasValue) {
                     var pos = e.GetPosition(CropCanvas);
 
                     var x = Math.Min(pos.X, cropStartPoint.Value.X);
@@ -484,16 +491,17 @@ namespace VerteMark {
                                       (int)CropRectangle.Width,
                                       (int)CropRectangle.Height);
 
-            if(rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
+            if (rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
                 return;
 
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
 
-            if(PreviewImage.Source != null) {
+
+            /*if(PreviewImage.Source != null) {
                 BitmapSource croppedPreviewImage = new CroppedBitmap(PreviewImage.Source as BitmapSource, rect);
                 CroppedPreviewImage.Source = croppedPreviewImage;
-            }
+            }*/
 
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
@@ -501,6 +509,8 @@ namespace VerteMark {
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
+
+            utility.CropOriginalPicture(croppedImage);
         }
 
         /*
@@ -510,7 +520,7 @@ namespace VerteMark {
          */
 
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            if(ImageHolder != null) {
+            if (ImageHolder != null) {
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }
@@ -519,7 +529,7 @@ namespace VerteMark {
 
     public class PercentageConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if(value == null || !(value is double))
+            if (value == null || !(value is double))
                 return null;
 
             double numericValue = (double)value;
@@ -531,5 +541,4 @@ namespace VerteMark {
             throw new NotImplementedException();
         }
     }
-
 }

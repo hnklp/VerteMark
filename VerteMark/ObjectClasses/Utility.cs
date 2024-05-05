@@ -22,15 +22,23 @@ namespace VerteMark.ObjectClasses {
         public Utility() {
             project = Project.GetInstance();
         }
-        public void LoginUser(string id, bool validator) {
-            project.LoginNewUser(id, validator);
+
+        public void CropOriginalPicture(BitmapSource image) {
+            BitmapImage bitmapImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream()) {
+                PngBitmapEncoder encoder = new PngBitmapEncoder(); // nebo jiný vhodný encoder podle vašich potřeb
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+            }
+            project.SetOriginalPicture(bitmapImage);
         }
-        public void LogoutUser() {
-            project.LogoutUser();
-        }
-        public User? GetLoggedInUser() {
-            return project.GetLoggedInUser();
-        }
+
+
+
         // fotka krku
         public BitmapImage? GetOriginalPicture() {
             return project.GetOriginalPicture();
@@ -40,33 +48,63 @@ namespace VerteMark.ObjectClasses {
         public bool ChooseProjectFolder(string path) {
             return project.TryOpeningProject(path);
         }
+
         public void SaveProject() {
             project.SaveProject();
         }
-        public void ChangeSelectedAnotation(int id) {
 
-        }
+
         public WriteableBitmap GetActiveAnotaceImage() {
             return project.ActiveAnotaceImage();
         }
+
         public void UpdateSelectedAnotation(WriteableBitmap bitmap) {
             project.UpdateSelectedAnotaceCanvas(bitmap);
         }
+
         public string GetActiveAnotaceId() {
             return project.ActiveAnotaceId();
         }
+
         public System.Windows.Media.Color GetActiveAnotaceColor() {
             return project.ActiveAnotaceColor();
         }
+
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();
         }
-        public void SwitchAnotationValidation(int id) {
 
+        public void SwitchAnotationValidation(int id) {
+            project.ValidateAnnotationByID(id);
         }
+
         public void ChangeActiveAnotation(int id) {
             project.SelectActiveAnotace(id);
         }
+
+        /*
+        * ==================
+        * Prace s uzivatelem
+        * ==================
+        */
+
+        public void LoginUser(string id, bool validator) {
+            project.LoginNewUser(id, validator);
+        }
+
+        public void LogoutUser() {
+            project.LogoutUser();
+        }
+
+        public User? GetLoggedInUser() {
+            return project.GetLoggedInUser();
+        }
+
+        /*
+        * =============================
+        * Pouziti v FolderbrowserWindow
+        * =============================
+        */
 
         public List<string> ChooseNewProject()
         {
@@ -87,41 +125,5 @@ namespace VerteMark.ObjectClasses {
         {
             project.Choose(path, projectType);
         }
-
-        /*
-        public void SaveBitmapToFile(BitmapSource bitmap, SaveFileDialog saveFileDialog)
-        {
-            // Create a SaveFileDialog to prompt the user for file save location
-            // Show the dialog and get the result
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                // Create a BitmapEncoder based on the selected file format
-                BitmapEncoder encoder = null;
-                switch (System.IO.Path.GetExtension(saveFileDialog.FileName).ToUpper())
-                {
-                    case ".PNG":
-                        encoder = new PngBitmapEncoder();
-                        break;
-                    case ".JPG":
-                        encoder = new JpegBitmapEncoder();
-                        break;
-                    case ".BMP":
-                        encoder = new BmpBitmapEncoder();
-                        break;
-                    default:
-                        // Unsupported file format
-                        return;
-                }
-
-                // Encode and save the bitmap to the selected file path
-                encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                using (FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.Create))
-                {
-                    encoder.Save(stream);
-                }
-            }
-        }*/
-
-
     }
 }
