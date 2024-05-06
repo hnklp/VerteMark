@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png">
 
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
+    </Window.InputBindings>
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenFileItem_Click"/>
@@ -187,7 +191,7 @@
             <ToggleButton Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
             <CheckBox Name="CheckBox8" Grid.Column="2" Content="" Margin="205,271,0,0"/>
 
-            <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Button_Click" Grid.Column="1"/>
+            <Button Name="SaveButtonUI" Content="&#xE105;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="110,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="1"/>
             <Button x:Name="OpenProject" Content="&#xE188;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="60,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="1"/>
             <Button x:Name="delete" Content="&#xE107;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1"/>
             <Label Grid.Column="1" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
