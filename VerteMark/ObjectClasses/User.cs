@@ -16,10 +16,5 @@ namespace VerteMark.ObjectClasses {
             UserID = id; //vychozi hodnota, dle ktere se muze odehravat 
             Validator = valid; // True = validator, False = anotator
         }
-
-        
-
-
     }
-
 }

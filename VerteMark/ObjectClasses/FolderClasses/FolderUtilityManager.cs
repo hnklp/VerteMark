@@ -6,97 +6,122 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Net.Http.Json;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 
-namespace VerteMark.ObjectClasses.FolderClasses
-{
-    internal class FolderUtilityManager
-    {
+namespace VerteMark.ObjectClasses.FolderClasses{
+    internal class FolderUtilityManager{
         ZipManager zipManager;
         FileManager fileManager;
         FolderManager folderManager;
         public string tempPath;
 
-        public FolderUtilityManager()
-        {
+        public FolderUtilityManager(){
             zipManager = new ZipManager();
             fileManager = new FileManager();
             folderManager = new FolderManager();
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        public void ExtractZip(string path)
-        {
-            zipManager.LoadZip(path);
+        public void Save(User user, bool newProject, BitmapImage image) {
+            fileManager.SaveCroppedImage(image);
+            if (!newProject) {
+                fileManager.AddUserActionToMetadata(user);
+            }
+            else {
+                fileManager.ExtractAndSaveMetadata(user);
+            }
+            SaveZip();
+        }
+
+        public bool ExtractZip(string path){
+            try {
+                zipManager.LoadZip(path);
+                folderManager.CheckTempFolder();
+                return true;
+            }
+            catch {
+                return false; }
         }
 
 
-        public void SaveZip()
-        {
+        void SaveZip(){
             zipManager.UpdateZipFromTempFolder();
         }
 
-        public BitmapImage GetImage()
-        {
+
+        public BitmapImage GetImage(){
             return fileManager.LoadBitmapImage();
         }
 
 
-        public void CreateNewProject(string path)
-        {
+        public void CreateNewProject(string path){
             string folderName = Path.GetFileNameWithoutExtension(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
             fileManager.dicomPath = path;
             fileManager.CreateOutputFile(folderName);
             fileManager.ExtractImageFromDicom();
-            fileManager.ExtractAndSaveMetadata();
         }
 
 
-        public void LoadProject(string path)
-        {
-            try
-            {
-                // Získání všech souborů ve složce
+        public string LoadProject(string path){
+            try {
                 string[] files = Directory.GetFiles(path);
-
-                // Filtrace souborů podle přípon
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
-                // string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
+                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
+                string? metaFile = files.FirstOrDefault(f => f.EndsWith(".meta"));
 
-                // Kontrola existence souborů
-                if (pngFile == null )//|| jsonFile == null)
-                {
+                if (pngFile == null || metaFile == null || jsonFile == null) {
+                    return "";
                     throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
                 }
+                else {
+                    fileManager.metaPath = metaFile;
+                    fileManager.pngPath = pngFile;
+                    fileManager.jsonPath = jsonFile;
+                    fileManager.outputPath = path;
 
-                // Nastavení cest
-                fileManager.pngPath = pngFile;
-                // fileManager.jsonPath = jsonFile;
-                fileManager.outputPath = path;
-
-                Debug.WriteLine("Soubory načteny úspěšně.");
+                    string jsonContent = File.ReadAllText(jsonFile);
+                    Debug.WriteLine(jsonContent);
+                    Debug.WriteLine("JSON CONTENT FROM FOL UT MAN -------------");
+                    return jsonContent;
+                }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine($"Chyba při načítání projektu: {ex.Message}");
+                return "";
             }
         }
-    
-         public List<string> ChooseNewProject()
-        {
+
+
+        public void SaveJson(string neco) {
+            string? path = fileManager.jsonPath;
+            if (path != null) {
+                using (StreamWriter sw = new StreamWriter(path)) {
+                    sw.Write(neco);
+                }
+            }
+        }
+
+        /*
+        * =============================
+        * Pouziti v FolderbrowserWindow
+        * =============================
+        */
+
+        public List<string> ChooseNewProject(){
             return folderManager.ChooseNewProject();
         }
 
-        public List<string> ChooseContinueAnotation()
-        {
+
+        public List<string> ChooseContinueAnotation(){
             return folderManager.ChooseContinueAnotation();
         }
 
-        public List<string> ChooseValidation()
-        {
+
+        public List<string> ChooseValidation(){
             return folderManager.ChooseValidation();
         }
-
-        public void SaveJson(string neco) { }
     }
 }
