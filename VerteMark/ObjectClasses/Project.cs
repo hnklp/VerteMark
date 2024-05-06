@@ -11,6 +11,7 @@ using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using System.Windows.Shell;
+using System.Security.RightsManagement;
 using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
 using System.Data;
@@ -34,7 +35,9 @@ namespace VerteMark.ObjectClasses {
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
         JsonManipulator? jsonManip;
+        bool IsAnotated = false;
         bool newProject;
+
 
 
         public Project() {
@@ -314,6 +317,33 @@ namespace VerteMark.ObjectClasses {
             }
             originalPicture = folderUtilityManager.GetImage();
         }
+
+        public bool GetIsAnotated()
+        {
+            CheckIsAnotated();
+            return this.IsAnotated;
+        }
+
+        private void CheckIsAnotated()
+        {
+            this.IsAnotated = false;
+            foreach (var anotace in anotaces)
+            {
+                if (anotace.IsAnotated)
+                {
+                    this.IsAnotated = true;
+                    break;
+                }
+            }
+        }
+
+        public void SetActiveAnotaceIsAnotated(bool isAnotated)
+        {
+            if (activeAnotace != null)
+            {
+                activeAnotace.SetIsAnotated(isAnotated);
+            }
+        }    
 
 
         // Vola se z FolderbrowserWindow - vraci vsechny soubory, ktere jsou k dispozici

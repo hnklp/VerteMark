@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+using Dicom.Imaging.LUT;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,12 +25,14 @@ namespace VerteMark.ObjectClasses {
         public string Name { get; private set; }
         public System.Drawing.Color Color { get; private set; }
         public bool IsValidated { get; private set; }
+        public bool IsAnotated { get; private set; }
         WriteableBitmap? canvas;
 
         public Anotace(int id, string name, System.Drawing.Color color) {
             this.Id = id;
             this.Name = name;
             this.Color = color;
+            this.IsAnotated = false;
         }
 
 
@@ -129,6 +132,11 @@ namespace VerteMark.ObjectClasses {
                 result.Add(Id.ToString(), bitmap);
             }
             return result;
+        }
+
+        public void SetIsAnotated(bool isAnotated)
+        {
+            this.IsAnotated = isAnotated;
         }
 
     }

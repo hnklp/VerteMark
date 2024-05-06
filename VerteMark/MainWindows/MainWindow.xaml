@@ -92,7 +92,7 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="4">
-                    <Slider x:Name="ZoomSlider" Value="100" Minimum="25" Maximum="200" TickPlacement="BottomRight" 
+                    <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="200" TickPlacement="BottomRight" 
                         Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
@@ -128,7 +128,6 @@
                     </InkCanvas>
 
                     <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <Image x:Name="CroppedPreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                     <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
                             MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp">
@@ -139,38 +138,20 @@
             </ScrollViewer>
 
 
-            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="255" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
+            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="auto" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
                          PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp">
-                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" Width="35" Height="255" VerticalAlignment="Top"
-                         HorizontalAlignment="Right" AllowDrop="False">
-                    <ToggleButton x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30" Click="CropTButton_Click">
+                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" VerticalAlignment="Top"
+                         HorizontalAlignment="Right" AllowDrop="False" OverflowMode="Never" Loaded="ToolBar_Loaded">
+                    <ToggleButton x:Name="CropTButton" Content="&#xE123;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30"
+                                  Click="CropTButton_Click">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TCrop.tooltip"/>
                         </ToggleButton.ToolTip>
                     </ToggleButton>
-                    <ToggleButton x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30" Click="DrawTButton_Click">
+                    <ToggleButton x:Name="DrawTButton" Content="&#xE104;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30"
+                                  IsChecked="True" Click="DrawTButton_Click">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="str_TDraw.tooltip"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                    <ToggleButton x:Name="EraseTButton" Content="&#x1f5fb;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content ="str_TErase.tooltip"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                    <ToggleButton x:Name="ZoomTButton" Content="&#xE12E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content ="str_TZoom.tooltip"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                    <ToggleButton x:Name="UndoTButton" Content="&#xE10E;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content ="str_TUndo.tooltip"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-                    <ToggleButton x:Name="RedoTButton" Content="&#xE10D;" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Right" Width="30" Height="30">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content ="str_TRedo.tooltip"/>
                         </ToggleButton.ToolTip>
                     </ToggleButton>
                 </ToolBar>
@@ -179,7 +160,7 @@
             <Rectangle Grid.Column="2" Fill="#FFF0F0F0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="3"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1"/>
+            <ToggleButton x:Name="Button1"  Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1" IsChecked="True"/>
             <CheckBox Name="CheckBox1" Grid.Column="2" Content="" Margin="205,61,0,0"/>
 
             <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Orange" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
@@ -215,6 +196,10 @@
             <Button x:Name="delete" Content="&#xE107;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="161,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Smazat_butt" Grid.Column="1"/>
             <Label Grid.Column="1" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
+            <Label x:Name="CropLabel" Grid.Column="1" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,315,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
+            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Left" Margin="60,350,0,0" VerticalAlignment="Top" Grid.Column="1" Height="20" Width="125" Visibility="Collapsed"/>
+            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Left" Margin="60,380,0,0" VerticalAlignment="Top" Grid.Column="1"  Height="20" Width="126" Visibility="Collapsed"/>
+            
         </Grid>
 
     </DockPanel>
