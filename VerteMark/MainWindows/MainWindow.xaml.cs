@@ -10,6 +10,7 @@ using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics;
+using VerteMark.ObjectClasses;
 
 
 namespace VerteMark {
@@ -63,6 +64,7 @@ namespace VerteMark {
             {
                 SetCanvasComponentsSize();
             };
+
         }
         public MainWindow(bool debugging) {
             InitializeComponent();
@@ -84,21 +86,6 @@ namespace VerteMark {
             Loaded += delegate {
                 SetCanvasComponentsSize();
             };
-
-            // Přidání CommandBinding pro Open
-            CommandBinding openCommandBinding = new CommandBinding(
-                ApplicationCommands.Open,
-                OpenFileItem_Click
-            );
-
-            this.CommandBindings.Add(openCommandBinding);
-
-            // Přidání CommandBinding pro Save
-            CommandBinding saveCommandBinding = new CommandBinding(
-                ApplicationCommands.Save,
-                Save_Click);  // Již existující metoda
-
-            this.CommandBindings.Add(saveCommandBinding);
         }
 
         //dialog otevreni souboru s filtrem
@@ -597,6 +584,38 @@ namespace VerteMark {
          *  Zoom
          * ======
          */
+
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Delta > 0)
+                {
+                    ZoomIn(null, null);
+                }
+                else if (e.Delta < 0)
+                {
+                    ZoomOut(null, null);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void ZoomIn(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value < ZoomSlider.Maximum)
+            {
+                ZoomSlider.Value += 10;
+            }
+        }
+
+        private void ZoomOut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value > ZoomSlider.Minimum)
+            {
+                ZoomSlider.Value -= 10;
+            }
+        }
 
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
