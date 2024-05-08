@@ -116,7 +116,11 @@
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+						  PreviewMouseLeftButtonDown="ScrollViewer_PreviewMouseRightButtonDown"
+						  PreviewMouseMove="ScrollViewer_PreviewMouseMove"
+						  PreviewMouseLeftButtonUp="ScrollViewer_PreviewMouseRightButtonUp">
+				
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" Height="490" Width="650">
                     <Grid VerticalAlignment="Center" HorizontalAlignment="center">
                         <Image x:Name="ImageHolder" Margin="0"/>
