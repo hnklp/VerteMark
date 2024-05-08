@@ -126,8 +126,9 @@
                             <!-- Change to the desired color -->
                         </InkCanvas.DefaultDrawingAttributes>
                     </InkCanvas>
-
-                    <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="PreviewGrid" >
+                        <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </Grid>
 
                     <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
                             MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp">

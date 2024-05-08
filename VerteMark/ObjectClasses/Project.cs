@@ -221,6 +221,15 @@ namespace VerteMark.ObjectClasses {
             return activeAnotace.GetCanvas();
         }
 
+        public List<WriteableBitmap> AllInactiveAnotaceImages() {
+            List <WriteableBitmap> a = new List<WriteableBitmap>();
+            foreach(Anotace anot in anotaces) {
+                if(activeAnotace != anot) {
+                    a.Add(anot.GetCanvas());
+                }
+            }
+            return a;
+        }
 
         Anotace FindAnotaceById(int idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);

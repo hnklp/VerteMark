@@ -96,6 +96,10 @@ namespace VerteMark.ObjectClasses {
             project.LogoutUser();
         }
 
+        public List<WriteableBitmap> AllInactiveAnotaceImages() {
+            return project.AllInactiveAnotaceImages();
+        }
+
         public User? GetLoggedInUser() {
             return project.GetLoggedInUser();
         }

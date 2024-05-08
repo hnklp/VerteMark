@@ -10,6 +10,10 @@ using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Media.Media3D;
 
 
 namespace VerteMark {
@@ -29,15 +33,17 @@ namespace VerteMark {
 
         // Toolbar drag and drop
         bool isDragging = false;
-        Point offset;
+        System.Windows.Point offset;
         Thumb grip;
 
         // Image crop
-        Point? cropStartPoint = null;
+        System.Windows.Point? cropStartPoint = null;
 
         // Dont worry about it (canvas)
         private StylusPoint? firstPoint = null;
         private StylusPoint? lastPoint = null;
+
+        List<System.Windows.Controls.Image> previewImageList;
 
         public MainWindow() {
             InitializeComponent();
@@ -47,7 +53,7 @@ namespace VerteMark {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-
+            previewImageList = new List<System.Windows.Controls.Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -113,6 +119,23 @@ namespace VerteMark {
             Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
             Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
+            AddPreviewImages(); ;
+        }
+
+        void AddPreviewImages() {
+            for(int i = 0; i < 7; i++) {
+                System.Windows.Controls.Image newImage = new System.Windows.Controls.Image();
+                newImage.Width = utility.GetOriginalPicture().PixelWidth;
+                newImage.Height = utility.GetOriginalPicture().PixelHeight;
+                newImage.Margin = new Thickness(0);
+                Grid.SetColumn(newImage, Grid.GetColumn(ImageHolder));
+                Grid.SetRow(newImage, Grid.GetRow(ImageHolder));
+                previewImageList.Add(newImage);
+                Debug.WriteLine($"added new image {newImage.Width} {newImage.Height}");
+                PreviewGrid.Children.Add(newImage);
+                Debug.WriteLine($"added new image {newImage.Width} {newImage.Height}");
+            }
+            previewImageList.Add(PreviewImage);
         }
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
@@ -304,7 +327,7 @@ namespace VerteMark {
 
             WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
 
-            PreviewImage.Source = activeAnotaceImage;
+       //     PreviewImage.Source = activeAnotaceImage;
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -344,7 +367,19 @@ namespace VerteMark {
             CropTButton.IsEnabled = !utility.GetIsAnotated();
         }
 
+        /* Ukázka všech anotací */
+        void PreviewAllAnotaces() {
+            List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
+            for(int i = 0; i < bitmaps.Count; i++) {
+                previewImageList[i].Source = bitmaps[i];
+                previewImageList[i].Opacity = 0.5;
+            }
+        }
+
+
+
         /* Přepínání anotací */
+
         void SwitchActiveAnot(int id) {
             // Stroking the connection (spojení od začátku ke konci)
             ConnectStrokeAnotace();
@@ -356,6 +391,8 @@ namespace VerteMark {
             InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
             //  InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
+
+            PreviewAllAnotaces();
         }
 
         void SwitchActiveAnotButton(ToggleButton pressedButton) { 
@@ -431,7 +468,7 @@ namespace VerteMark {
         }
 
         private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            Point p = e.GetPosition(ToolBarTray);
+            System.Windows.Point p = e.GetPosition(ToolBarTray);
             IInputElement ie = ToolBarTray.InputHitTest(p);
             grip = GetParent<Thumb>(ie as DependencyObject);
             if (grip != null) {
@@ -443,10 +480,10 @@ namespace VerteMark {
 
         private void Grip_PreviewMouseMove(object sender, MouseEventArgs e) {
             if (isDragging) {
-                Point currentPoint = e.GetPosition(ToolBarTray);
+                System.Windows.Point currentPoint = e.GetPosition(ToolBarTray);
 
                 if (grip != null && grip.IsMouseCaptured) {
-                    Point newPosition = Mouse.GetPosition(this);
+                    System.Windows.Point newPosition = Mouse.GetPosition(this);
                     int toolbarOffset = 18;
                     double newX = newPosition.X - offset.X;
                     double newY = newPosition.Y - offset.Y - toolbarOffset;
