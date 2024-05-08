@@ -32,6 +32,10 @@ namespace VerteMark {
         Point offset;
         Thumb grip;
 
+        // Canvas Drag Move View
+        private bool _isDragging = false;
+        private Point _startDragPoint;
+
         // Image crop
         Point? cropStartPoint = null;
 
@@ -47,18 +51,6 @@ namespace VerteMark {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-
-
-            CommandBinding openCommandBinding = new CommandBinding(
-                    ApplicationCommands.Open,
-                    OpenFileItem_Click);
-            this.CommandBindings.Add(openCommandBinding);
-
-            // Přidání CommandBinding pro Save
-            CommandBinding saveCommandBinding = new CommandBinding(
-                ApplicationCommands.Save,
-                Save_Click);
-            this.CommandBindings.Add(saveCommandBinding);
 
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
@@ -571,12 +563,80 @@ namespace VerteMark {
          * ======
          */
 
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Delta > 0)
+                {
+                    ZoomIn(null, null);
+                }
+                else if (e.Delta < 0)
+                {
+                    ZoomOut(null, null);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void ZoomIn(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value < ZoomSlider.Maximum)
+            {
+                ZoomSlider.Value += 10;
+            }
+        }
+
+        private void ZoomOut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value > ZoomSlider.Minimum)
+            {
+                ZoomSlider.Value -= 10;
+            }
+        }
+
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             if (ImageHolder != null) {
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }
         }
+
+        // Drag Move View
+
+        private void ScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                _isDragging = true;
+                _startDragPoint = e.GetPosition(sender as UIElement);
+                (sender as ScrollViewer).CaptureMouse();
+                (sender as ScrollViewer).Cursor = Cursors.Hand;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isDragging)
+            {
+                var sv = sender as ScrollViewer;
+                Point currentPoint = e.GetPosition(sv);
+                sv.ScrollToHorizontalOffset(sv.HorizontalOffset - (currentPoint.X - _startDragPoint.X));
+                sv.ScrollToVerticalOffset(sv.VerticalOffset - (currentPoint.Y - _startDragPoint.Y));
+                _startDragPoint = currentPoint;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_isDragging)
+            {
+                _isDragging = false;
+                (sender as ScrollViewer).ReleaseMouseCapture();
+                (sender as ScrollViewer).Cursor = Cursors.Arrow;
+            }
+        }
+
     }
 
     public class PercentageConverter : IValueConverter {
