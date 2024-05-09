@@ -98,6 +98,10 @@ namespace VerteMark.ObjectClasses {
             project.LogoutUser();
         }
 
+        public List<WriteableBitmap> AllInactiveAnotaceImages() {
+            return project.AllInactiveAnotaceImages();
+        }
+
         public User? GetLoggedInUser() {
             return project.GetLoggedInUser();
         }
@@ -136,6 +140,11 @@ namespace VerteMark.ObjectClasses {
         public void SetActiveAnotaceIsAnotated(bool isAnotated)
         {
             project.SetActiveAnotaceIsAnotated(isAnotated);
+        }
+        // debug
+
+        public void CreateNewProjectDEBUG() {
+            project.CreateNewProjectDEBUG();
         }
 
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,6 +16,8 @@ using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
 using System.Data;
 using Microsoft.Win32;
+using System.Reflection;
+
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -63,7 +65,19 @@ namespace VerteMark.ObjectClasses {
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
         }
-
+        public void CreateNewProjectDEBUG() {
+            newProject = true;
+            CreateNewAnotaces();
+            // debug obrázek
+            string assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string projectDirectory = Directory.GetParent(assemblyDirectory).Parent.Parent.FullName;
+            string relativeImagePath = Path.Combine("Pictures", "debug.png");
+            string imagePath = Path.Combine(projectDirectory, relativeImagePath);
+            if(File.Exists(imagePath)) {
+                BitmapImage bitmap = new BitmapImage(new Uri(imagePath));
+                originalPicture = bitmap;
+            }
+        }
 
         void LoadProject(string path) {
             newProject = false;
@@ -225,6 +239,15 @@ namespace VerteMark.ObjectClasses {
             return activeAnotace.GetCanvas();
         }
 
+        public List<WriteableBitmap> AllInactiveAnotaceImages() {
+            List <WriteableBitmap> a = new List<WriteableBitmap>();
+            foreach(Anotace anot in anotaces) {
+                if(activeAnotace != anot) {
+                    a.Add(anot.GetCanvas());
+                }
+            }
+            return a;
+        }
 
         Anotace FindAnotaceById(int idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);

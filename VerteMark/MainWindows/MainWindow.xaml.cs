@@ -12,6 +12,13 @@ using System.Windows.Controls.Primitives;
 using System.Diagnostics;
 using VerteMark.MainWindows;
 using VerteMark.SubWindows;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Media.Media3D;
+using System.IO;
+using System.Reflection;
+
 
 
 namespace VerteMark {
@@ -31,15 +38,21 @@ namespace VerteMark {
 
         // Toolbar drag and drop
         bool isDragging = false;
-        Point offset;
+        System.Windows.Point offset;
         Thumb grip;
 
+        // Canvas Drag Move View
+        private bool _isDragging = false;
+        private System.Windows.Point _startDragPoint;
+
         // Image crop
-        Point? cropStartPoint = null;
+        System.Windows.Point? cropStartPoint = null;
 
         // Dont worry about it (canvas)
         private StylusPoint? firstPoint = null;
         private StylusPoint? lastPoint = null;
+
+        List<System.Windows.Controls.Image> previewImageList;
 
         public MainWindow() {
             InitializeComponent();
@@ -49,7 +62,7 @@ namespace VerteMark {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-
+            previewImageList = new List<System.Windows.Controls.Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -61,11 +74,10 @@ namespace VerteMark {
                 ApplicationCommands.Save,
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
-
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
-            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
@@ -83,6 +95,49 @@ namespace VerteMark {
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
             
+        }
+        // Debugovací konstruktor pro volání z debug tlačítka
+        public MainWindow(bool debug) {
+            InitializeComponent();
+            utility = new Utility();
+            checkBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+            previewImageList = new List<System.Windows.Controls.Image>();
+            utility.LoginUser("debug_user", true);
+
+            CommandBinding openCommandBinding = new CommandBinding(
+                    ApplicationCommands.Open,
+                    OpenFileItem_Click);
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Save_Click);
+            this.CommandBindings.Add(saveCommandBinding);
+            loggedInUser = utility.GetLoggedInUser();
+            InitializeCheckboxes();
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
+            utility.CreateNewProjectDEBUG();
+            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            stateManager = new StateManager();
+            stateManager.StateChanged += HandleStateChanged;
+            activeAnotButton = Button1;
+            activeToolbarButton = DrawTButton;
+
+            Loaded += delegate {
+                SetCanvasComponentsSize();
+                SwitchActiveAnot(0);
+
+                // start at 25% zoom
+                double zoomFactor = 0.25;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
+            };
+
         }
 
         //dialog otevreni souboru s filtrem
@@ -115,6 +170,21 @@ namespace VerteMark {
             Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
             Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
+            AddPreviewImages(); ;
+        }
+
+        void AddPreviewImages() {
+            for(int i = 0; i < 7; i++) {
+                System.Windows.Controls.Image newImage = new System.Windows.Controls.Image();
+                newImage.Width = utility.GetOriginalPicture().PixelWidth;
+                newImage.Height = utility.GetOriginalPicture().PixelHeight;
+                newImage.Margin = new Thickness(0);
+                Grid.SetColumn(newImage, Grid.GetColumn(ImageHolder));
+                Grid.SetRow(newImage, Grid.GetRow(ImageHolder));
+                previewImageList.Add(newImage);
+                PreviewGrid.Children.Add(newImage);
+            }
+            previewImageList.Add(PreviewImage);
         }
 
         private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
@@ -307,7 +377,7 @@ namespace VerteMark {
 
             WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
 
-            PreviewImage.Source = activeAnotaceImage;
+       //     PreviewImage.Source = activeAnotaceImage;
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -347,7 +417,21 @@ namespace VerteMark {
             CropTButton.IsEnabled = !utility.GetIsAnotated();
         }
 
+        /* Ukázka všech anotací */
+        void PreviewAllAnotaces() {
+            if(ImageHolder.Source != null) {
+                List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
+                for(int i = 0; i < bitmaps.Count; i++) {
+                    previewImageList[i].Source = bitmaps[i];
+                    previewImageList[i].Opacity = 0.5;
+                }
+            }
+        }
+
+
+
         /* Přepínání anotací */
+
         void SwitchActiveAnot(int id) {
             // Stroking the connection (spojení od začátku ke konci)
             ConnectStrokeAnotace();
@@ -359,6 +443,8 @@ namespace VerteMark {
             InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
             //  InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
+
+            PreviewAllAnotaces();
         }
 
         void SwitchActiveAnotButton(ToggleButton pressedButton) { 
@@ -434,7 +520,7 @@ namespace VerteMark {
         }
 
         private void Grip_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            Point p = e.GetPosition(ToolBarTray);
+            System.Windows.Point p = e.GetPosition(ToolBarTray);
             IInputElement ie = ToolBarTray.InputHitTest(p);
             grip = GetParent<Thumb>(ie as DependencyObject);
             if (grip != null) {
@@ -446,10 +532,10 @@ namespace VerteMark {
 
         private void Grip_PreviewMouseMove(object sender, MouseEventArgs e) {
             if (isDragging) {
-                Point currentPoint = e.GetPosition(ToolBarTray);
+                System.Windows.Point currentPoint = e.GetPosition(ToolBarTray);
 
                 if (grip != null && grip.IsMouseCaptured) {
-                    Point newPosition = Mouse.GetPosition(this);
+                    System.Windows.Point newPosition = Mouse.GetPosition(this);
                     int toolbarOffset = 18;
                     double newX = newPosition.X - offset.X;
                     double newY = newPosition.Y - offset.Y - toolbarOffset;
@@ -574,12 +660,80 @@ namespace VerteMark {
          * ======
          */
 
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (e.Delta > 0)
+                {
+                    ZoomIn(null, null);
+                }
+                else if (e.Delta < 0)
+                {
+                    ZoomOut(null, null);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void ZoomIn(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value < ZoomSlider.Maximum)
+            {
+                ZoomSlider.Value += 10;
+            }
+        }
+
+        private void ZoomOut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ZoomSlider.Value > ZoomSlider.Minimum)
+            {
+                ZoomSlider.Value -= 10;
+            }
+        }
+
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             if (ImageHolder != null) {
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             }
         }
+
+        // Drag Move View
+
+        private void ScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                _isDragging = true;
+                _startDragPoint = e.GetPosition(sender as UIElement);
+                (sender as ScrollViewer).CaptureMouse();
+                (sender as ScrollViewer).Cursor = Cursors.Hand;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isDragging)
+            {
+                var sv = sender as ScrollViewer;
+                System.Windows.Point currentPoint = e.GetPosition(sv);
+                sv.ScrollToHorizontalOffset(sv.HorizontalOffset - (currentPoint.X - _startDragPoint.X));
+                sv.ScrollToVerticalOffset(sv.VerticalOffset - (currentPoint.Y - _startDragPoint.Y));
+                _startDragPoint = currentPoint;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_isDragging)
+            {
+                _isDragging = false;
+                (sender as ScrollViewer).ReleaseMouseCapture();
+                (sender as ScrollViewer).Cursor = Cursors.Arrow;
+            }
+        }
+
     }
 
     public class PercentageConverter : IValueConverter {
