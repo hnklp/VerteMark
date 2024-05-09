@@ -14,6 +14,8 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Media3D;
+using System.IO;
+using System.Reflection;
 
 
 namespace VerteMark {
@@ -72,7 +74,7 @@ namespace VerteMark {
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
-            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
@@ -90,6 +92,49 @@ namespace VerteMark {
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
             
+        }
+        // Debugovací konstruktor pro volání z debug tlačítka
+        public MainWindow(bool debug) {
+            InitializeComponent();
+            utility = new Utility();
+            checkBoxes = new List<CheckBox>
+            {
+                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
+                CheckBox5, CheckBox6, CheckBox7, CheckBox8
+            };
+            previewImageList = new List<System.Windows.Controls.Image>();
+            utility.LoginUser("debug_user", true);
+
+            CommandBinding openCommandBinding = new CommandBinding(
+                    ApplicationCommands.Open,
+                    OpenFileItem_Click);
+            this.CommandBindings.Add(openCommandBinding);
+
+            // Přidání CommandBinding pro Save
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Save_Click);
+            this.CommandBindings.Add(saveCommandBinding);
+            loggedInUser = utility.GetLoggedInUser();
+            InitializeCheckboxes();
+            UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
+            utility.CreateNewProjectDEBUG();
+            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            stateManager = new StateManager();
+            stateManager.StateChanged += HandleStateChanged;
+            activeAnotButton = Button1;
+            activeToolbarButton = DrawTButton;
+
+            Loaded += delegate {
+                SetCanvasComponentsSize();
+                SwitchActiveAnot(0);
+
+                // start at 25% zoom
+                double zoomFactor = 0.25;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
+            };
+
         }
 
         //dialog otevreni souboru s filtrem
@@ -134,9 +179,7 @@ namespace VerteMark {
                 Grid.SetColumn(newImage, Grid.GetColumn(ImageHolder));
                 Grid.SetRow(newImage, Grid.GetRow(ImageHolder));
                 previewImageList.Add(newImage);
-                Debug.WriteLine($"added new image {newImage.Width} {newImage.Height}");
                 PreviewGrid.Children.Add(newImage);
-                Debug.WriteLine($"added new image {newImage.Width} {newImage.Height}");
             }
             previewImageList.Add(PreviewImage);
         }
@@ -372,10 +415,12 @@ namespace VerteMark {
 
         /* Ukázka všech anotací */
         void PreviewAllAnotaces() {
-            List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
-            for(int i = 0; i < bitmaps.Count; i++) {
-                previewImageList[i].Source = bitmaps[i];
-                previewImageList[i].Opacity = 0.5;
+            if(ImageHolder.Source != null) {
+                List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
+                for(int i = 0; i < bitmaps.Count; i++) {
+                    previewImageList[i].Source = bitmaps[i];
+                    previewImageList[i].Opacity = 0.5;
+                }
             }
         }
 

@@ -9,8 +9,39 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Icons\bin_icon.ico" />
+    <None Remove="Resources\Icons\crop_icon.ico" />
+    <None Remove="Resources\Icons\draw_icon.ico" />
+    <None Remove="Resources\Icons\floppy_icon.ico" />
+    <None Remove="Resources\Icons\folder_icon.ico" />
+    <None Remove="Resources\Icons\unzoom_icon.ico" />
+    <None Remove="Resources\Icons\zoom_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Pictures\icon.png" />
     <Resource Include="Pictures\textboxbackground.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\bin_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\crop_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\draw_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\floppy_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\folder_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\unzoom_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\zoom_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <PackageReference Include="fo-dicom" Version="5.1.2" />

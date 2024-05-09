@@ -15,6 +15,7 @@ using System.Security.RightsManagement;
 using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Reflection;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -60,7 +61,19 @@ namespace VerteMark.ObjectClasses {
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
         }
-
+        public void CreateNewProjectDEBUG() {
+            newProject = true;
+            CreateNewAnotaces();
+            // debug obrázek
+            string assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string projectDirectory = Directory.GetParent(assemblyDirectory).Parent.Parent.FullName;
+            string relativeImagePath = Path.Combine("Pictures", "debug.png");
+            string imagePath = Path.Combine(projectDirectory, relativeImagePath);
+            if(File.Exists(imagePath)) {
+                BitmapImage bitmap = new BitmapImage(new Uri(imagePath));
+                originalPicture = bitmap;
+            }
+        }
 
         void LoadProject(string path) {
             newProject = false;

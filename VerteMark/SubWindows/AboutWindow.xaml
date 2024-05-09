@@ -32,7 +32,6 @@
                 <Label Content="Hynek Půta" FontSize="10"/>
                 <Label Content="Jakub Kepič" FontSize="10"/>
                 <Label Content="Josef Bér" FontSize="10"/>
-                <Label Content="Matěj Ježek" FontSize="10"/>
                 <Label Content="Sabina Ajksnerová" FontSize="10"/>
             </StackPanel>
         </GroupBox>

@@ -42,10 +42,10 @@ namespace VerteMark
         private void Select_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "all_files_opend_str (*.*)|*.*";
+            openFileDialog.Filter = "Soubory VerteMark (.vmk)|*.vmk";
             openFileDialog.FilterIndex = 1;
             openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "open_dialog_title_str";
+            openFileDialog.Title = "Otevřít soubor";
 
             if (openFileDialog.ShowDialog() == true)
             {
