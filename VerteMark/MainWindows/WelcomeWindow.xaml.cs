@@ -58,11 +58,11 @@ namespace VerteMark
             {
                 if (RadioButton == AnotatorRadioButton)
                 {
-                    HintLabel.Content = "51 placeholder anapoveda";
+                    HintLabel.Content = "Anotátor provádí anotaci.";
                 }
                 else
                 {
-                    HintLabel.Content = "55 placeholder vnapoveda";
+                    HintLabel.Content = "Validátor ověřuje správnost anotací.";
                 }
             }
         }

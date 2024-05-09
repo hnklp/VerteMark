@@ -74,7 +74,7 @@ namespace VerteMark {
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
-            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
@@ -103,7 +103,7 @@ namespace VerteMark {
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
             previewImageList = new List<System.Windows.Controls.Image>();
-            utility.LoginUser("pepa je bůh", true);
+            utility.LoginUser("debug_user", true);
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -118,7 +118,7 @@ namespace VerteMark {
             loggedInUser = utility.GetLoggedInUser();
             InitializeCheckboxes();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
-            RoleStatus.Text = loggedInUser.Validator ? "v_status_str" : "a_status_str";
+            RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             utility.CreateNewProjectDEBUG();
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
