@@ -61,6 +61,7 @@ namespace VerteMark.ObjectClasses {
 
         void CreateNewProject(string path) {
             newProject = true;
+            activeAnotace = null;
             CreateNewAnotaces();
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
@@ -81,7 +82,7 @@ namespace VerteMark.ObjectClasses {
 
         void LoadProject(string path) {
             newProject = false;
-            //CreateNewAnotaces(); // - prozatimni reseni!
+            activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
 
             JArray annotations = jsonManip.UnpackJson(jsonString);
