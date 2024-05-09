@@ -431,7 +431,7 @@ namespace VerteMark {
 
         void SwitchActiveAnot(int id) {
             // Stroking the connection (spojení od začátku ke konci)
-            ConnectStrokeAnotace();
+        //    ConnectStrokeAnotace();
             SaveCanvasIntoAnot();
             // The rest
             UpdateElementsWithAnotace();
