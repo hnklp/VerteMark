@@ -67,7 +67,7 @@ namespace VerteMark.ObjectClasses {
             // debug obrázek
             string assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string projectDirectory = Directory.GetParent(assemblyDirectory).Parent.Parent.FullName;
-            string relativeImagePath = Path.Combine("Pictures", "CapyJedi.png");
+            string relativeImagePath = Path.Combine("Pictures", "debug.png");
             string imagePath = Path.Combine(projectDirectory, relativeImagePath);
             if(File.Exists(imagePath)) {
                 BitmapImage bitmap = new BitmapImage(new Uri(imagePath));
