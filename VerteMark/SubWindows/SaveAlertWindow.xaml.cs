@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -42,6 +43,8 @@ namespace VerteMark.SubWindows {
         public void Browse() {
             FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(false);
 
+            folderbrowserWindow.oldMainWindow = mainWindow;
+
             // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
@@ -50,7 +53,7 @@ namespace VerteMark.SubWindows {
             folderbrowserWindow.Left = originalCenterX - folderbrowserWindow.Width / 2;
             folderbrowserWindow.Top = originalCenterY - folderbrowserWindow.Height / 2;
 
-
+            mainWindow.Visibility = Visibility.Hidden;
             folderbrowserWindow.Show();
         }
     }

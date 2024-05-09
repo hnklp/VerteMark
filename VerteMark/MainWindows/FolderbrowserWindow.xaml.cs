@@ -14,6 +14,7 @@ namespace VerteMark.MainWindows
         Utility utility;
         string projectType; // create new project or load existing
         bool loadFromSelect;
+        public MainWindow? oldMainWindow;
 
         public FolderbrowserWindow(bool fromSelect)
         {
@@ -21,10 +22,13 @@ namespace VerteMark.MainWindows
             utility = new Utility();
             projectType = "";
             loadFromSelect = fromSelect;
+            oldMainWindow = null;
+            
 
             // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
             FileListBox.SelectionChanged += FileListBox_SelectionChanged;
             LoadforRole();
+            Closing += FolderbrowserWindow_Closing;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -59,9 +63,19 @@ namespace VerteMark.MainWindows
             mainWindow.Left = originalCenterX - mainWindow.Width / 2;
             mainWindow.Top = originalCenterY - mainWindow.Height / 2;
 
+
             mainWindow.Show();
 
             this.Close();
+        }
+
+        private void FolderbrowserWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+
+            // Kontrola, zda oldMainWindow není null a zda je viditelné
+            if (oldMainWindow != null && oldMainWindow.Visibility == Visibility.Hidden) {
+                // Zavření oldMainWindow
+                oldMainWindow.Close();
+            }
         }
 
         private void FileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -93,10 +107,11 @@ namespace VerteMark.MainWindows
                 selectWindow.Top = originalCenterY - selectWindow.Height / 2;
 
                 selectWindow.Show();
-
+                oldMainWindow.Close();
                 this.Close();
             }
             else {
+                oldMainWindow.Visibility = Visibility.Visible;
                 this.Close();
             }
         }
