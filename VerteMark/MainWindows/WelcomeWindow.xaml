@@ -35,6 +35,7 @@
             </GridSplitter.Background>
         </GridSplitter>
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
+        <Button x:Name="SettingsButtonUI_Kopírovat" Content="&#xE115;" FontFamily="Segoe UI Symbol" HorizontalAlignment="Left" Margin="30,295,0,0" VerticalAlignment="Top" Height="63" Width="91" Click="SettingsButtonUI_Kopírovat_Click"/>
 
     </Grid>
 

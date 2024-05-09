@@ -139,6 +139,11 @@ namespace VerteMark.ObjectClasses {
         {
             project.SetActiveAnotaceIsAnotated(isAnotated);
         }
+        // debug
+
+        public void CreateNewProjectDEBUG() {
+            project.CreateNewProjectDEBUG();
+        }
 
     }
 }

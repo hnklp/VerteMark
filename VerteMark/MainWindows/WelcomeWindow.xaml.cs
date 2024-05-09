@@ -97,5 +97,10 @@ namespace VerteMark
 
             this.Close();
         }
+
+        private void SettingsButtonUI_Kopírovat_Click(object sender, RoutedEventArgs e) {
+            new MainWindow(true).Show();
+            this.Close();
+        }
     }
 }
