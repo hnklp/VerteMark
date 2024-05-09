@@ -10,6 +10,8 @@ using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics;
+using VerteMark.MainWindows;
+using VerteMark.SubWindows;
 
 
 namespace VerteMark {
@@ -134,19 +136,20 @@ namespace VerteMark {
         }
 
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "Select a PNG File";
-            if (openFileDialog.ShowDialog() == true) {
-                string selectedFilePath = openFileDialog.FileName;
-                bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
-                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                    BitmapImage bitmapImage = utility.GetOriginalPicture();
-                    ImageHolder.Source = bitmapImage;
-                }
+                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this);
+
+            if (utility.saved) {
+                saveAlertWindow.Browse();
+            }
+            else {
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
+
+                saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
+                saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
+
+
+                saveAlertWindow.Show();
             }
         }
 

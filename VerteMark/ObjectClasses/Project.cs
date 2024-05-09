@@ -15,6 +15,7 @@ using System.Security.RightsManagement;
 using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using Microsoft.Win32;
 
 namespace VerteMark.ObjectClasses {
     /// <summary>
@@ -37,6 +38,7 @@ namespace VerteMark.ObjectClasses {
         JsonManipulator? jsonManip;
         bool IsAnotated = false;
         bool newProject;
+        bool saved;
 
 
 
@@ -46,6 +48,7 @@ namespace VerteMark.ObjectClasses {
             folderUtilityManager = new FolderUtilityManager();
             jsonManip = new JsonManipulator();
             newProject = false;
+            saved = false;
         }
 
 
@@ -95,6 +98,7 @@ namespace VerteMark.ObjectClasses {
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
             folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
+            this.saved = true;
         }
 
 

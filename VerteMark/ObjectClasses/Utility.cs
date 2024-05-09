@@ -17,10 +17,12 @@ namespace VerteMark.ObjectClasses {
     internal class Utility {
         // Vlastnosti
         Project project;
+        public bool saved;
 
         // Konstruktor
         public Utility() {
             project = Project.GetInstance();
+            saved = false;
         }
 
         public void CropOriginalPicture(BitmapSource image) {

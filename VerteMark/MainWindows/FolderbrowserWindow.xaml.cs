@@ -13,12 +13,14 @@ namespace VerteMark.MainWindows
     {
         Utility utility;
         string projectType; // create new project or load existing
+        bool loadFromSelect;
 
-        public FolderbrowserWindow()
+        public FolderbrowserWindow(bool fromSelect)
         {
             InitializeComponent();
             utility = new Utility();
             projectType = "";
+            loadFromSelect = fromSelect;
 
             // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
             FileListBox.SelectionChanged += FileListBox_SelectionChanged;
@@ -78,20 +80,25 @@ namespace VerteMark.MainWindows
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            // Switch to SelectWindow
-            SelectWindow selectWindow = new SelectWindow();
+            if (loadFromSelect) {
+                // Switch to SelectWindow
+                SelectWindow selectWindow = new SelectWindow();
 
-            // Získání středu původního okna
-            double originalCenterX = Left + Width / 2;
-            double originalCenterY = Top + Height / 2;
+                // Získání středu původního okna
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
 
-            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
-            selectWindow.Left = originalCenterX - selectWindow.Width / 2;
-            selectWindow.Top = originalCenterY - selectWindow.Height / 2;
+                // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+                selectWindow.Left = originalCenterX - selectWindow.Width / 2;
+                selectWindow.Top = originalCenterY - selectWindow.Height / 2;
 
-            selectWindow.Show();
+                selectWindow.Show();
 
-            this.Close();
+                this.Close();
+            }
+            else {
+                this.Close();
+            }
         }
 
         private void UpdateFileList()
