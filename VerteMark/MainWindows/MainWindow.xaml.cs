@@ -167,17 +167,18 @@ namespace VerteMark {
             Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
             Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
-            AddPreviewImages(); ;
+            AddPreviewImages();
         }
 
         void AddPreviewImages() {
-            for(int i = 0; i < 7; i++) {
+            for(int i = 0; i < 7; i++) { 
                 System.Windows.Controls.Image newImage = new System.Windows.Controls.Image();
                 newImage.Width = utility.GetOriginalPicture().PixelWidth;
                 newImage.Height = utility.GetOriginalPicture().PixelHeight;
                 newImage.Margin = new Thickness(0);
-                Grid.SetColumn(newImage, Grid.GetColumn(ImageHolder));
-                Grid.SetRow(newImage, Grid.GetRow(ImageHolder));
+                Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
+                Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
+                newImage.Stretch=Stretch.Fill;
                 previewImageList.Add(newImage);
                 PreviewGrid.Children.Add(newImage);
             }
@@ -627,6 +628,13 @@ namespace VerteMark {
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
+            foreach(System.Windows.Controls.Image img in previewImageList) {
+                img.Width = CropRectangle.Width;
+                img.Height = CropRectangle.Height;
+                PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
+                PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
+            }
+
 
             utility.CropOriginalPicture(croppedImage);
         }
