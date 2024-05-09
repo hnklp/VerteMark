@@ -38,7 +38,7 @@ namespace VerteMark {
 
         // Canvas Drag Move View
         private bool _isDragging = false;
-        private Point _startDragPoint;
+        private System.Windows.Point _startDragPoint;
 
         // Image crop
         System.Windows.Point? cropStartPoint = null;
@@ -668,7 +668,7 @@ namespace VerteMark {
             if (_isDragging)
             {
                 var sv = sender as ScrollViewer;
-                Point currentPoint = e.GetPosition(sv);
+                System.Windows.Point currentPoint = e.GetPosition(sv);
                 sv.ScrollToHorizontalOffset(sv.HorizontalOffset - (currentPoint.X - _startDragPoint.X));
                 sv.ScrollToVerticalOffset(sv.VerticalOffset - (currentPoint.Y - _startDragPoint.Y));
                 _startDragPoint = currentPoint;
