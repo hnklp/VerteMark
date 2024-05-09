@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png">
+        Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
+        PreviewMouseWheel="Window_PreviewMouseWheel">
 
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
@@ -15,6 +16,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenFileItem_Click"/>
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseItem_Click"/>
+        
         <CommandBinding Command="ApplicationCommands.Properties" Executed="PropertiesItem_Click"/>
     </Window.CommandBindings>
 
@@ -113,7 +115,11 @@
                 <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                          PreviewMouseRightButtonDown="ScrollViewer_PreviewMouseRightButtonDown"
+                          PreviewMouseMove="ScrollViewer_PreviewMouseMove"
+                          PreviewMouseRightButtonUp="ScrollViewer_PreviewMouseRightButtonUp">
+                
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" >
                     <Image x:Name="ImageHolder"  HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <Image x:Name="CroppedImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
