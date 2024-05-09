@@ -60,7 +60,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         private List<string> GetSubfolders(string parentFolderName) {
             string parentFolderPath = Path.Combine(tempFolderPath, parentFolderName);
-            Debug.WriteLine(parentFolderPath);
             if (!Directory.Exists(parentFolderPath)){
                 Directory.CreateDirectory(parentFolderPath); // Zajistí vytvoření složky, pokud ještě neexistuje
             }

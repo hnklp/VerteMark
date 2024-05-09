@@ -60,6 +60,7 @@ namespace VerteMark.ObjectClasses {
 
 
         void CreateNewProject(string path) {
+            anotaces = new List<Anotace>();
             newProject = true;
             activeAnotace = null;
             CreateNewAnotaces();
@@ -82,6 +83,7 @@ namespace VerteMark.ObjectClasses {
 
         void LoadProject(string path) {
             newProject = false;
+            anotaces = new List<Anotace>();
             activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
 
@@ -149,8 +151,6 @@ namespace VerteMark.ObjectClasses {
             foreach (JObject annotationObj in annotations) {
                 foreach (var annotation in annotationObj) {
                     int annotationId = int.Parse(annotation.Key);
-                    Debug.WriteLine(annotationId);
-                    Debug.WriteLine("ANOTACNI ID KTERE SE NACETLO");
                     createdIds.Add(annotationId);
                     CreateNewAnnotation(annotationId);
 
@@ -337,7 +337,6 @@ namespace VerteMark.ObjectClasses {
         public void Choose(string path, string projectType) {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
             if (projectType == "dicoms") {
-                Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
             else {
