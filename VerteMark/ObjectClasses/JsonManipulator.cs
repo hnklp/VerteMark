@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     internal class JsonManipulator {
             public string? ValidatorID { get; private set; }
             public string? AnnotatorID { get; private set; }

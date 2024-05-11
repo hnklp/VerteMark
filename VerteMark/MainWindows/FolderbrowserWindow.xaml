@@ -17,16 +17,16 @@
 
         <!-- Levý sloupec pro přehled -->
         <Grid Grid.Column="0" Margin="10,10,32,10">
-            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="46,54,0,0"/>
-            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="41,100,79,75" Cursor="Hand"/>
+            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="41,54,0,0"/>
+            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="41,100,30,75" Cursor="Hand"/>
         </Grid>
 
         <!-- Pravý sloupec pro RadioButtony a tlačítka -->
 
 
-        <Grid Grid.ColumnSpan="2" Margin="10,10,0,0">
-            <StackPanel Margin="547,153,10,116">
-                <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Width="448"/>
+        <Grid Grid.ColumnSpan="2" Margin="10,5,0,5">
+            <StackPanel Margin="539,104,19,0" VerticalAlignment="Top">
+                <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Width="448" IsChecked="True"/>
                 <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
                 <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
             </StackPanel>
