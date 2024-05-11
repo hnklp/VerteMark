@@ -1,15 +1,8 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows.Media.Imaging;
-using VerteMark.ObjectClasses.FolderClasses;
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     /// <summary>
     /// Třída obsahující metody, které slouží jako interface pro UI
     /// (Prakticky metody co se volají tlačítky)

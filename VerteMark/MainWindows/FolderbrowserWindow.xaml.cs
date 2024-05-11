@@ -1,8 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using VerteMark.ObjectClasses;
@@ -107,7 +103,12 @@ namespace VerteMark.MainWindows
                 selectWindow.Top = originalCenterY - selectWindow.Height / 2;
 
                 selectWindow.Show();
-                oldMainWindow.Close();
+
+                if (oldMainWindow != null)
+                {
+                    oldMainWindow.Close();
+                }
+                
                 this.Close();
             }
             else {

@@ -1,25 +1,13 @@
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
-using System.Windows.Shell;
-using System.Security.RightsManagement;
-using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
-using System.Data;
-using Microsoft.Win32;
 using System.Reflection;
 
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
