@@ -11,7 +11,7 @@
             <ColumnDefinition Width="56*"/>
             <ColumnDefinition Width="19*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock HorizontalAlignment="Left" Margin="63,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="VerteMark verze {"/><Run Language="en-gb" Text="ver"/><Run Text="}"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="63,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="VerteMark verze "/><Run Language="en-gb" Text="1.0"/></TextBlock>
 
         <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="214,241,16,16" Height="27" Width="90" Grid.ColumnSpan="2" RenderTransformOrigin="0.411,0.075"/>
 
@@ -35,7 +35,7 @@
                 <Label Content="Sabina Ajksnerová" FontSize="10"/>
             </StackPanel>
         </GroupBox>
-        <Label Content="UJEP Ústí nad Labem 2024" HorizontalAlignment="Left" Margin="16,268,0,0" VerticalAlignment="Top" Width="158" FontSize="10"/>
+        <Label Content="UJEP Ústí nad Labem 2024" HorizontalAlignment="Left" Margin="16,256,0,0" VerticalAlignment="Top" Width="158" FontSize="10"/>
         <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="59,32,0,0" VerticalAlignment="Top" FontSize="10"/>
 
     </Grid>

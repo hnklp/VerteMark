@@ -84,7 +84,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         public void AddUserActionToMetadata(User user) {
             if (!File.Exists(metaPath)) {
-                Debug.WriteLine("METAPATH NEEXISTUJE!!");
                 return;
             }
             DateTime currentTime = DateTime.Now;

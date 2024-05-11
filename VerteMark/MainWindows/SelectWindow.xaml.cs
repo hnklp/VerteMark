@@ -23,7 +23,7 @@ namespace VerteMark
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow();
+            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(true);
 
             // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
