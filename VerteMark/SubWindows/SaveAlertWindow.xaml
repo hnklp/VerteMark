@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark.SubWindows"
         mc:Ignorable="d"
-        Title="" Height="170" Width="350">
+        Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png">
     <Grid>
-        <TextBlock Text="Před otevřením nového souboru musíte uložit dosavadní práci. Chcete uložit a uzavřít rozpracovanou práci a otevřít novou?"
-                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="49" Width="304" Margin="0,22,0,0"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,88,0,0">
-            <Button Content="Uložit a otevřít nový projekt" Width="150" Margin="5" Click="SaveAndContinue_Click"/>
-            <Button Content="Zpět k rozdělané práci" Width="150" Margin="5" Click="Back_Click"/>
+        <TextBlock
+                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="49" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci"/><Run Text=" a otevřít novou?"/></TextBlock>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="148,70,0,0">
+            <Button Content="Uložit" Width="70" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
+            <Button Content="Zpět" Width="70" Height="30" Margin="5" Click="Back_Click"/>
         </StackPanel>
     </Grid>
 </Window>
