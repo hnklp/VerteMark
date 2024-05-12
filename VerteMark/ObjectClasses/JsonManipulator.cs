@@ -10,10 +10,11 @@ namespace VerteMark.ObjectClasses
             public string? ValidationDate { get; private set; }
 
             public List<Dictionary<string, List<Tuple<int, int>>>>? Annotations { get; private set; }
+            public Dictionary<string, bool>? ValidatedAnnotations { get; private set; }
 
 
-            // naimportovat atributy usera a vsechny anotace
-            void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations) {
+        // naimportovat atributy usera a vsechny anotace
+        void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, Dictionary<string, bool> programValidatedAnnotations) {
                 // načtení základních atributů
 
                 DateTime theTime = DateTime.Now;
@@ -27,6 +28,7 @@ namespace VerteMark.ObjectClasses
                 }
 
                 Annotations = programAnnotations;
+                ValidatedAnnotations = programValidatedAnnotations;
             }
 
             // vytvoreni jsonu na zaklade metody ImportAttributes
@@ -37,8 +39,8 @@ namespace VerteMark.ObjectClasses
 
 
             // pro jednoduchost muze Project vyuzit jen metodu ExportJson, ktera kombinuje predchozi metody
-            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations) {
-                ImportAttributes(user, programAnnotations);
+            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, Dictionary<string, bool> programValidatedAnnotations) {
+                ImportAttributes(user, programAnnotations, programValidatedAnnotations);
                 string createdJson = CreateJson();
 
                 return createdJson;
