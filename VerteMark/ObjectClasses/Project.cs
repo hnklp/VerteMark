@@ -1,23 +1,13 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
-using System.Windows.Shell;
-using System.Security.RightsManagement;
-using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
-using System.Data;
 using System.Reflection;
 
-namespace VerteMark.ObjectClasses {
+
+namespace VerteMark.ObjectClasses
+{
     /// <summary>
     /// Hlavní třída projektu.
     /// Propojuje ostatní třídy a drží informace o aktuálním stavu 
@@ -38,6 +28,7 @@ namespace VerteMark.ObjectClasses {
         JsonManipulator? jsonManip;
         bool IsAnotated = false;
         bool newProject;
+        bool saved;
 
 
 
@@ -47,6 +38,7 @@ namespace VerteMark.ObjectClasses {
             folderUtilityManager = new FolderUtilityManager();
             jsonManip = new JsonManipulator();
             newProject = false;
+            saved = false;
         }
 
 
@@ -56,7 +48,9 @@ namespace VerteMark.ObjectClasses {
 
 
         void CreateNewProject(string path) {
+            anotaces = new List<Anotace>();
             newProject = true;
+            activeAnotace = null;
             CreateNewAnotaces();
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
@@ -77,7 +71,8 @@ namespace VerteMark.ObjectClasses {
 
         void LoadProject(string path) {
             newProject = false;
-            //CreateNewAnotaces(); // - prozatimni reseni!
+            anotaces = new List<Anotace>();
+            activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
 
             JArray annotations = jsonManip.UnpackJson(jsonString);
@@ -108,6 +103,7 @@ namespace VerteMark.ObjectClasses {
             }
             folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
             folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
+            this.saved = true;
         }
 
 
@@ -143,8 +139,6 @@ namespace VerteMark.ObjectClasses {
             foreach (JObject annotationObj in annotations) {
                 foreach (var annotation in annotationObj) {
                     int annotationId = int.Parse(annotation.Key);
-                    Debug.WriteLine(annotationId);
-                    Debug.WriteLine("ANOTACNI ID KTERE SE NACETLO");
                     createdIds.Add(annotationId);
                     CreateNewAnnotation(annotationId);
 
@@ -331,7 +325,6 @@ namespace VerteMark.ObjectClasses {
         public void Choose(string path, string projectType) {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
             if (projectType == "dicoms") {
-                Debug.WriteLine(newPath);
                 CreateNewProject(newPath);
             }
             else {

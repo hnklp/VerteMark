@@ -1,8 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using VerteMark.ObjectClasses;
@@ -13,16 +9,22 @@ namespace VerteMark.MainWindows
     {
         Utility utility;
         string projectType; // create new project or load existing
+        bool loadFromSelect;
+        public MainWindow? oldMainWindow;
 
-        public FolderbrowserWindow()
+        public FolderbrowserWindow(bool fromSelect)
         {
             InitializeComponent();
             utility = new Utility();
             projectType = "";
+            loadFromSelect = fromSelect;
+            oldMainWindow = null;
+            
 
             // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
             FileListBox.SelectionChanged += FileListBox_SelectionChanged;
             LoadforRole();
+            Closing += FolderbrowserWindow_Closing;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -57,9 +59,19 @@ namespace VerteMark.MainWindows
             mainWindow.Left = originalCenterX - mainWindow.Width / 2;
             mainWindow.Top = originalCenterY - mainWindow.Height / 2;
 
+
             mainWindow.Show();
 
             this.Close();
+        }
+
+        private void FolderbrowserWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+
+            // Kontrola, zda oldMainWindow není null a zda je viditelné
+            if (oldMainWindow != null && oldMainWindow.Visibility == Visibility.Hidden) {
+                // Zavření oldMainWindow
+                oldMainWindow.Close();
+            }
         }
 
         private void FileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -78,20 +90,31 @@ namespace VerteMark.MainWindows
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            // Switch to SelectWindow
-            SelectWindow selectWindow = new SelectWindow();
+            if (loadFromSelect) {
+                // Switch to SelectWindow
+                SelectWindow selectWindow = new SelectWindow();
 
-            // Získání středu původního okna
-            double originalCenterX = Left + Width / 2;
-            double originalCenterY = Top + Height / 2;
+                // Získání středu původního okna
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
 
-            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
-            selectWindow.Left = originalCenterX - selectWindow.Width / 2;
-            selectWindow.Top = originalCenterY - selectWindow.Height / 2;
+                // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+                selectWindow.Left = originalCenterX - selectWindow.Width / 2;
+                selectWindow.Top = originalCenterY - selectWindow.Height / 2;
 
-            selectWindow.Show();
+                selectWindow.Show();
 
-            this.Close();
+                if (oldMainWindow != null)
+                {
+                    oldMainWindow.Close();
+                }
+                
+                this.Close();
+            }
+            else {
+                oldMainWindow.Visibility = Visibility.Visible;
+                this.Close();
+            }
         }
 
         private void UpdateFileList()

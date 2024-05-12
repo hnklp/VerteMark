@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace VerteMark.ObjectClasses {
+namespace VerteMark.ObjectClasses
+{
     internal class JsonManipulator {
             public string? ValidatorID { get; private set; }
             public string? AnnotatorID { get; private set; }
@@ -15,10 +10,11 @@ namespace VerteMark.ObjectClasses {
             public string? ValidationDate { get; private set; }
 
             public List<Dictionary<string, List<Tuple<int, int>>>>? Annotations { get; private set; }
+            public List<string>? ValidatedAnnotations { get; private set; }
 
 
             // naimportovat atributy usera a vsechny anotace
-            void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations) {
+            void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, List<string> programValidatedAnnotations) {
                 // načtení základních atributů
 
                 DateTime theTime = DateTime.Now;
@@ -32,6 +28,7 @@ namespace VerteMark.ObjectClasses {
                 }
 
                 Annotations = programAnnotations;
+                ValidatedAnnotations = programValidatedAnnotations;
             }
 
             // vytvoreni jsonu na zaklade metody ImportAttributes
@@ -42,8 +39,8 @@ namespace VerteMark.ObjectClasses {
 
 
             // pro jednoduchost muze Project vyuzit jen metodu ExportJson, ktera kombinuje predchozi metody
-            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations) {
-                ImportAttributes(user, programAnnotations);
+            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, List<string> programValidatedAnnotations) {
+                ImportAttributes(user, programAnnotations, programValidatedAnnotations);
                 string createdJson = CreateJson();
 
                 return createdJson;
@@ -51,11 +48,19 @@ namespace VerteMark.ObjectClasses {
 
 
         // UnpackJson - lepsi funkce pro rozbaleni json stringu
-            public JArray? UnpackJson(string createdJson) {
+            public List<JArray?> UnpackJson(string createdJson) {
             JObject jsonObject = JObject.Parse(createdJson);
             // Získání seznamu anotací ze zpracovaného JObject
-            JArray annotationsArray = (JArray)jsonObject["Annotations"];
-            return annotationsArray;
-        }
+            JArray? annotationsArray = (JArray?)jsonObject["Annotations"];
+            JArray? validatedAnnotationsArray = (JArray?)jsonObject["ValidatedAnnotations"];
+
+            List<JArray?> GatheredAnnotations = new List<JArray?>
+            {
+                annotationsArray,
+                validatedAnnotationsArray
+            };
+
+            return GatheredAnnotations;
+            }
     }
 }

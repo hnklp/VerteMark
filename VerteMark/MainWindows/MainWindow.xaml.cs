@@ -9,47 +9,43 @@ using VerteMark.ObjectClasses;
 using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
-using System.Diagnostics;
-using System.Drawing.Imaging;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Media.Media3D;
-using System.IO;
-using System.Reflection;
+using VerteMark.SubWindows;
 
 
-namespace VerteMark {
+
+namespace VerteMark
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
     public partial class MainWindow : Window {
-        Utility utility;
-        User? loggedInUser;
-        List<CheckBox> checkBoxes;
-        ToggleButton activeAnotButton;
-        ToggleButton activeToolbarButton;
+        private Utility utility;
+        private User? loggedInUser;
+        private List<CheckBox> checkBoxes;
+        private ToggleButton activeAnotButton;
+        private ToggleButton activeToolbarButton;
 
         StateManager stateManager;
 
         // Toolbar drag and drop
-        bool isDragging = false;
-        System.Windows.Point offset;
-        Thumb grip;
+        private bool isDragging = false;
+        private Point offset;
+        private Thumb grip;
 
         // Canvas Drag Move View
         private bool _isDragging = false;
-        private System.Windows.Point _startDragPoint;
+        private Point _startDragPoint;
 
         // Image crop
-        System.Windows.Point? cropStartPoint = null;
+        private Point? cropStartPoint = null;
 
         // Dont worry about it (canvas)
         private StylusPoint? firstPoint = null;
         private StylusPoint? lastPoint = null;
 
-        List<System.Windows.Controls.Image> previewImageList;
+        private List<Image> previewImageList;
 
         public MainWindow() {
             InitializeComponent();
@@ -59,7 +55,7 @@ namespace VerteMark {
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-            previewImageList = new List<System.Windows.Controls.Image>();
+            previewImageList = new List<Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -142,7 +138,7 @@ namespace VerteMark {
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
 
-        void InitializeCheckboxes() {
+        private void InitializeCheckboxes() {
             foreach (var CheckBox in checkBoxes) {
                 bool isValidator = loggedInUser.Validator;
                 CheckBox.IsEnabled = isValidator;
@@ -151,7 +147,7 @@ namespace VerteMark {
         }
 
         // Podle velikosti ImageHolder nastaví plátno
-        void SetCanvasComponentsSize() {
+        private void SetCanvasComponentsSize() {
             InkCanvas.Width = utility.GetOriginalPicture().PixelWidth;
             InkCanvas.Height = utility.GetOriginalPicture().PixelHeight;
             InkCanvas.Margin = new Thickness(0);
@@ -204,19 +200,20 @@ namespace VerteMark {
         }
 
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PNG Files (*.png)|*.png|All Files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "Select a PNG File";
-            if (openFileDialog.ShowDialog() == true) {
-                string selectedFilePath = openFileDialog.FileName;
-                bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
-                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                    BitmapImage bitmapImage = utility.GetOriginalPicture();
-                    ImageHolder.Source = bitmapImage;
-                }
+                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this);
+
+            if (utility.saved) {
+                saveAlertWindow.Browse();
+            }
+            else {
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
+
+                saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
+                saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
+
+
+                saveAlertWindow.Show();
             }
         }
 
@@ -288,7 +285,7 @@ namespace VerteMark {
             e.Handled = true;
         }
 
-        void SwitchActiveToolbarButton(ToggleButton pressedButton) {
+        private void SwitchActiveToolbarButton(ToggleButton pressedButton) {
             if (activeToolbarButton != null) {
                 activeToolbarButton.IsChecked = false;
                 pressedButton.IsChecked = true;
@@ -338,14 +335,14 @@ namespace VerteMark {
          */
 
         //Spojování linky
-        private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
+        private void InkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e) {
             if (firstPoint == null) {
                 firstPoint = e.Stroke.StylusPoints.First();
             }
             lastPoint = e.Stroke.StylusPoints.Last();
         }
 
-        void ConnectStrokeAnotace() {
+        private void ConnectStrokeAnotace() {
             if (stateManager != null && stateManager.CurrentState == AppState.Drawing && firstPoint != null && lastPoint != null) {
                 // Calculate the distance between the first and last points
                 double distance = Math.Sqrt(Math.Pow(lastPoint.Value.X - firstPoint.Value.X, 2) + Math.Pow(lastPoint.Value.Y - firstPoint.Value.Y, 2));
@@ -369,7 +366,7 @@ namespace VerteMark {
                 }
             }
         }
-        void UpdateElementsWithAnotace() {
+        private void UpdateElementsWithAnotace() {
             InkCanvas.Strokes.Clear();
 
             WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
@@ -378,44 +375,42 @@ namespace VerteMark {
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
-        void SaveCanvasIntoAnot() {
+        private void SaveCanvasIntoAnot() {
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
             rtb.Render(InkCanvas);
             utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
-        void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void InkCanvas_MouseUp(object sender, MouseButtonEventArgs e) {
             if (stateManager.CurrentState == AppState.Drawing) {
-                /*
-                utility.UpdateSelectedAnotation(ConvertInkCanvasToWriteableBitmap(InkCanvas));
-                if(CroppedImage.Source == null){
-                    PreviewImage.Source = utility.GetActiveAnotaceImage();
-                }else{
-                    CroppedPreviewImage.Source = utility.GetActiveAnotaceImage();
-                }
-                */
-
                 // width a height a dpi by mohli dělat bordel při ukládání
                 SaveCanvasIntoAnot();
                 UpdateElementsWithAnotace();
 
                 utility.SetActiveAnotaceIsAnotated(true);
-                CropTButton.IsEnabled = !utility.GetIsAnotated();
+                ToggleCropButton(!utility.GetIsAnotated());
             }
         }
 
+
+        private void ToggleCropButton(bool isEnabled)
+        {
+            CropTButton.IsEnabled = isEnabled;
+            CropTButton.Opacity = isEnabled ? 1 : 0.5;
+        }
+
         //Smaže obsah vybrané anotace
-        void Smazat_butt(object sender, RoutedEventArgs e) {
+        private void Delete_butt(object sender, RoutedEventArgs e) {
             utility.ClearActiveAnotace();
             UpdateElementsWithAnotace();
 
             utility.SetActiveAnotaceIsAnotated(false);
-            CropTButton.IsEnabled = !utility.GetIsAnotated();
+            ToggleCropButton(!utility.GetIsAnotated());
         }
 
         /* Ukázka všech anotací */
-        void PreviewAllAnotaces() {
+        private void PreviewAllAnotaces() {
             if(ImageHolder.Source != null) {
                 List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
                 for(int i = 0; i < bitmaps.Count; i++) {
@@ -429,7 +424,7 @@ namespace VerteMark {
 
         /* Přepínání anotací */
 
-        void SwitchActiveAnot(int id) {
+        private void SwitchActiveAnot(int id) {
             // Stroking the connection (spojení od začátku ke konci)
         //    ConnectStrokeAnotace();
             SaveCanvasIntoAnot();
@@ -444,7 +439,7 @@ namespace VerteMark {
             PreviewAllAnotaces();
         }
 
-        void SwitchActiveAnotButton(ToggleButton pressedButton) { 
+        private void SwitchActiveAnotButton(ToggleButton pressedButton) { 
 
             if(activeAnotButton != null) {
 
@@ -538,7 +533,7 @@ namespace VerteMark {
                     double newY = newPosition.Y - offset.Y - toolbarOffset;
 
                     // Ensure the ToolBarTray stays within the bounds of the window
-                    newX = Math.Max(0, Math.Min(newX, Grid.ColumnDefinitions[0].ActualWidth - ToolBarTray.ActualWidth));
+                    newX = Math.Max(0, Math.Min(newX, Grid.ColumnDefinitions[0].ActualWidth  + Grid.ColumnDefinitions[1].ActualWidth - ToolBarTray.ActualWidth));
                     newY = Math.Max(0, Math.Min(newY, Grid.ActualHeight - ToolBarTray.ActualHeight));
 
                     ToolBarTray.Margin = new Thickness(newX, newY, 0, 0);
@@ -703,7 +698,13 @@ namespace VerteMark {
             }
         }
 
-        // Drag Move View
+
+        /*
+         * ================
+         *  Drag Move View
+         * ================
+         */
+
 
         private void ScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
