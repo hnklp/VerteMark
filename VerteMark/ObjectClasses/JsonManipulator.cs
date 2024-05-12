@@ -48,13 +48,13 @@ namespace VerteMark.ObjectClasses
 
 
         // UnpackJson - lepsi funkce pro rozbaleni json stringu
-            public List<JArray?> UnpackJson(string createdJson) {
+            public List<JArray>? UnpackJson(string createdJson) {
             JObject jsonObject = JObject.Parse(createdJson);
             // Získání seznamu anotací ze zpracovaného JObject
             JArray? annotationsArray = (JArray?)jsonObject["Annotations"];
             JArray? validatedAnnotationsArray = (JArray?)jsonObject["ValidatedAnnotations"];
 
-            List<JArray?> GatheredAnnotations = new List<JArray?>
+            List<JArray>? GatheredAnnotations = new List<JArray>
             {
                 annotationsArray,
                 validatedAnnotationsArray

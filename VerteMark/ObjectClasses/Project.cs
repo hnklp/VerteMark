@@ -101,10 +101,13 @@ namespace VerteMark.ObjectClasses
 
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
+            List<string>? valids = new List<string>();
+
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
-            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+
+            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts, valids));
             folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
         }
