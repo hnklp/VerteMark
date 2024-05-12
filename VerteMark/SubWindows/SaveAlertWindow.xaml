@@ -9,9 +9,12 @@
     <Grid>
         <TextBlock
                    TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="49" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci"/><Run Text=" a otevřít novou?"/></TextBlock>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="148,70,0,0">
-            <Button Content="Uložit" Width="70" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,70,0,0" Width="190">
+            <Button Content="Uložit" Width="94" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
             <Button Content="Zpět" Width="70" Height="30" Margin="5" Click="Back_Click"/>
         </StackPanel>
+        <Button Content="Založit" Click="SaveAndContinue_Click" Margin="6,127,285,6"/>
+        <TextBlock
+            TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="160" Margin="70,133,0,0" FontSize="10"><Run FontSize="9" Language="cs-cz" Text="V případě nedokončené anotace"/></TextBlock>
     </Grid>
 </Window>
