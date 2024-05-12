@@ -75,11 +75,14 @@ namespace VerteMark.ObjectClasses
             activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
 
-            JArray annotations = jsonManip.UnpackJson(jsonString);
+            List<JArray> annotations = jsonManip.UnpackJson(jsonString);
             if (annotations != null || annotations.Count > 0) {
 
+                // První JArray -> Just Annotated
+                JArray firstAnnotation = annotations[0];
+
                 originalPicture = folderUtilityManager.GetImage();
-                List<int> created = LoadAnnotations(annotations);
+                List<int> created = LoadAnnotations(firstAnnotation);
                 AddMissingAnnotations(created);
             }
             else {
