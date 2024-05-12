@@ -4,14 +4,18 @@
 VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového učení.
 
 ### Aktuální funkčnost
-* GUI
-* Extrahování DICOM (PNG, CSV)
+* Extrahování DICOM (PNG, JSON)
 * Kreslení
+* Vlastní file format
+* Ukládání anotovaných snímků
 
-### Podporované operační systémy
+### Oficálně podporované OS
 * Windows 10/11
 * Windows 8.**1**
 * Windows 7 SP1
+
+### Neoficiálně podporované OS
+* macOS
 
 > [!WARNING]  
 > Windows 8 nejsou podporovány.
@@ -25,7 +29,7 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
 
 Alex Schönfelder -  GUI, Backend\
 Sabina Ajksnerová - GUI, Backend\
-Hynek Půta - GUI, Backend, Kompatibilita, Installer\
+Hynek Půta - GUI, Backend, macOS Port\
 Josef Bér - Backend\
 Jakub Kepič - Backend
 
