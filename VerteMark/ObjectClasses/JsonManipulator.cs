@@ -10,11 +10,11 @@ namespace VerteMark.ObjectClasses
             public string? ValidationDate { get; private set; }
 
             public List<Dictionary<string, List<Tuple<int, int>>>>? Annotations { get; private set; }
-            public Dictionary<string, bool>? ValidatedAnnotations { get; private set; }
+            public List<string>? ValidatedAnnotations { get; private set; }
 
 
-        // naimportovat atributy usera a vsechny anotace
-        void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, Dictionary<string, bool> programValidatedAnnotations) {
+            // naimportovat atributy usera a vsechny anotace
+            void ImportAttributes(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, List<string> programValidatedAnnotations) {
                 // načtení základních atributů
 
                 DateTime theTime = DateTime.Now;
@@ -39,7 +39,7 @@ namespace VerteMark.ObjectClasses
 
 
             // pro jednoduchost muze Project vyuzit jen metodu ExportJson, ktera kombinuje predchozi metody
-            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, Dictionary<string, bool> programValidatedAnnotations) {
+            public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, List<string> programValidatedAnnotations) {
                 ImportAttributes(user, programAnnotations, programValidatedAnnotations);
                 string createdJson = CreateJson();
 
@@ -48,11 +48,19 @@ namespace VerteMark.ObjectClasses
 
 
         // UnpackJson - lepsi funkce pro rozbaleni json stringu
-            public JArray? UnpackJson(string createdJson) {
+            public List<JArray?> UnpackJson(string createdJson) {
             JObject jsonObject = JObject.Parse(createdJson);
             // Získání seznamu anotací ze zpracovaného JObject
-            JArray annotationsArray = (JArray)jsonObject["Annotations"];
-            return annotationsArray;
-        }
+            JArray? annotationsArray = (JArray?)jsonObject["Annotations"];
+            JArray? validatedAnnotationsArray = (JArray?)jsonObject["ValidatedAnnotations"];
+
+            List<JArray?> GatheredAnnotations = new List<JArray?>
+            {
+                annotationsArray,
+                validatedAnnotationsArray
+            };
+
+            return GatheredAnnotations;
+            }
     }
 }
