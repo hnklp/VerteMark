@@ -75,11 +75,14 @@ namespace VerteMark.ObjectClasses
             activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
 
-            JArray annotations = jsonManip.UnpackJson(jsonString);
+            List<JArray> annotations = jsonManip.UnpackJson(jsonString);
             if (annotations != null || annotations.Count > 0) {
 
+                // První JArray -> Just Annotated
+                JArray firstAnnotation = annotations[0];
+
                 originalPicture = folderUtilityManager.GetImage();
-                List<int> created = LoadAnnotations(annotations);
+                List<int> created = LoadAnnotations(firstAnnotation);
                 AddMissingAnnotations(created);
             }
             else {
@@ -98,10 +101,13 @@ namespace VerteMark.ObjectClasses
 
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
+            List<string>? valids = new List<string>();
+
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
             }
-            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts));
+
+            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts, valids));
             folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
         }
