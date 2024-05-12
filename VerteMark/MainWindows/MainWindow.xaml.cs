@@ -87,6 +87,11 @@ namespace VerteMark
                 double zoomFactor = 0.25;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
+
+            // zvalidneni vsech anotaci, pokud je user validator:
+            if ( loggedInUser != null && loggedInUser.Validator) {
+                utility.ValidateAll();
+            }
             
         }
         // Debugovací konstruktor pro volání z debug tlačítka
@@ -130,8 +135,8 @@ namespace VerteMark
                 double zoomFactor = 0.25;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
-
         }
+
 
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
@@ -497,6 +502,40 @@ namespace VerteMark
             e.Handled = true;
         }
 
+        private void SwitchValidation_Check_0(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(0);
+        }
+
+        private void SwitchValidation_Check_1(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(1);
+        }
+
+        private void SwitchValidation_Check_2(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(2);
+        }
+
+        private void SwitchValidation_Check_3(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(3);
+        }
+
+        private void SwitchValidation_Check_4(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(4);
+        }
+
+        private void SwitchValidation_Check_5(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(5);
+        }
+
+        private void SwitchValidation_Check_6(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(6);
+        }
+
+        private void SwitchValidation_Check_7(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(7);
+        }
+
+
+
         /*
          * =======================
          *  Toolbar drop and drag
@@ -738,7 +777,6 @@ namespace VerteMark
                 (sender as ScrollViewer).Cursor = Cursors.Arrow;
             }
         }
-
     }
 
     public class PercentageConverter : IValueConverter {

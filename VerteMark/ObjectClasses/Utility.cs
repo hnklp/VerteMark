@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses
@@ -70,11 +71,16 @@ namespace VerteMark.ObjectClasses
         }
 
         public void SwitchAnotationValidation(int id) {
+            Debug.Write("UTILITY VOLA VALIDACI");
             project.ValidateAnnotationByID(id);
         }
 
         public void ChangeActiveAnotation(int id) {
             project.SelectActiveAnotace(id);
+        }
+
+        public void ValidateAll() {
+            project.ValidateAll();
         }
 
         /*
