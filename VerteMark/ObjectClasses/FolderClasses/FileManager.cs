@@ -25,6 +25,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         public string? jsonPath;
         public string? metaPath;
         private string key;
+        public string? fileName;
 
 
         public FileManager() {
@@ -38,6 +39,15 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             using (FileStream stream = new FileStream(pngPath, FileMode.Create)) {
                 // Uložení bitmapy do souboru pomocí encoderu
                 encoder.Save(stream);
+            }
+        }
+
+        public void SaveJson(string jsonString) {
+            string? path = jsonPath;
+            if (path != null) {
+                using (StreamWriter sw = new StreamWriter(path)) {
+                    sw.Write(jsonString);
+                }
             }
         }
 
@@ -73,14 +83,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * Specialne pri nacitani rozdelaneho projektu:
         * ============================================
         */
-
-
-        // pujde do funkce JSON maker - ulozeni do output slozky
-        public List<Anotace> GetProjectAnotaces() {
-            return null;
-        }
-
-
 
         public void AddUserActionToMetadata(User user) {
             if (!File.Exists(metaPath)) {
@@ -128,7 +130,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             DicomImage image = new DicomImage(dicomFile.Dataset);
             Bitmap bmp = image.RenderImage().As<Bitmap>();
 
-            string fileName = Path.GetFileNameWithoutExtension(dicomPath);
+            fileName = Path.GetFileNameWithoutExtension(dicomPath);
             pngPath = Path.Combine(outputPath, fileName + ".png");
             jsonPath = Path.Combine(outputPath, fileName + ".json");
             bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);

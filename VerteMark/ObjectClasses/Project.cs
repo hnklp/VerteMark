@@ -93,7 +93,7 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public void SaveProject() {
+        public void SaveProject(int savingParameter) {
 
             // pred ulozenim - pokud je uzivatel anotator:
                     // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
@@ -110,9 +110,9 @@ namespace VerteMark.ObjectClasses
                     valids.Add(anot.Id);
                 }
             }
-
-            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts, valids));
-            folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
+            folderUtilityManager.Save(loggedInUser, newProject, 
+                originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
+                savingParameter); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
         }
 

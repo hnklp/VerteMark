@@ -46,6 +46,7 @@ namespace VerteMark
         private StylusPoint? lastPoint = null;
 
         private List<Image> previewImageList;
+        private int savingParam;
 
         public MainWindow() {
             InitializeComponent();
@@ -59,7 +60,7 @@ namespace VerteMark
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
-                    OpenFileItem_Click);
+                    OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
 
             // Přidání CommandBinding pro Save
@@ -77,7 +78,8 @@ namespace VerteMark
 
             activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
-          
+            savingParam = 0;
+
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -91,6 +93,7 @@ namespace VerteMark
             // zvalidneni vsech anotaci, pokud je user validator:
             if ( loggedInUser != null && loggedInUser.Validator) {
                 utility.ValidateAll();
+                savingParam = 2;
             }
             
         }
@@ -108,7 +111,7 @@ namespace VerteMark
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
-                    OpenFileItem_Click);
+                    OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
 
             // Přidání CommandBinding pro Save
@@ -126,6 +129,7 @@ namespace VerteMark
             stateManager.StateChanged += HandleStateChanged;
             activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
+            savingParam = 2;
 
             Loaded += delegate {
                 SetCanvasComponentsSize();
@@ -186,26 +190,8 @@ namespace VerteMark
             previewImageList.Add(PreviewImage);
         }
 
-        private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "open_dialog_title_str";
-
-            if (openFileDialog.ShowDialog() == true) {
-                string selectedFilePath = openFileDialog.FileName;
-                bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
-                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                    BitmapImage bitmapImage = utility.GetOriginalPicture();
-                    ImageHolder.Source = bitmapImage;
-                }
-            }
-        }
-
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
-                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this);
+                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, loggedInUser.Validator);
 
             if (utility.saved) {
                 saveAlertWindow.Browse();
@@ -330,7 +316,7 @@ namespace VerteMark
         }
 
         private void Save_Click(object sender, RoutedEventArgs e) {
-            utility.SaveProject();
+            
         }
 
         /*

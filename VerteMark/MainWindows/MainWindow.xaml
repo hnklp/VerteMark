@@ -14,7 +14,7 @@
     </Window.InputBindings>
 
     <Window.CommandBindings>
-        <CommandBinding Command="Open" Executed="OpenFileItem_Click"/>
+        <CommandBinding Command="Open" Executed="OpenProject_Click"/>
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseItem_Click"/>
 
         <CommandBinding Command="ApplicationCommands.Properties" Executed="PropertiesItem_Click"/>

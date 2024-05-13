@@ -45,8 +45,8 @@ namespace VerteMark.ObjectClasses
             return project.TryOpeningProject(path);
         }
 
-        public void SaveProject() {
-            project.SaveProject();
+        public void SaveProject(int savingParameter) {
+            project.SaveProject(savingParameter);
         }
 
 
