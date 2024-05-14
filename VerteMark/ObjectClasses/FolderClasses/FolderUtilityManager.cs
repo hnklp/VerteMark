@@ -24,16 +24,42 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        public void Save(User user, bool newProject, BitmapImage image) {
-            fileManager.SaveCroppedImage(image);
+
+        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated
+        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter) {
+            switch (savingParameter) {
+                case 0:
+                    fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
+                    break;
+                case 1:
+                    fileManager.outputPath = Path.Combine(tempPath, "to_validate");
+                    break;
+                case 2:
+                    fileManager.outputPath = Path.Combine(tempPath, "validated");
+                    break;
+            }
+
+            string oldFolder = fileManager.outputPath;
+            fileManager.CreateOutputFile(fileManager.fileName);
+            fileManager.TransformPaths();
+
             if (!newProject) {
+                string oldMetaPath = fileManager.metaPath;
+                fileManager.metaPath = Path.Combine(fileManager.outputPath, Path.GetFileName(fileManager.metaPath));
+                if (oldMetaPath != fileManager.metaPath) {
+                    fileManager.CopyMetaFile(oldMetaPath);
+                }
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
                 fileManager.ExtractAndSaveMetadata(user);
             }
+            fileManager.SaveJson(jsonString);
+            fileManager.SaveCroppedImage(image);
+            folderManager.ProcessFolders(); // deletes duplicity folders
             SaveZip();
         }
+
 
         public bool ExtractZip(string path){
             try {
@@ -71,6 +97,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
                 string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
                 string? metaFile = files.FirstOrDefault(f => f.EndsWith(".meta"));
+                string fileName = Path.GetFileNameWithoutExtension(pngFile);
 
                 if (pngFile == null || metaFile == null || jsonFile == null) {
                     return "";
@@ -81,8 +108,13 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                     fileManager.pngPath = pngFile;
                     fileManager.jsonPath = jsonFile;
                     fileManager.outputPath = path;
+                    fileManager.fileName = fileName;
 
                     string jsonContent = File.ReadAllText(jsonFile);
+                    Debug.WriteLine(fileManager.metaPath);
+                    Debug.WriteLine(fileManager.pngPath);
+                    Debug.WriteLine(fileManager.outputPath);
+                    Debug.WriteLine(fileManager.jsonPath);
                     return jsonContent;
                 }
             }
@@ -92,15 +124,6 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             }
         }
 
-
-        public void SaveJson(string neco) {
-            string? path = fileManager.jsonPath;
-            if (path != null) {
-                using (StreamWriter sw = new StreamWriter(path)) {
-                    sw.Write(neco);
-                }
-            }
-        }
 
         /*
         * =============================

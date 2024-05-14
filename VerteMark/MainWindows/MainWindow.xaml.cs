@@ -46,6 +46,7 @@ namespace VerteMark
         private StylusPoint? lastPoint = null;
 
         private List<Image> previewImageList;
+        private int savingParam;
 
         public MainWindow() {
             InitializeComponent();
@@ -59,7 +60,7 @@ namespace VerteMark
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
-                    OpenFileItem_Click);
+                    OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
 
             // Přidání CommandBinding pro Save
@@ -77,7 +78,8 @@ namespace VerteMark
 
             activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
-          
+            savingParam = 0;
+
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -87,6 +89,12 @@ namespace VerteMark
                 double zoomFactor = 0.25;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
+
+            // zvalidneni vsech anotaci, pokud je user validator:
+            if ( loggedInUser != null && loggedInUser.Validator) {
+                utility.ValidateAll();
+                savingParam = 2;
+            }
             
         }
         // Debugovací konstruktor pro volání z debug tlačítka
@@ -103,7 +111,7 @@ namespace VerteMark
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
-                    OpenFileItem_Click);
+                    OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
 
             // Přidání CommandBinding pro Save
@@ -121,6 +129,7 @@ namespace VerteMark
             stateManager.StateChanged += HandleStateChanged;
             activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
+            savingParam = 2;
 
             Loaded += delegate {
                 SetCanvasComponentsSize();
@@ -130,8 +139,8 @@ namespace VerteMark
                 double zoomFactor = 0.25;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
-
         }
+
 
         //dialog otevreni souboru s filtrem
         //TODO odstranit moznost vsechny soubory??
@@ -181,26 +190,8 @@ namespace VerteMark
             previewImageList.Add(PreviewImage);
         }
 
-        private void OpenFileItem_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "png_files_opend_str (*.png)|*.png|DICOM (*.dcm)|*.dcm|all_files_opend_str (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.Multiselect = false; // Allow selecting only one file
-            openFileDialog.Title = "open_dialog_title_str";
-
-            if (openFileDialog.ShowDialog() == true) {
-                string selectedFilePath = openFileDialog.FileName;
-                bool success = utility.ChooseProjectFolder(selectedFilePath);
-                if (success) {
-                    //Pokud se vybrala dobrá složka/soubor tak pokračuj
-                    BitmapImage bitmapImage = utility.GetOriginalPicture();
-                    ImageHolder.Source = bitmapImage;
-                }
-            }
-        }
-
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
-                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this);
+                SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, loggedInUser.Validator);
 
             if (utility.saved) {
                 saveAlertWindow.Browse();
@@ -325,7 +316,7 @@ namespace VerteMark
         }
 
         private void Save_Click(object sender, RoutedEventArgs e) {
-            utility.SaveProject();
+            
         }
 
         /*
@@ -496,6 +487,40 @@ namespace VerteMark
             SwitchActiveAnotButton(sender as ToggleButton);
             e.Handled = true;
         }
+
+        private void SwitchValidation_Check_0(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(0);
+        }
+
+        private void SwitchValidation_Check_1(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(1);
+        }
+
+        private void SwitchValidation_Check_2(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(2);
+        }
+
+        private void SwitchValidation_Check_3(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(3);
+        }
+
+        private void SwitchValidation_Check_4(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(4);
+        }
+
+        private void SwitchValidation_Check_5(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(5);
+        }
+
+        private void SwitchValidation_Check_6(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(6);
+        }
+
+        private void SwitchValidation_Check_7(object sender, RoutedEventArgs e) {
+            utility.SwitchAnotationValidation(7);
+        }
+
+
 
         /*
          * =======================
@@ -738,7 +763,6 @@ namespace VerteMark
                 (sender as ScrollViewer).Cursor = Cursors.Arrow;
             }
         }
-
     }
 
     public class PercentageConverter : IValueConverter {

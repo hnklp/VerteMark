@@ -10,21 +10,37 @@ namespace VerteMark.SubWindows
     public partial class SaveAlertWindow : Window {
         Utility utility;
         MainWindow mainWindow;
+        bool validator;
 
-        public SaveAlertWindow(MainWindow mainWindow) {
+        public SaveAlertWindow(MainWindow mainWindow, bool validator) {
             InitializeComponent();
             utility = new Utility();
             this.mainWindow = mainWindow;
+            this.validator = validator;
+
+            mainWindow.IsEnabled = false;
         }
 
         private void Back_Click(object sender, RoutedEventArgs e) {
+            mainWindow.IsEnabled = true;
             this.Close();
         }
 
         private void SaveAndContinue_Click(object sender, RoutedEventArgs e) {
-            utility.SaveProject();
+            if (!validator) { utility.SaveProject(1); }
+            else {  utility.SaveProject(2); }
             utility.saved = true;
             Browse();
+            mainWindow.IsEnabled = true;
+            this.Close();
+        }
+
+        private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e) {
+            if (!validator) { utility.SaveProject(0); }
+            else { utility.SaveProject(1); }
+            utility.saved = true;
+            Browse();
+            mainWindow.IsEnabled = true;
             this.Close();
         }
 

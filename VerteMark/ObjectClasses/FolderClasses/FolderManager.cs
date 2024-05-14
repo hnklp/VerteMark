@@ -30,6 +30,46 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        public void ProcessFolders() {
+            string validatedPath = Path.Combine(tempFolderPath, "validated");
+            string toValidatePath = Path.Combine(tempFolderPath, "to_validate");
+            string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
+            try {
+                // Get all directories in the validated and to_validate folders
+                var validatedDirectories = Directory.GetDirectories(validatedPath);
+                var toValidateDirectories = Directory.GetDirectories(toValidatePath);
+
+                // Check and delete matching directories from to_validate
+                foreach (var validatedDir in validatedDirectories) {
+                    var directoryName = Path.GetFileName(validatedDir);
+                    var matchingDirInToValidate = Path.Combine(toValidatePath, directoryName);
+
+                    if (Directory.Exists(matchingDirInToValidate)) {
+                        Directory.Delete(matchingDirInToValidate, true);
+                        Debug.WriteLine($"Deleted {matchingDirInToValidate} from to_validate");
+                    }
+                }
+
+                // Get all directories in the to_validate and to_anotate folders again
+                toValidateDirectories = Directory.GetDirectories(toValidatePath);
+                var toAnnotateDirectories = Directory.GetDirectories(toAnnotatePath);
+
+                // Check and delete matching directories from to_anotate
+                foreach (var toValidateDir in toValidateDirectories) {
+                    var directoryName = Path.GetFileName(toValidateDir);
+                    var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
+
+                    if (Directory.Exists(matchingDirInToAnnotate)) {
+                        Directory.Delete(matchingDirInToAnnotate, true);
+                        Debug.WriteLine($"Deleted {matchingDirInToAnnotate} from to_anotate");
+                    }
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
 
         // vrati list dicomu, pro ktere jeste neni vytvoren projekt
         public List<string> ChooseNewProject() {
@@ -48,13 +88,18 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         // vrati list rozdelanych projektu k anotaci
         public List<string> ChooseContinueAnotation() {
-            return GetSubfolders("to_anotate");
+            List<string> toAnotateFiles = GetSubfolders("to_anotate");
+            List<string> validatedProjects = GetSubfolders("validated");
+            List<string> toValidateProjects = GetSubfolders("to_validate");
+            return toAnotateFiles.Except(validatedProjects).Except(toValidateProjects).ToList();
         }
 
 
         // vrati list pro validatora k validaci
         public List<string> ChooseValidation() {
-            return GetSubfolders("to_validate");
+            List<string> validatedProjects = GetSubfolders("validated");
+            List<string> toValidateProjects = GetSubfolders("to_validate");
+            return toValidateProjects.Except(validatedProjects).ToList();
         }
 
 

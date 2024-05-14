@@ -79,10 +79,11 @@ namespace VerteMark.ObjectClasses
             if (annotations != null || annotations.Count > 0) {
 
                 // První JArray -> Just Annotated
-                JArray firstAnnotation = annotations[0];
+                JArray canvasAnnotations = annotations[0];
+                JArray validations = annotations[1];
 
                 originalPicture = folderUtilityManager.GetImage();
-                List<int> created = LoadAnnotations(firstAnnotation);
+                List<int> created = LoadAnnotations(canvasAnnotations, validations);
                 AddMissingAnnotations(created);
             }
             else {
@@ -92,7 +93,7 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public void SaveProject() {
+        public void SaveProject(int savingParameter) {
 
             // pred ulozenim - pokud je uzivatel anotator:
                     // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
@@ -101,14 +102,17 @@ namespace VerteMark.ObjectClasses
 
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
-            List<string>? valids = new List<string>();
+            List<int>? valids = new List<int>();
 
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
+                if (anot.IsValidated) {
+                    valids.Add(anot.Id);
+                }
             }
-
-            folderUtilityManager.SaveJson(jsonManip.ExportJson(loggedInUser, dicts, valids));
-            folderUtilityManager.Save(loggedInUser, newProject, originalPicture); // bere tyto parametry pro ulozeni metadat
+            folderUtilityManager.Save(loggedInUser, newProject, 
+                originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
+                savingParameter); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
         }
 
@@ -139,7 +143,7 @@ namespace VerteMark.ObjectClasses
         */
 
 
-        List<int> LoadAnnotations(JArray annotations) {
+        List<int> LoadAnnotations(JArray annotations, JArray validations) {
             List<int> createdIds = new List<int>();
 
             foreach (JObject annotationObj in annotations) {
@@ -258,8 +262,10 @@ namespace VerteMark.ObjectClasses
 
         public void ValidateAnnotationByID(int id) {
             Anotace anotace = FindAnotaceById(id);
+            Debug.WriteLine("ZAVOLANA VALIDACE");
             if (anotace.IsValidated) {
                 anotace.Validate(false);
+                Debug.WriteLine("FALSE");
             }
             else {
                 anotace.Validate(true);
@@ -295,6 +301,12 @@ namespace VerteMark.ObjectClasses
         public void ClearActiveAnotace() {
             if (activeAnotace != null) {
                 activeAnotace.ClearCanvas();
+            }
+        }
+
+        public void ValidateAll() {
+            foreach (Anotace annotation in anotaces) {
+                annotation.Validate(true);
             }
         }
 

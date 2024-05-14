@@ -8,9 +8,10 @@
         Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png">
     <Grid>
         <TextBlock
-                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="49" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci"/><Run Text=" a otevřít novou?"/></TextBlock>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="148,70,0,0">
-            <Button Content="Uložit" Width="70" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
+                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci"/><Run Text=" a otevřít novou?"/></TextBlock>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,57,0,0" Width="320" Height="58">
+            <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="95" Height="30" FontSize="10" Margin="5,5,40,5"/>
+            <Button Content="Uložit" Width="94" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
             <Button Content="Zpět" Width="70" Height="30" Margin="5" Click="Back_Click"/>
         </StackPanel>
     </Grid>
