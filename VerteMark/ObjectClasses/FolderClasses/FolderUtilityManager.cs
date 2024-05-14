@@ -56,10 +56,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             }
             fileManager.SaveJson(jsonString);
             fileManager.SaveCroppedImage(image);
-
-            if (oldFolder != fileManager.outputPath) {
-                Directory.Delete(oldFolder, recursive: true);
-            }
+            folderManager.ProcessFolders(); // deletes duplicity folders
             SaveZip();
         }
 
