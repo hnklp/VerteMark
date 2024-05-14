@@ -33,6 +33,25 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
+        public void TransformPaths() {
+            pngPath = Path.Combine(outputPath, Path.GetFileName(pngPath));
+            jsonPath = Path.Combine(outputPath, Path.GetFileName(jsonPath));
+        }
+
+        public void CopyMetaFile(string sourcePath) {
+            if (!File.Exists(sourcePath)) {
+                throw new FileNotFoundException($"The source file does not exist: {sourcePath}");
+            }
+
+            // Ensure the destination directory exists
+            string destinationDirectory = Path.GetDirectoryName(metaPath);
+            if (!Directory.Exists(destinationDirectory)) {
+                Directory.CreateDirectory(destinationDirectory);
+            }
+
+            File.Copy(sourcePath, metaPath, overwrite: true);
+        }
+
         public void SaveCroppedImage(BitmapImage image) {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));

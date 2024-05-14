@@ -17,9 +17,12 @@ namespace VerteMark.SubWindows
             utility = new Utility();
             this.mainWindow = mainWindow;
             this.validator = validator;
+
+            mainWindow.IsEnabled = false;
         }
 
         private void Back_Click(object sender, RoutedEventArgs e) {
+            mainWindow.IsEnabled = true;
             this.Close();
         }
 
@@ -28,6 +31,7 @@ namespace VerteMark.SubWindows
             else {  utility.SaveProject(2); }
             utility.saved = true;
             Browse();
+            mainWindow.IsEnabled = true;
             this.Close();
         }
 
@@ -36,6 +40,7 @@ namespace VerteMark.SubWindows
             else { utility.SaveProject(1); }
             utility.saved = true;
             Browse();
+            mainWindow.IsEnabled = true;
             this.Close();
         }
 

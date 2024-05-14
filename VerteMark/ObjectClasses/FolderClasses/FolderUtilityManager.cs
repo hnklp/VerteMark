@@ -26,7 +26,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
 
 
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated
-        public void Save(User user, bool newProject, BitmapImage image, string jsonString ,int savingParameter) {
+        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter) {
             switch (savingParameter) {
                 case 0:
                     fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
@@ -38,14 +38,27 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                     fileManager.outputPath = Path.Combine(tempPath, "validated");
                     break;
             }
-            
-            fileManager.SaveJson(jsonString);
-            fileManager.SaveCroppedImage(image);
+
+            string oldFolder = fileManager.outputPath;
+            fileManager.CreateOutputFile(fileManager.fileName);
+            fileManager.TransformPaths();
+
             if (!newProject) {
+                string oldMetaPath = fileManager.metaPath;
+                fileManager.metaPath = Path.Combine(fileManager.outputPath, Path.GetFileName(fileManager.metaPath));
+                if (oldMetaPath != fileManager.metaPath) {
+                    fileManager.CopyMetaFile(oldMetaPath);
+                }
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
                 fileManager.ExtractAndSaveMetadata(user);
+            }
+            fileManager.SaveJson(jsonString);
+            fileManager.SaveCroppedImage(image);
+
+            if (oldFolder != fileManager.outputPath) {
+                Directory.Delete(oldFolder, recursive: true);
             }
             SaveZip();
         }
@@ -101,6 +114,10 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                     fileManager.fileName = fileName;
 
                     string jsonContent = File.ReadAllText(jsonFile);
+                    Debug.WriteLine(fileManager.metaPath);
+                    Debug.WriteLine(fileManager.pngPath);
+                    Debug.WriteLine(fileManager.outputPath);
+                    Debug.WriteLine(fileManager.jsonPath);
                     return jsonContent;
                 }
             }
