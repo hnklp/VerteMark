@@ -49,7 +49,7 @@ namespace VerteMark
             {
                 string selectedFilePath = openFileDialog.FileName;
                 utility.ChooseProjectFolder(selectedFilePath);
-                this.HintLabel.Content = openFileDialog.FileName;
+                this.HintText.Text = openFileDialog.FileName;
             }
 
             ContinueButton.IsEnabled = true;

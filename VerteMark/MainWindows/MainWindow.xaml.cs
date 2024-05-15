@@ -106,7 +106,7 @@ namespace VerteMark
                 CheckBox1, CheckBox2, CheckBox3, CheckBox4,
                 CheckBox5, CheckBox6, CheckBox7, CheckBox8
             };
-            previewImageList = new List<System.Windows.Controls.Image>();
+            previewImageList = new List<Image>();
             utility.LoginUser("debug_user", true);
 
             CommandBinding openCommandBinding = new CommandBinding(
@@ -157,14 +157,14 @@ namespace VerteMark
 
         // Podle velikosti ImageHolder nastaví plátno
         private void SetCanvasComponentsSize() {
-            InkCanvas.Width = utility.GetOriginalPicture().PixelWidth;
-            InkCanvas.Height = utility.GetOriginalPicture().PixelHeight;
+            InkCanvas.Width = ImageHolder.ActualWidth;
+            InkCanvas.Height = ImageHolder.ActualHeight;
             InkCanvas.Margin = new Thickness(0);
-            PreviewImage.Width = utility.GetOriginalPicture().PixelWidth;
-            PreviewImage.Height = utility.GetOriginalPicture().PixelHeight;
+            PreviewImage.Width = ImageHolder.ActualWidth;
+            PreviewImage.Height = ImageHolder.ActualHeight;
             PreviewImage.Margin = new Thickness(0);
-            CropCanvas.Width = utility.GetOriginalPicture().PixelWidth;
-            CropCanvas.Height = utility.GetOriginalPicture().PixelHeight;
+            CropCanvas.Width = ImageHolder.ActualWidth;
+            CropCanvas.Height = ImageHolder.ActualHeight;
             CropCanvas.Margin = new Thickness(0);
             Grid.SetColumn(InkCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(InkCanvas, Grid.GetRow(ImageHolder));
@@ -178,8 +178,8 @@ namespace VerteMark
         void AddPreviewImages() {
             for(int i = 0; i < 7; i++) { 
                 System.Windows.Controls.Image newImage = new System.Windows.Controls.Image();
-                newImage.Width = utility.GetOriginalPicture().PixelWidth;
-                newImage.Height = utility.GetOriginalPicture().PixelHeight;
+                newImage.Width = ImageHolder.ActualWidth;
+                newImage.Height = ImageHolder.ActualHeight;
                 newImage.Margin = new Thickness(0);
                 Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
                 Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
@@ -231,6 +231,7 @@ namespace VerteMark
 
                         CroppedImage.Visibility = Visibility.Visible;
                     }
+
                     break;
 
                 case AppState.Cropping:
@@ -631,30 +632,45 @@ namespace VerteMark
         }
 
         private void CropImage() {
-            Int32Rect rect = new Int32Rect((int)Canvas.GetLeft(CropRectangle),
-                                      (int)Canvas.GetTop(CropRectangle),
-                                      (int)CropRectangle.Width,
-                                      (int)CropRectangle.Height);
+            PresentationSource source = PresentationSource.FromVisual(this);
+            double dpi = 96.0;
+            double dpiX = dpi;
+            double dpiY = dpi;
+
+            if (source != null)
+            {
+                dpiX = dpi * source.CompositionTarget.TransformToDevice.M11;
+                dpiY = dpi * source.CompositionTarget.TransformToDevice.M22;
+            }
+
+            double scaleFactorX = dpiX / dpi;
+            double scaleFactorY = dpiY / dpi;
+
+            Int32Rect rect = new Int32Rect(
+                (int)(Canvas.GetLeft(CropRectangle) * scaleFactorX),
+                (int)(Canvas.GetTop(CropRectangle) * scaleFactorY),
+                (int)(CropRectangle.Width * scaleFactorX),
+                (int)(CropRectangle.Height * scaleFactorY)
+            );
 
             if (rect.IsEmpty || rect.Width <= 0 || rect.Height <= 0)
                 return;
 
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
-          
+
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
             PreviewImage.Width = CropRectangle.Width;
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
-            foreach(System.Windows.Controls.Image img in previewImageList) {
+            foreach(Image img in previewImageList) {
                 img.Width = CropRectangle.Width;
                 img.Height = CropRectangle.Height;
                 PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
                 PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
             }
-
 
             utility.CropOriginalPicture(croppedImage);
         }
