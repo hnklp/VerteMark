@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Icons\appicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
     <None Remove="Resources\Icons\folder_icon.ico" />
     <None Remove="Resources\Icons\unzoom_icon.ico" />
     <None Remove="Resources\Icons\zoom_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Icons\appicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
