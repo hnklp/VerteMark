@@ -89,7 +89,11 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="3">
-                    <Label Content="&#xE1A4;" FontFamily="Segoe UI Symbol"/>
+                    <Button Width="25" Height="25" Click="ZoomOut" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
+                        <Button.Content>
+                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button.Content>
+                    </Button>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="4">
@@ -98,7 +102,11 @@
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="5">
-                    <Label Content="&#xE12E;" FontFamily="Segoe UI Symbol"/>
+                    <Button Width="25" Height="25" Click="ZoomIn" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
+                        <Button.Content>
+                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button.Content>
+                    </Button>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="6">
@@ -120,12 +128,12 @@
                           PreviewMouseMove="ScrollViewer_PreviewMouseMove"
                           PreviewMouseRightButtonUp="ScrollViewer_PreviewMouseRightButtonUp" Grid.ColumnSpan="2">
 
-                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" >
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" MouseEnter="CanvasGrid_MouseEnter" MouseLeave="CanvasGrid_MouseLeave">
                     <Image x:Name="ImageHolder"  HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <Image x:Name="CroppedImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                     <!-- InkCanvas control -->
-                    <InkCanvas x:Name="InkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top"
+                    <InkCanvas x:Name="InkCanvas" HorizontalAlignment="Left" VerticalAlignment="Top" UseCustomCursor="True"
                          Panel.ZIndex="3" Background="Transparent" MouseUp="InkCanvas_MouseUp" StrokeCollected="InkCanvas_StrokeCollected">
                         <InkCanvas.DefaultDrawingAttributes>
                             <DrawingAttributes Color="Black" />
