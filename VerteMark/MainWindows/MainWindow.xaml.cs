@@ -694,6 +694,8 @@ namespace VerteMark
 
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
+            InkCanvas.HorizontalAlignment = HorizontalAlignment.Center;
+            InkCanvas.VerticalAlignment = VerticalAlignment.Center;
             PreviewImage.Width = CropRectangle.Width;
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
