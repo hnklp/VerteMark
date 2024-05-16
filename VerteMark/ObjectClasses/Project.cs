@@ -263,12 +263,13 @@ namespace VerteMark.ObjectClasses
         public void ValidateAnnotationByID(int id) {
             Anotace anotace = FindAnotaceById(id);
             Debug.WriteLine("ZAVOLANA VALIDACE");
-            if (anotace.IsValidated) {
-                anotace.Validate(false);
-                Debug.WriteLine("FALSE");
-            }
-            else {
-                anotace.Validate(true);
+            if(anotace != null) {
+                if(anotace.IsValidated) {
+                    anotace.Validate(false);
+                    Debug.WriteLine("FALSE");
+                } else {
+                    anotace.Validate(true);
+                }
             }
         }
 

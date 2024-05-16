@@ -689,6 +689,8 @@ namespace VerteMark
 
             BitmapSource croppedImage = new CroppedBitmap(ImageHolder.Source as BitmapSource, rect);
             CroppedImage.Source = croppedImage;
+            CroppedImage.HorizontalAlignment = HorizontalAlignment.Center;
+            CroppedImage.VerticalAlignment = VerticalAlignment.Center;
 
             InkCanvas.Width = CropRectangle.Width;
             InkCanvas.Height = CropRectangle.Height;
@@ -699,8 +701,8 @@ namespace VerteMark
             foreach(Image img in previewImageList) {
                 img.Width = CropRectangle.Width;
                 img.Height = CropRectangle.Height;
-                PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
-                PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
+                PreviewGrid.HorizontalAlignment = HorizontalAlignment.Center;
+                PreviewGrid.VerticalAlignment = VerticalAlignment.Center;
             }
 
             utility.CropOriginalPicture(croppedImage);
