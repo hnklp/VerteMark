@@ -171,18 +171,20 @@ namespace VerteMark.MainWindows
 
         void LoadforRole()
        {        
-            if (utility.GetLoggedInUser().Validator)
-                {
+            if (utility.GetLoggedInUser().Validator){
                     FileListBox.ItemsSource = utility.ChooseValidation();
                     projectType = "to_validate";
                     UpdateFileList();
                     SelectedRadioButtonTextBlock.Text = "K validaci";
-                }
+                    ValidationRadioButton.IsChecked = true;
+            }
             else
             {
                 FileListBox.ItemsSource = utility.ChooseNewProject();
                 projectType = "dicoms";
                 UpdateFileList();
+                DicomRadioButton.IsChecked = true;
+
             }
             }
         }
