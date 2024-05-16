@@ -80,6 +80,9 @@ namespace VerteMark
             activeToolbarButton = DrawTButton;
             savingParam = 0;
 
+            CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
+            CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
+
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
@@ -225,6 +228,10 @@ namespace VerteMark
                     CropConfirmButton.Visibility = Visibility.Collapsed;
                     CropCancelButton.Visibility = Visibility.Collapsed;
 
+                    //string cursorFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cursors", "Draw_Cursor.cur");
+                    //Mouse.OverrideCursor = new Cursor(cursorFilePath);
+                    //Mouse.OverrideCursor = Cursors.Pen;
+
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
                         PreviewImage.Visibility = Visibility.Hidden;
@@ -241,6 +248,8 @@ namespace VerteMark
                     CropLabel.Visibility = Visibility.Visible;
                     CropConfirmButton.Visibility = Visibility.Visible;
                     CropCancelButton.Visibility = Visibility.Visible;
+
+                   // Mouse.OverrideCursor = Cursors.Cross;
 
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
@@ -283,6 +292,19 @@ namespace VerteMark
                 pressedButton.IsChecked = true;
             }
             activeToolbarButton = pressedButton;
+        }
+
+
+        private void CanvasGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            CanvasGrid.Cursor = stateManager.CurrentState == AppState.Drawing ? Cursors.Pen :
+                                    Cursors.Cross;
+
+        }
+
+        private void CanvasGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            CanvasGrid.Cursor = Cursors.Arrow; // nebo jiný výchozí kurzor podle vašich preferencí
         }
 
         /*
@@ -716,7 +738,7 @@ namespace VerteMark
             }
         }
 
-        private void ZoomIn(object sender, ExecutedRoutedEventArgs e)
+        private void ZoomIn(object sender, RoutedEventArgs e)
         {
             if (ZoomSlider.Value < ZoomSlider.Maximum)
             {
@@ -724,7 +746,7 @@ namespace VerteMark
             }
         }
 
-        private void ZoomOut(object sender, ExecutedRoutedEventArgs e)
+        private void ZoomOut(object sender, RoutedEventArgs e)
         {
             if (ZoomSlider.Value > ZoomSlider.Minimum)
             {
