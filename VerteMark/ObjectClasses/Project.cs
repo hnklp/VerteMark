@@ -4,6 +4,7 @@ using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 
 namespace VerteMark.ObjectClasses
@@ -21,7 +22,7 @@ namespace VerteMark.ObjectClasses
 
         private static Project instance;
         FolderUtilityManager folderUtilityManager;
-        User? loggedInUser; // Info o uživateli
+        User loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
@@ -182,47 +183,46 @@ namespace VerteMark.ObjectClasses
         }
 
 
-            void CreateNewAnnotation(int id) {
+        void CreateNewAnnotation(int id) {
             // Barva odpovídající danému ID
             System.Drawing.Color color;
             string name;
             switch (id) {
                 case 0:
                     color = System.Drawing.Color.Red;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 1:
                     color = System.Drawing.Color.Orange;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 2:
                     color = System.Drawing.Color.Yellow;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 3:
                     color = System.Drawing.Color.Lime;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 4:
                     color = System.Drawing.Color.Aquamarine;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 5:
                     color = System.Drawing.Color.Aqua;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 6:
                     color = System.Drawing.Color.BlueViolet;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 7:
                     color = System.Drawing.Color.DeepPink;
                     name = "Implantát";
                     break;
                 default:
-                    // Pokud je ID mimo rozsah, použije se defaultní barva a název
-                    color = System.Drawing.Color.Black;
-                    name = "Unknown";
+                    color = System.Drawing.Color.DeepPink;
+                    name = "Implantát " + (id - 6);
                     break;
             }
 
@@ -230,6 +230,14 @@ namespace VerteMark.ObjectClasses
             anotaces.Add(new Anotace(id, name, color));
         }
 
+        public Anotace CreateImplantAnnotation()
+        {
+            int id = anotaces.Count;
+            string name = "Implantát " + (id - 6);
+            Anotace implant = new Anotace(id, name, System.Drawing.Color.DeepPink);
+            anotaces.Add(implant);
+            return implant;
+        }
 
         public WriteableBitmap ActiveAnotaceImage() {
             if (activeAnotace == null) {
@@ -310,6 +318,11 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        public List<Anotace> GetAnotaces()
+        {
+            return anotaces;
+        }
+
 
         /*
         * ===========
@@ -328,7 +341,7 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public User? GetLoggedInUser() {
+        public User GetLoggedInUser() {
             return loggedInUser;
         }
 

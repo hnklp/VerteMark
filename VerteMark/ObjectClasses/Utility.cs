@@ -34,7 +34,6 @@ namespace VerteMark.ObjectClasses
         }
 
 
-
         // fotka krku
         public BitmapImage? GetOriginalPicture() {
             return project.GetOriginalPicture();
@@ -48,7 +47,6 @@ namespace VerteMark.ObjectClasses
         public void SaveProject(int savingParameter) {
             project.SaveProject(savingParameter);
         }
-
 
         public WriteableBitmap GetActiveAnotaceImage() {
             return project.ActiveAnotaceImage();
@@ -83,6 +81,14 @@ namespace VerteMark.ObjectClasses
             project.ValidateAll();
         }
 
+        public List<Anotace> GetAnnotationsList(){
+            return project.GetAnotaces();
+        }
+
+        public Anotace CreateImplantAnnotation(){
+            return project.CreateImplantAnnotation();
+        }
+
         /*
         * ==================
         * Prace s uzivatelem
@@ -101,7 +107,7 @@ namespace VerteMark.ObjectClasses
             return project.AllInactiveAnotaceImages();
         }
 
-        public User? GetLoggedInUser() {
+        public User GetLoggedInUser() {
             return project.GetLoggedInUser();
         }
 
