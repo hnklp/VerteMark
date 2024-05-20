@@ -130,5 +130,10 @@ namespace VerteMark.ObjectClasses
             this.IsAnotated = isAnotated;
         }
 
+        public void SetAnnotationId(int Id)
+        {
+            this.Id = Id;
+            this.Name = "Implantát " + (Id - 6);
+        }
     }
 }

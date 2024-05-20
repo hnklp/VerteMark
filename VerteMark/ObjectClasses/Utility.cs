@@ -52,6 +52,8 @@ namespace VerteMark.ObjectClasses
             return project.ActiveAnotaceImage();
         }
 
+
+
         public void UpdateSelectedAnotation(WriteableBitmap bitmap) {
             project.UpdateSelectedAnotaceCanvas(bitmap);
         }
@@ -66,6 +68,10 @@ namespace VerteMark.ObjectClasses
 
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();
+        }
+
+        public void ClearAnnotation(int id) {
+            project.ClearAnnotation(id);
         }
 
         public void SwitchAnotationValidation(int id) {
@@ -89,13 +95,22 @@ namespace VerteMark.ObjectClasses
             return project.CreateImplantAnnotation();
         }
 
-        /*
-        * ==================
-        * Prace s uzivatelem
-        * ==================
-        */
+        public void DeleteAnnotation(int id){ 
+            project.DeleteAnnotation(id);
+        }
 
-        public void LoginUser(string id, bool validator) {
+        public void ChangeAnnotationId(int id)
+        {
+            project.ChangeAnnotationId(id);
+        }
+
+            /*
+            * ==================
+            * Prace s uzivatelem
+            * ==================
+            */
+
+            public void LoginUser(string id, bool validator) {
             project.LoginNewUser(id, validator);
         }
 

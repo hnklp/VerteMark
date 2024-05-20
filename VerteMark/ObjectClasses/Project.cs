@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using System.Windows.Annotations;
 
 
 namespace VerteMark.ObjectClasses
@@ -256,7 +257,7 @@ namespace VerteMark.ObjectClasses
             return a;
         }
 
-        Anotace FindAnotaceById(int idAnotace) {
+        public Anotace FindAnotaceById(int idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
             if (foundAnotace != null) {
                 return foundAnotace;
@@ -312,17 +313,40 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        public void ClearAnnotation(int annotationId) {
+            Anotace annotation = FindAnotaceById(annotationId);
+            if (annotation != null)
+            {
+                annotation.ClearCanvas();
+            }
+        }
+
         public void ValidateAll() {
             foreach (Anotace annotation in anotaces) {
                 annotation.Validate(true);
             }
         }
 
-        public List<Anotace> GetAnotaces()
-        {
+        public List<Anotace> GetAnotaces(){
             return anotaces;
         }
 
+        public void DeleteAnnotation(int annotationId) { 
+            Anotace annotation = FindAnotaceById(annotationId);
+            if (annotation != null)
+            {
+                anotaces.Remove(annotation);
+            }
+        }
+
+        public void ChangeAnnotationId(int annotationId)
+        {
+            Anotace annotation = FindAnotaceById(annotationId);
+            if (annotation != null)
+            {
+                annotation.SetAnnotationId(annotationId - 1);
+            }
+        }
 
         /*
         * ===========

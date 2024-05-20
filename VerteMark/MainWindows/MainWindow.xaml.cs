@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
 using System.Windows.Shapes;
+using System.Reflection;
 
 
 
@@ -24,6 +25,7 @@ namespace VerteMark
         private Utility utility;
         private ToggleButton activeAnotButton;
         private ToggleButton activeToolbarButton;
+        private Button plusButton;
 
         StateManager stateManager;
 
@@ -70,8 +72,6 @@ namespace VerteMark
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
-
-            //activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
             savingParam = 0;
 
@@ -120,7 +120,6 @@ namespace VerteMark
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
-            //activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
             savingParam = 2;
 
@@ -183,6 +182,13 @@ namespace VerteMark
             PreviewGrid.Children.Add(newImage);
         }
 
+        private void DeletePreviewImage(int anotaceId)
+        {
+            //utility.ClearAnnotation(anotaceId);
+            PreviewGrid.Children.Remove(previewImageList[anotaceId]);
+            previewImageList.RemoveAt(anotaceId); 
+        }
+
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
             SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, utility.GetLoggedInUser().Validator);
 
@@ -195,7 +201,6 @@ namespace VerteMark
 
                 saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
                 saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
-
 
                 saveAlertWindow.Show();
             }
@@ -384,7 +389,6 @@ namespace VerteMark
 
             WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
 
-       //     PreviewImage.Source = activeAnotaceImage;
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -405,7 +409,6 @@ namespace VerteMark
                 ToggleCropButton(!utility.GetIsAnotated());
             }
         }
-
 
         private void ToggleCropButton(bool isEnabled)
         {
@@ -487,6 +490,7 @@ namespace VerteMark
                 Margin = new Thickness(109, 5 + 30 * i, 0, 0),
             };
             plusButton.Click += (sender, e) => PlusButton_Click(sender, e);
+            this.plusButton = plusButton;
 
             ButtonGrid.Children.Add(plusButton);
 
@@ -496,17 +500,47 @@ namespace VerteMark
         {
             Brush color = new SolidColorBrush(Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B));
 
-            Rectangle rect = new Rectangle
+            if (i > 7)
             {
-                Stroke = Brushes.Black,
-                StrokeThickness = 0.5,
-                Fill = color,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = 19,
-                Height = 19,
-                Margin = new Thickness(20, 5 + 30 * i, 0, 0),
-            };
+                Button minusButton = new Button
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Width = 19,
+                    Height = 19,
+                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Tag = i
+                };
+                Image binIcon = new Image
+                {
+                    Source = new BitmapImage(new Uri("../Resources/Icons/bin_icon.ico", UriKind.Relative)),
+                    Width = 20,
+                    Height = 20,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                minusButton.Content = binIcon;
+                minusButton.Click += (sender, e) => MinusButton_Click(sender, e);
+
+                ButtonGrid.Children.Add(minusButton);
+            }
+
+            else
+            {
+                Rectangle rect = new Rectangle
+                {
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 0.5,
+                    Fill = color,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Width = 19,
+                    Height = 19,
+                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Tag = i
+                };
+                ButtonGrid.Children.Add(rect);
+            }
 
             ToggleButton toggleButton = new ToggleButton
             {
@@ -520,6 +554,8 @@ namespace VerteMark
             };
             toggleButton.Click += (sender, e) => Button_Click(sender, e);
 
+            if (i == 0)
+                SwitchActiveAnotButton(toggleButton);
 
             CheckBox checkBox = new CheckBox
             {
@@ -536,7 +572,6 @@ namespace VerteMark
             checkBox.Checked += SwitchValidation_Check;
             checkBox.Unchecked += SwitchValidation_Check;
 
-            ButtonGrid.Children.Add(rect);
             ButtonGrid.Children.Add(toggleButton);
             ButtonGrid.Children.Add(checkBox);
         }
@@ -574,14 +609,72 @@ namespace VerteMark
             bool isValidator = utility.GetLoggedInUser().Validator;
             Anotace implant = utility.CreateImplantAnnotation();
             AddPreviewImage();
-            AddNewRow(implant, isValidator, implant.Id);
-            MovePlusButton(sender as Button, implant.Id + 1);
+
+            List<Anotace> Annotations = utility.GetAnnotationsList();
+            AddNewRow(implant, isValidator, Annotations.Count - 1);
+            MovePlusButton();
         }
 
-        private void MovePlusButton(Button plusButton, int i)
+        private void MovePlusButton(bool down = true)
         {
-            int newMarginTop = 5 + 30 * i;
-            plusButton.Margin = new Thickness(109, newMarginTop, 0, 0);
+            if (down)
+            {
+                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top + 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
+            }
+            else
+            {
+                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top - 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
+            }
+        }
+
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null && button.Tag != null)
+            {
+                int index;
+                if (int.TryParse(button.Tag.ToString(), out index))
+                {
+                    DeleteRow(index);
+                    utility.DeleteAnnotation(index);
+                    DeletePreviewImage(index);
+                    MovePlusButton(false);
+                }
+            }
+        }
+
+        private void DeleteRow(int i)
+        {
+            // Najdeme všechny prvky s tagem `i` a odstraníme je z `ButtonGrid`
+            var elementsToRemove = ButtonGrid.Children.OfType<UIElement>().Where(e => e is FrameworkElement fe && fe.Tag is int tag && tag == i).ToList();
+
+            foreach (var element in elementsToRemove)
+            {
+                ButtonGrid.Children.Remove(element);
+            }
+
+            // Aktualizujeme pozice, tagy a obsah všech prvků po odstranění řádku
+            foreach (var element in ButtonGrid.Children)
+            {
+                if (element is FrameworkElement fe && fe.Tag is int tag && tag > i)
+                {
+                    fe.Tag = tag - 1;
+
+                    // Upravíme margin pro zachování správného rozložení
+                    if (fe.Margin != null)
+                    {
+                        fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
+                    }
+
+                    // Aktualizujeme obsah ToggleButton, pokud je to ToggleButton
+                    if (element is ToggleButton toggleButton)
+                    {
+                        toggleButton.Content = $"Implantát {tag - 7}";
+                    }
+
+                    utility.ChangeAnnotationId(tag);
+                }
+            }
         }
 
         /*
