@@ -184,9 +184,25 @@ namespace VerteMark
 
         private void DeletePreviewImage(int anotaceId)
         {
-            //utility.ClearAnnotation(anotaceId);
             PreviewGrid.Children.Remove(previewImageList[anotaceId]);
-            previewImageList.RemoveAt(anotaceId); 
+            previewImageList.RemoveAt(anotaceId);
+
+            if (int.TryParse(utility.GetActiveAnotaceId(), out int activeAnotaceId))
+            {
+                if (activeAnotaceId == anotaceId)
+                {
+                    SwitchActiveAnot(anotaceId - 1);
+
+                    foreach (var child in ButtonGrid.Children)
+                    {
+                        if (child is ToggleButton toggleButton && toggleButton.Tag is int tag && tag == anotaceId - 1)
+                        {
+                            SwitchActiveAnotButton(toggleButton);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
@@ -223,9 +239,8 @@ namespace VerteMark
                     CropConfirmButton.Visibility = Visibility.Collapsed;
                     CropCancelButton.Visibility = Visibility.Collapsed;
 
-                    //string cursorFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cursors", "Draw_Cursor.cur");
-                    //Mouse.OverrideCursor = new Cursor(cursorFilePath);
-                    //Mouse.OverrideCursor = Cursors.Pen;
+                    ValidateLabel.Visibility = Visibility.Visible;
+                    ButtonGrid.Visibility = Visibility.Visible;
 
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
@@ -244,7 +259,8 @@ namespace VerteMark
                     CropConfirmButton.Visibility = Visibility.Visible;
                     CropCancelButton.Visibility = Visibility.Visible;
 
-                   // Mouse.OverrideCursor = Cursors.Cross;
+                    ValidateLabel.Visibility = Visibility.Collapsed;
+                    ButtonGrid.Visibility = Visibility.Collapsed;
 
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
@@ -463,8 +479,8 @@ namespace VerteMark
             if(activeAnotButton != null) {
 
                 activeAnotButton.IsChecked = false;
-                pressedButton.IsChecked = true;
             }
+            pressedButton.IsChecked = true;
             activeAnotButton = pressedButton;
         }
 

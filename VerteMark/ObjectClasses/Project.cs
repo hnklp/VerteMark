@@ -92,6 +92,8 @@ namespace VerteMark.ObjectClasses
                 // UPOZORNENI, ZE ANOTACE NEBYLY NACTENY - NEMOHL SE IDENTIFIKOVAT SOUBOR
                 CreateNewAnotaces();
             }
+
+            anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
 
@@ -181,6 +183,8 @@ namespace VerteMark.ObjectClasses
                     Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
+
+
         }
 
 
@@ -306,18 +310,9 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
         public void ClearActiveAnotace() {
             if (activeAnotace != null) {
                 activeAnotace.ClearCanvas();
-            }
-        }
-
-        public void ClearAnnotation(int annotationId) {
-            Anotace annotation = FindAnotaceById(annotationId);
-            if (annotation != null)
-            {
-                annotation.ClearCanvas();
             }
         }
 

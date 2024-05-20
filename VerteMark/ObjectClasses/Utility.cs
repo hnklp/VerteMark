@@ -52,8 +52,6 @@ namespace VerteMark.ObjectClasses
             return project.ActiveAnotaceImage();
         }
 
-
-
         public void UpdateSelectedAnotation(WriteableBitmap bitmap) {
             project.UpdateSelectedAnotaceCanvas(bitmap);
         }
@@ -68,10 +66,6 @@ namespace VerteMark.ObjectClasses
 
         public void ClearActiveAnotace() {
             project.ClearActiveAnotace();
-        }
-
-        public void ClearAnnotation(int id) {
-            project.ClearAnnotation(id);
         }
 
         public void SwitchAnotationValidation(int id) {
@@ -99,8 +93,7 @@ namespace VerteMark.ObjectClasses
             project.DeleteAnnotation(id);
         }
 
-        public void ChangeAnnotationId(int id)
-        {
+        public void ChangeAnnotationId(int id){
             project.ChangeAnnotationId(id);
         }
 

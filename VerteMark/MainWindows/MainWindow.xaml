@@ -215,11 +215,11 @@
                 </Button.ToolTip>
             </Button>
 
-            <Label Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
+            <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
-            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,315,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
-            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Left" Margin="60,350,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="125" Visibility="Collapsed"/>
-            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Left" Margin="60,380,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="20" Width="125" Visibility="Collapsed"/>
+            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,186,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
+            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="126" Visibility="Collapsed"/>
+            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Center" Margin="0,252,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="20" Width="125" Visibility="Collapsed"/>
 
         </Grid>
 
