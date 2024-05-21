@@ -11,6 +11,7 @@ using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
 using System.Windows.Shapes;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 
 
@@ -582,9 +583,7 @@ namespace VerteMark
                 Tag = i,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated
-
-            };
-            checkBox.IsChecked = true;
+        };
             checkBox.Checked += SwitchValidation_Check;
             checkBox.Unchecked += SwitchValidation_Check;
 

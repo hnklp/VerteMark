@@ -149,6 +149,7 @@ namespace VerteMark.ObjectClasses
 
         List<int> LoadAnnotations(JArray annotations, JArray validations) {
             List<int> createdIds = new List<int>();
+            HashSet<int> validationSet = validations.ToObject<HashSet<int>>();
 
             foreach (JObject annotationObj in annotations) {
                 foreach (var annotation in annotationObj) {
@@ -158,8 +159,11 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    //createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
                     createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+
+                    if (validationSet.Contains(annotationId)) {
+                        createdAnnotation.Validate(true);
+                    }
                 }
             }
             return createdIds;
