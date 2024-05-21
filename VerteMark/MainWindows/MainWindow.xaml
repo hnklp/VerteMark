@@ -192,37 +192,10 @@
 
             <Rectangle Grid.Column="2" Fill="#FFF0F0F0" HorizontalAlignment="Left" Width="3"/>
 
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Red" HorizontalAlignment="Left" Margin="20,60,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton x:Name="Button1"  Grid.Column="2" Content="C1"  HorizontalAlignment="Left" Margin="60,60,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_1" IsChecked="True"/>
-            <CheckBox Name="CheckBox1" Grid.Column="2" Content="" Margin="205,61,0,0" Checked="SwitchValidation_Check_0" Unchecked="SwitchValidation_Check_0"/>
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Margin="0,55,0,0">
+                <Grid x:Name="ButtonGrid" Grid.Column="2"/>
+            </ScrollViewer>
 
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Orange" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C2" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_2"/>
-            <CheckBox Name="CheckBox2" Grid.Column="2" Content="" Margin="205,91,0,0" Checked="SwitchValidation_Check_1" Unchecked="SwitchValidation_Check_2"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Yellow" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C3" HorizontalAlignment="Left" Margin="60,120,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_3"/>
-            <CheckBox Name="CheckBox3" Grid.Column="2" Content="" Margin="205,121,0,0" Checked="SwitchValidation_Check_2" Unchecked="SwitchValidation_Check_2"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Lime" HorizontalAlignment="Left" Margin="20,150,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C4" HorizontalAlignment="Left" Margin="60,150,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_4"/>
-            <CheckBox Name="CheckBox4" Grid.Column="2" Content="" Margin="205,151,0,0" Checked="SwitchValidation_Check_3" Unchecked="SwitchValidation_Check_3"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Aquamarine" HorizontalAlignment="Left" Margin="20,180,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C5" HorizontalAlignment="Left" Margin="60,180,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_5"/>
-            <CheckBox Name="CheckBox5" Grid.Column="2" Content="" Margin="205,181,0,0" Checked="SwitchValidation_Check_4" Unchecked="SwitchValidation_Check_4"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="Aqua" HorizontalAlignment="Left" Margin="20,210,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C6" HorizontalAlignment="Left" Margin="60,210,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_6"/>
-            <CheckBox Name="CheckBox6" Grid.Column="2" Content="" Margin="205,211,0,0" Checked="SwitchValidation_Check_5" Unchecked="SwitchValidation_Check_5"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="BlueViolet" HorizontalAlignment="Left" Margin="20,240,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="C7" HorizontalAlignment="Left" Margin="60,240,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_7"/>
-            <CheckBox Name="CheckBox7" Grid.Column="2" Content="" Margin="205,241,0,0" Checked="SwitchValidation_Check_6" Unchecked="SwitchValidation_Check_6"/>
-
-            <Rectangle Grid.Column="2" Stroke="Black" StrokeThickness="0.5" Fill="DeepPink" HorizontalAlignment="Left" Margin="20,270,0,0" VerticalAlignment="Top" Width="19" Height="19"/>
-            <ToggleButton Grid.Column="2" Content="Implantát" HorizontalAlignment="Left" Margin="60,270,0,0" VerticalAlignment="Top" Height="20" Width="125" Click="Button_Click_8"/>
-            <CheckBox Name="CheckBox8" Grid.Column="2" Content="" Margin="205,271,0,0" Checked="SwitchValidation_Check_7" Unchecked="SwitchValidation_Check_7" />
 
             <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="142,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">
                 <Button.Content>
@@ -242,11 +215,11 @@
                 </Button.ToolTip>
             </Button>
 
-            <Label Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
+            <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
-            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,315,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
-            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Left" Margin="60,350,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="125" Visibility="Collapsed"/>
-            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Left" Margin="60,380,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="20" Width="125" Visibility="Collapsed"/>
+            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,186,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
+            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="126" Visibility="Collapsed"/>
+            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Center" Margin="0,252,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="20" Width="125" Visibility="Collapsed"/>
 
         </Grid>
 

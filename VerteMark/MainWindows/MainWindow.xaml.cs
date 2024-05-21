@@ -4,12 +4,14 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Win32;
 using VerteMark.ObjectClasses;
 using System.Windows.Ink;
 using System.Globalization;
 using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
+using System.Windows.Shapes;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 
 
@@ -22,10 +24,9 @@ namespace VerteMark
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
     public partial class MainWindow : Window {
         private Utility utility;
-        private User? loggedInUser;
-        private List<CheckBox> checkBoxes;
         private ToggleButton activeAnotButton;
         private ToggleButton activeToolbarButton;
+        private Button plusButton;
 
         StateManager stateManager;
 
@@ -51,11 +52,6 @@ namespace VerteMark
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
-            checkBoxes = new List<CheckBox>
-            {
-                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
-                CheckBox5, CheckBox6, CheckBox7, CheckBox8
-            };
             previewImageList = new List<Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
@@ -68,15 +64,15 @@ namespace VerteMark
                 ApplicationCommands.Save,
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
-            loggedInUser = utility.GetLoggedInUser();
-            InitializeCheckboxes();
+
+            CreateButtons();
+
+            User loggedInUser = utility.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
-
-            activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
             savingParam = 0;
 
@@ -104,11 +100,6 @@ namespace VerteMark
         public MainWindow(bool debug) {
             InitializeComponent();
             utility = new Utility();
-            checkBoxes = new List<CheckBox>
-            {
-                CheckBox1, CheckBox2, CheckBox3, CheckBox4,
-                CheckBox5, CheckBox6, CheckBox7, CheckBox8
-            };
             previewImageList = new List<Image>();
             utility.LoginUser("debug_user", true);
 
@@ -122,15 +113,14 @@ namespace VerteMark
                 ApplicationCommands.Save,
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
-            loggedInUser = utility.GetLoggedInUser();
-            InitializeCheckboxes();
+            User loggedInUser = utility.GetLoggedInUser();
+
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
             utility.CreateNewProjectDEBUG();
             ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
-            activeAnotButton = Button1;
             activeToolbarButton = DrawTButton;
             savingParam = 2;
 
@@ -149,14 +139,6 @@ namespace VerteMark
         //TODO odstranit moznost vsechny soubory??
         //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
         //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
-
-        private void InitializeCheckboxes() {
-            foreach (var CheckBox in checkBoxes) {
-                bool isValidator = loggedInUser.Validator;
-                CheckBox.IsEnabled = isValidator;
-                CheckBox.IsChecked = isValidator;
-            }
-        }
 
         // Podle velikosti ImageHolder nastaví plátno
         private void SetCanvasComponentsSize() {
@@ -178,23 +160,54 @@ namespace VerteMark
             AddPreviewImages();
         }
 
-        void AddPreviewImages() {
-            for(int i = 0; i < 7; i++) { 
-                System.Windows.Controls.Image newImage = new System.Windows.Controls.Image();
-                newImage.Width = ImageHolder.ActualWidth;
-                newImage.Height = ImageHolder.ActualHeight;
-                newImage.Margin = new Thickness(0);
-                Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
-                Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
-                newImage.Stretch=Stretch.Fill;
-                previewImageList.Add(newImage);
-                PreviewGrid.Children.Add(newImage);
+        private void AddPreviewImages() {
+            List<Anotace> Annotations = utility.GetAnnotationsList();
+
+            foreach (Anotace anotace in Annotations)
+            {
+                AddPreviewImage();
             }
             previewImageList.Add(PreviewImage);
         }
 
+        private void AddPreviewImage()
+        {
+            Image newImage = new Image();
+            newImage.Width = ImageHolder.ActualWidth;
+            newImage.Height = ImageHolder.ActualHeight;
+            newImage.Margin = new Thickness(0);
+            Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
+            Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
+            newImage.Stretch = Stretch.Fill;
+            previewImageList.Add(newImage);
+            PreviewGrid.Children.Add(newImage);
+        }
+
+        private void DeletePreviewImage(int anotaceId)
+        {
+            PreviewGrid.Children.Remove(previewImageList[anotaceId]);
+            previewImageList.RemoveAt(anotaceId);
+
+            if (int.TryParse(utility.GetActiveAnotaceId(), out int activeAnotaceId))
+            {
+                if (activeAnotaceId == anotaceId)
+                {
+                    SwitchActiveAnot(anotaceId - 1);
+
+                    foreach (var child in ButtonGrid.Children)
+                    {
+                        if (child is ToggleButton toggleButton && toggleButton.Tag is int tag && tag == anotaceId - 1)
+                        {
+                            SwitchActiveAnotButton(toggleButton);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         private void OpenProject_Click(object sender, RoutedEventArgs e) {
-            SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, loggedInUser.Validator);
+            SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, utility.GetLoggedInUser().Validator);
 
             if (utility.saved) {
                 saveAlertWindow.Browse();
@@ -205,7 +218,6 @@ namespace VerteMark
 
                 saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
                 saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
-
 
                 saveAlertWindow.Show();
             }
@@ -228,9 +240,8 @@ namespace VerteMark
                     CropConfirmButton.Visibility = Visibility.Collapsed;
                     CropCancelButton.Visibility = Visibility.Collapsed;
 
-                    //string cursorFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cursors", "Draw_Cursor.cur");
-                    //Mouse.OverrideCursor = new Cursor(cursorFilePath);
-                    //Mouse.OverrideCursor = Cursors.Pen;
+                    ValidateLabel.Visibility = Visibility.Visible;
+                    ButtonGrid.Visibility = Visibility.Visible;
 
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Hidden;
@@ -249,7 +260,8 @@ namespace VerteMark
                     CropConfirmButton.Visibility = Visibility.Visible;
                     CropCancelButton.Visibility = Visibility.Visible;
 
-                   // Mouse.OverrideCursor = Cursors.Cross;
+                    ValidateLabel.Visibility = Visibility.Collapsed;
+                    ButtonGrid.Visibility = Visibility.Collapsed;
 
                     if (CroppedImage.Source != null) {
                         ImageHolder.Visibility = Visibility.Visible;
@@ -339,7 +351,7 @@ namespace VerteMark
         }
 
         private void Save_Click(object sender, RoutedEventArgs e) {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, loggedInUser.Validator);
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, utility.GetLoggedInUser().Validator);
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
@@ -394,7 +406,6 @@ namespace VerteMark
 
             WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
 
-       //     PreviewImage.Source = activeAnotaceImage;
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -415,7 +426,6 @@ namespace VerteMark
                 ToggleCropButton(!utility.GetIsAnotated());
             }
         }
-
 
         private void ToggleCropButton(bool isEnabled)
         {
@@ -444,8 +454,11 @@ namespace VerteMark
         }
 
 
-
-        /* Přepínání anotací */
+        /*
+         * =========
+         *  Buttons
+         * =========
+         */
 
         private void SwitchActiveAnot(int id) {
             // Stroking the connection (spojení od začátku ke konci)
@@ -467,92 +480,217 @@ namespace VerteMark
             if(activeAnotButton != null) {
 
                 activeAnotButton.IsChecked = false;
-                pressedButton.IsChecked = true;
             }
+            pressedButton.IsChecked = true;
             activeAnotButton = pressedButton;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(0);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void CreateButtons()
+        {
+            List<Anotace> Annotations = utility.GetAnnotationsList();
+            bool isValidator = utility.GetLoggedInUser().Validator;
+
+            int i = 0;
+            foreach(Anotace anotace in Annotations)
+            {
+                AddNewRow(anotace, isValidator, i);
+                i++;
+            }
+
+            Button plusButton = new Button
+            {
+                Content = "+",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = 20,
+                Height = 20,
+                Margin = new Thickness(109, 5 + 30 * i, 0, 0),
+            };
+            plusButton.Click += (sender, e) => PlusButton_Click(sender, e);
+            this.plusButton = plusButton;
+
+            ButtonGrid.Children.Add(plusButton);
+
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(1);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void AddNewRow(Anotace anotace, bool isValidator, int i)
+        {
+            Brush color = new SolidColorBrush(Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B));
+
+            if (i > 7)
+            {
+                Button minusButton = new Button
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Width = 19,
+                    Height = 19,
+                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Tag = i
+                };
+                Image binIcon = new Image
+                {
+                    Source = new BitmapImage(new Uri("../Resources/Icons/bin_icon.ico", UriKind.Relative)),
+                    Width = 20,
+                    Height = 20,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                minusButton.Content = binIcon;
+                minusButton.Click += (sender, e) => MinusButton_Click(sender, e);
+
+                ButtonGrid.Children.Add(minusButton);
+            }
+
+            else
+            {
+                Rectangle rect = new Rectangle
+                {
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 0.5,
+                    Fill = color,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Width = 19,
+                    Height = 19,
+                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Tag = i
+                };
+                ButtonGrid.Children.Add(rect);
+            }
+
+            ToggleButton toggleButton = new ToggleButton
+            {
+                Content = anotace.Name,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = 125,
+                Height = 20,
+                Margin = new Thickness(60, 5 + 30 * i, 0, 0),
+                Tag = i
+            };
+            toggleButton.Click += (sender, e) => Button_Click(sender, e);
+
+            if (i == 0)
+                SwitchActiveAnotButton(toggleButton);
+
+            CheckBox checkBox = new CheckBox {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = 20,
+                Height = 20,
+                Margin = new Thickness(205, 6 + 30 * i, 0, 0),
+                Tag = i,
+                IsEnabled = isValidator,
+                IsChecked = anotace.IsValidated
+        };
+            checkBox.Checked += SwitchValidation_Check;
+            checkBox.Unchecked += SwitchValidation_Check;
+
+            ButtonGrid.Children.Add(toggleButton);
+            ButtonGrid.Children.Add(checkBox);
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(2);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton toggleButton = sender as ToggleButton;
+            if(toggleButton != null && toggleButton.Tag != null)
+            {
+                int index;
+                if (int.TryParse(toggleButton.Tag.ToString(), out index))
+                {
+                    SwitchActiveAnot(index);
+                    SwitchActiveAnotButton(sender as ToggleButton);
+                    e.Handled = true;
+                }
+            }
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(3);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void SwitchValidation_Check(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if (checkBox != null && checkBox.Tag != null)
+            {
+                int index;
+                if (int.TryParse(checkBox.Tag.ToString(), out index))
+                {
+                    utility.SwitchAnotationValidation(index);
+                }
+            }
         }
 
-        private void Button_Click_5(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(4);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool isValidator = utility.GetLoggedInUser().Validator;
+            Anotace implant = utility.CreateImplantAnnotation();
+            AddPreviewImage();
+
+            List<Anotace> Annotations = utility.GetAnnotationsList();
+            AddNewRow(implant, isValidator, Annotations.Count - 1);
+            MovePlusButton();
         }
 
-        private void Button_Click_6(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(5);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void MovePlusButton(bool down = true)
+        {
+            if (down)
+            {
+                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top + 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
+            }
+            else
+            {
+                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top - 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
+            }
         }
 
-        private void Button_Click_7(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(6);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null && button.Tag != null)
+            {
+                int index;
+                if (int.TryParse(button.Tag.ToString(), out index))
+                {
+                    DeleteRow(index);
+                    utility.DeleteAnnotation(index);
+                    DeletePreviewImage(index);
+                    MovePlusButton(false);
+                }
+            }
         }
 
-        private void Button_Click_8(object sender, RoutedEventArgs e) {
-            SwitchActiveAnot(7);
-            SwitchActiveAnotButton(sender as ToggleButton);
-            e.Handled = true;
+        private void DeleteRow(int i)
+        {
+            // Najdeme všechny prvky s tagem `i` a odstraníme je z `ButtonGrid`
+            var elementsToRemove = ButtonGrid.Children.OfType<UIElement>().Where(e => e is FrameworkElement fe && fe.Tag is int tag && tag == i).ToList();
+
+            foreach (var element in elementsToRemove)
+            {
+                ButtonGrid.Children.Remove(element);
+            }
+
+            // Aktualizujeme pozice, tagy a obsah všech prvků po odstranění řádku
+            foreach (var element in ButtonGrid.Children)
+            {
+                if (element is FrameworkElement fe && fe.Tag is int tag && tag > i)
+                {
+                    fe.Tag = tag - 1;
+
+                    // Upravíme margin pro zachování správného rozložení
+                    if (fe.Margin != null)
+                    {
+                        fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
+                    }
+
+                    // Aktualizujeme obsah ToggleButton, pokud je to ToggleButton
+                    if (element is ToggleButton toggleButton)
+                    {
+                        toggleButton.Content = $"Implantát {tag - 7}";
+                    }
+
+                    utility.ChangeAnnotationId(tag);
+                }
+            }
         }
-
-        private void SwitchValidation_Check_0(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(0);
-        }
-
-        private void SwitchValidation_Check_1(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(1);
-        }
-
-        private void SwitchValidation_Check_2(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(2);
-        }
-
-        private void SwitchValidation_Check_3(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(3);
-        }
-
-        private void SwitchValidation_Check_4(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(4);
-        }
-
-        private void SwitchValidation_Check_5(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(5);
-        }
-
-        private void SwitchValidation_Check_6(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(6);
-        }
-
-        private void SwitchValidation_Check_7(object sender, RoutedEventArgs e) {
-            utility.SwitchAnotationValidation(7);
-        }
-
-
 
         /*
          * =======================

@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -122,6 +123,10 @@ namespace VerteMark.ObjectClasses
                 List<Tuple<int, int>> bitmap = BitmapAsList();
                 result.Add(Id.ToString(), bitmap);
             }
+            else {
+                List<Tuple<int, int>> bitmap = new List<Tuple<int, int>>();
+                result.Add(Id.ToString(), bitmap);
+            }
             return result;
         }
 
@@ -130,5 +135,10 @@ namespace VerteMark.ObjectClasses
             this.IsAnotated = isAnotated;
         }
 
+        public void SetAnnotationId(int Id)
+        {
+            this.Id = Id;
+            this.Name = "Implantát " + (Id - 6);
+        }
     }
 }

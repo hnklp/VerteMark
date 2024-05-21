@@ -4,6 +4,8 @@ using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
+using System.Xml.Linq;
+using System.Windows.Annotations;
 
 
 namespace VerteMark.ObjectClasses
@@ -21,7 +23,7 @@ namespace VerteMark.ObjectClasses
 
         private static Project instance;
         FolderUtilityManager folderUtilityManager;
-        User? loggedInUser; // Info o uživateli
+        User loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
         BitmapImage? originalPicture; // Fotka toho krku
@@ -90,6 +92,8 @@ namespace VerteMark.ObjectClasses
                 // UPOZORNENI, ZE ANOTACE NEBYLY NACTENY - NEMOHL SE IDENTIFIKOVAT SOUBOR
                 CreateNewAnotaces();
             }
+
+            anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
 
@@ -145,6 +149,7 @@ namespace VerteMark.ObjectClasses
 
         List<int> LoadAnnotations(JArray annotations, JArray validations) {
             List<int> createdIds = new List<int>();
+            HashSet<int> validationSet = validations.ToObject<HashSet<int>>();
 
             foreach (JObject annotationObj in annotations) {
                 foreach (var annotation in annotationObj) {
@@ -154,8 +159,11 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    //createdAnnotation.CreateEmptyCanvas(originalPicture.PixelWidth, originalPicture.PixelHeight);
                     createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+
+                    if (validationSet.Contains(annotationId)) {
+                        createdAnnotation.Validate(true);
+                    }
                 }
             }
             return createdIds;
@@ -179,50 +187,51 @@ namespace VerteMark.ObjectClasses
                     Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
+
+
         }
 
 
-            void CreateNewAnnotation(int id) {
+        void CreateNewAnnotation(int id) {
             // Barva odpovídající danému ID
             System.Drawing.Color color;
             string name;
             switch (id) {
                 case 0:
                     color = System.Drawing.Color.Red;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 1:
                     color = System.Drawing.Color.Orange;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 2:
                     color = System.Drawing.Color.Yellow;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 3:
                     color = System.Drawing.Color.Lime;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 4:
                     color = System.Drawing.Color.Aquamarine;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 5:
                     color = System.Drawing.Color.Aqua;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 6:
                     color = System.Drawing.Color.BlueViolet;
-                    name = "C" + id;
+                    name = "C" + (id + 1);
                     break;
                 case 7:
                     color = System.Drawing.Color.DeepPink;
                     name = "Implantát";
                     break;
                 default:
-                    // Pokud je ID mimo rozsah, použije se defaultní barva a název
-                    color = System.Drawing.Color.Black;
-                    name = "Unknown";
+                    color = System.Drawing.Color.DeepPink;
+                    name = "Implantát " + (id - 6);
                     break;
             }
 
@@ -230,6 +239,14 @@ namespace VerteMark.ObjectClasses
             anotaces.Add(new Anotace(id, name, color));
         }
 
+        public Anotace CreateImplantAnnotation()
+        {
+            int id = anotaces.Count;
+            string name = "Implantát " + (id - 6);
+            Anotace implant = new Anotace(id, name, System.Drawing.Color.DeepPink);
+            anotaces.Add(implant);
+            return implant;
+        }
 
         public WriteableBitmap ActiveAnotaceImage() {
             if (activeAnotace == null) {
@@ -248,7 +265,7 @@ namespace VerteMark.ObjectClasses
             return a;
         }
 
-        Anotace FindAnotaceById(int idAnotace) {
+        public Anotace FindAnotaceById(int idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
             if (foundAnotace != null) {
                 return foundAnotace;
@@ -297,7 +314,6 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
         public void ClearActiveAnotace() {
             if (activeAnotace != null) {
                 activeAnotace.ClearCanvas();
@@ -310,6 +326,26 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        public List<Anotace> GetAnotaces(){
+            return anotaces;
+        }
+
+        public void DeleteAnnotation(int annotationId) { 
+            Anotace annotation = FindAnotaceById(annotationId);
+            if (annotation != null)
+            {
+                anotaces.Remove(annotation);
+            }
+        }
+
+        public void ChangeAnnotationId(int annotationId)
+        {
+            Anotace annotation = FindAnotaceById(annotationId);
+            if (annotation != null)
+            {
+                annotation.SetAnnotationId(annotationId - 1);
+            }
+        }
 
         /*
         * ===========
@@ -328,7 +364,7 @@ namespace VerteMark.ObjectClasses
         }
 
 
-        public User? GetLoggedInUser() {
+        public User GetLoggedInUser() {
             return loggedInUser;
         }
 
