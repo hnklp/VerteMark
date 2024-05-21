@@ -573,8 +573,7 @@ namespace VerteMark
             if (i == 0)
                 SwitchActiveAnotButton(toggleButton);
 
-            CheckBox checkBox = new CheckBox
-            {
+            CheckBox checkBox = new CheckBox {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 20,
@@ -585,6 +584,7 @@ namespace VerteMark
                 IsChecked = anotace.IsValidated
 
             };
+            checkBox.IsChecked = true;
             checkBox.Checked += SwitchValidation_Check;
             checkBox.Unchecked += SwitchValidation_Check;
 
