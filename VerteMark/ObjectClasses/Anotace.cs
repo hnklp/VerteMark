@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -120,6 +121,10 @@ namespace VerteMark.ObjectClasses
             Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
             if (canvas != null) {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
+                result.Add(Id.ToString(), bitmap);
+            }
+            else {
+                List<Tuple<int, int>> bitmap = new List<Tuple<int, int>>();
                 result.Add(Id.ToString(), bitmap);
             }
             return result;
