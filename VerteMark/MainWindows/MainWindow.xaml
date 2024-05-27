@@ -145,7 +145,8 @@
                     </Grid>
 
                     <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
-                            MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp">
+                            MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp"
+                            MouseLeave="CropCanvas_MouseLeave">
                         <Rectangle x:Name="CropRectangle" Width="0" Height="0" Stroke="LightBlue" Fill="#220000FF"/>
                     </Canvas>
 
