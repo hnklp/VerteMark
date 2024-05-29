@@ -780,6 +780,17 @@ namespace VerteMark
             }
         }
 
+        private void CropCanvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (stateManager.CurrentState == AppState.Cropping)
+            {
+                if (cropStartPoint.HasValue)
+                {
+                    cropStartPoint = null;
+                }
+            }
+        }
+
         private void CropCanvas_MouseMove(object sender, MouseEventArgs e) {
             if (stateManager.CurrentState == AppState.Cropping) {
                 if (cropStartPoint.HasValue) {
