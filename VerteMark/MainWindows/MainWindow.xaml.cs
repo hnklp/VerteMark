@@ -71,6 +71,7 @@ namespace VerteMark
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
 
+
             CreateButtons();
 
             User loggedInUser = utility.GetLoggedInUser();
@@ -105,6 +106,8 @@ namespace VerteMark
             CanvasGrid.TouchMove += CanvasGrid_TouchMove;
             CanvasGrid.TouchUp += CanvasGrid_TouchUp;
 
+            CanvasScrollViewer.ManipulationDelta += CustomScrollViewer_ManipulationDelta; // Upravený řádek
+            CanvasScrollViewer.ManipulationInertiaStarting += CustomScrollViewer_ManipulationInertiaStarting; // Upravený řádek
         }
 
         private void CanvasGrid_TouchDown(object sender, TouchEventArgs e) {
@@ -143,6 +146,25 @@ namespace VerteMark
             T parent = parentObject as T;
             if (parent != null) return parent;
             else return FindParent<T>(parentObject);
+        }
+
+        private void CustomScrollViewer_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.DeltaManipulation.Translation.X);
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.DeltaManipulation.Translation.Y);
+
+                e.Handled = true;
+            }
+        }
+
+        private void CustomScrollViewer_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e)
+        {
+            e.TranslationBehavior.DesiredDeceleration = 10 * 96.0 / (1000.0 * 1000.0); // example value
+            e.Handled = true;
         }
 
         // Debugovací konstruktor pro volání z debug tlačítka
