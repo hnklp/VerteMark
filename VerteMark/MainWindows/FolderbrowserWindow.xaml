@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VerteMark.MainWindows"
         mc:Ignorable="d" 
         d:DesignHeight="415" d:DesignWidth="800"
-        Title="VerteMark" Height="415" Width="800" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
 
     <Grid>
         <Grid.ColumnDefinitions>
