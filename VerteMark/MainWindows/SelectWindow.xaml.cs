@@ -49,10 +49,14 @@ namespace VerteMark
             {
                 string selectedFilePath = openFileDialog.FileName;
                 utility.ChooseProjectFolder(selectedFilePath);
-                this.HintText.Text = openFileDialog.FileName;
+                HintText.Text = selectedFilePath;
             }
 
-            ContinueButton.IsEnabled = true;
+            if (openFileDialog.FileName != "" && openFileDialog.FileName != null)
+            {
+                ContinueButton.IsEnabled = true;
+            }
+
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
