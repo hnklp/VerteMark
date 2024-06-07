@@ -5,16 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
+using System.Diagnostics;
 
 namespace VerteMark.ObjectClasses.FolderClasses{
     public class ZipManager{
         public string? zipPath;
         public string? tempFolderPath;
+        public string? zipName;
 
         public void LoadZip(string zipPath){
             try{
                 this.zipPath = zipPath;
-                tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+                this.zipName = Path.GetFileNameWithoutExtension(zipPath);
+                Debug.WriteLine(zipName);
+                tempFolderPath = Path.GetTempPath() + "/VerteMark/" + zipName ;
 
                 // Kontrola, zda je složka temp prázdná a pokud ne, smaž její obsah
                 if (Directory.Exists(tempFolderPath) && Directory.GetFileSystemEntries(tempFolderPath).Length > 0){

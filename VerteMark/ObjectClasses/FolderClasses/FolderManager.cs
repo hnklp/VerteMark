@@ -11,13 +11,9 @@ namespace VerteMark.ObjectClasses.FolderClasses {
     // bude nastrojem pro vyber slozek, ze kterych chce uzivatel vybirat
 
     internal class FolderManager {
-        public string tempFolderPath;
+        public string? tempFolderPath;
 
-        public FolderManager() {
-            tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        }
         
-
         public void CheckTempFolder() {
         // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
             string[] requiredFolders = { "dicoms", "to_validate", "to_anotate", "validated" };
