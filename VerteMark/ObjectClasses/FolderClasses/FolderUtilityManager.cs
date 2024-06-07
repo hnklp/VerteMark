@@ -10,14 +10,14 @@ using System.Net.Http.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
-namespace VerteMark.ObjectClasses.FolderClasses{
-    internal class FolderUtilityManager{
+namespace VerteMark.ObjectClasses.FolderClasses {
+    internal class FolderUtilityManager {
         ZipManager zipManager;
         FileManager fileManager;
         FolderManager folderManager;
         public string tempPath;
 
-        public FolderUtilityManager(){
+        public FolderUtilityManager() {
             zipManager = new ZipManager();
             fileManager = new FileManager();
             folderManager = new FolderManager();
@@ -61,7 +61,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        public bool ExtractZip(string path){
+        public bool ExtractZip(string path) {
             try {
                 zipManager.LoadZip(path);
                 folderManager.CheckTempFolder();
@@ -72,17 +72,17 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        void SaveZip(){
+        void SaveZip() {
             zipManager.UpdateZipFromTempFolder();
         }
 
 
-        public BitmapImage GetImage(){
+        public BitmapImage GetImage() {
             return fileManager.LoadBitmapImage();
         }
 
 
-        public void CreateNewProject(string path){
+        public void CreateNewProject(string path) {
             string folderName = Path.GetFileNameWithoutExtension(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
             fileManager.dicomPath = path;
@@ -91,7 +91,7 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         }
 
 
-        public string LoadProject(string path){
+        public string LoadProject(string path) {
             try {
                 string[] files = Directory.GetFiles(path);
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
@@ -131,18 +131,34 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         * =============================
         */
 
-        public List<string> ChooseNewProject(){
+        public List<string> ChooseNewProject() {
             return folderManager.ChooseNewProject();
         }
 
 
-        public List<string> ChooseContinueAnotation(){
+        public List<string> ChooseContinueAnotation() {
             return folderManager.ChooseContinueAnotation();
         }
 
 
-        public List<string> ChooseValidation(){
+        public List<string> ChooseValidation() {
             return folderManager.ChooseValidation();
+        }
+
+        /*
+        * =============================
+        * Kontrola pokracovani v praci
+        * =============================
+        */
+
+        public bool anyProjectAvailable(bool isValidator) {
+            if (isValidator && folderManager.ChooseValidation().Count == 0) {
+                return false;
+            }
+            else if (!isValidator && (folderManager.ChooseContinueAnotation().Count == 0 && folderManager.ChooseNewProject().Count == 0)) {
+                return false;
+            }
+            return true;
         }
     }
 }
