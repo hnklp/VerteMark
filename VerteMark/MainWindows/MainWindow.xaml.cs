@@ -78,6 +78,7 @@ namespace VerteMark
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
+            this.Closing += DeleteTempFolder_Closing;
 
             Loaded += delegate
             {
@@ -361,6 +362,10 @@ namespace VerteMark
 
 
             saveAlertWindow.Show();
+        }
+
+        private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+            utility.DeleteTempFolder();
         }
 
         /*

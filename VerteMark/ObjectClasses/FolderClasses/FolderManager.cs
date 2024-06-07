@@ -26,6 +26,33 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        public void DeleteTempFolder() {
+            {
+                try {
+                    // Získání nadřazené cesty
+                    string parentDirectory = Path.GetDirectoryName(tempFolderPath);
+
+                    if (string.IsNullOrEmpty(parentDirectory)) {
+                        Console.WriteLine("Cesta je neplatná nebo nemá nadřazenou složku.");
+                        return;
+                    }
+
+                    // Zkontrolování existence cílové složky
+                    if (Directory.Exists(tempFolderPath)) {
+                        // Smazání složky a jejího obsahu
+                        Directory.Delete(tempFolderPath, true);
+                        Console.WriteLine($"Složka '{tempFolderPath}' a její obsah byly úspěšně smazány.");
+                    }
+                    else {
+                        Console.WriteLine($"Složka '{tempFolderPath}' neexistuje.");
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"Při mazání složky nastala chyba: {ex.Message}");
+                }
+            }
+        }
+
         public void ProcessFolders() {
             string validatedPath = Path.Combine(tempFolderPath, "validated");
             string toValidatePath = Path.Combine(tempFolderPath, "to_validate");

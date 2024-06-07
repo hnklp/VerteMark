@@ -60,6 +60,10 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             SaveZip();
         }
 
+        public void DeleteTempFolder() {
+            folderManager.DeleteTempFolder();
+        }
+
 
         public bool ExtractZip(string path){
             try {
