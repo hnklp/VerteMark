@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="415" Width="800" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
 
     <Grid>
         <Button x:Name="SelectZIP" Content="Vybrat soubor" HorizontalAlignment="Left" Margin="437,210,0,0" VerticalAlignment="Top" Height="27" Width="324" Click="Select_Click" />

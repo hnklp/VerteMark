@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="415" Width="800" Topmost="True" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" Background="#FFF0F0F0" >
+        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" Background="#FFF0F0F0" >
 
     <Window.Resources>
         <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
