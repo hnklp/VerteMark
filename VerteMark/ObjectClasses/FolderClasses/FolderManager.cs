@@ -11,13 +11,9 @@ namespace VerteMark.ObjectClasses.FolderClasses {
     // bude nastrojem pro vyber slozek, ze kterych chce uzivatel vybirat
 
     internal class FolderManager {
-        public string tempFolderPath;
+        public string? tempFolderPath;
 
-        public FolderManager() {
-            tempFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
-        }
         
-
         public void CheckTempFolder() {
         // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
             string[] requiredFolders = { "dicoms", "to_validate", "to_anotate", "validated" };
@@ -26,6 +22,33 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 string folderPath = Path.Combine(tempFolderPath, folderName);
                 if (!Directory.Exists(folderPath)) {
                     Directory.CreateDirectory(folderPath);
+                }
+            }
+        }
+
+        public void DeleteTempFolder() {
+            {
+                try {
+                    // Získání nadřazené cesty
+                    string parentDirectory = Path.GetDirectoryName(tempFolderPath);
+
+                    if (string.IsNullOrEmpty(parentDirectory)) {
+                        Console.WriteLine("Cesta je neplatná nebo nemá nadřazenou složku.");
+                        return;
+                    }
+
+                    // Zkontrolování existence cílové složky
+                    if (Directory.Exists(tempFolderPath)) {
+                        // Smazání složky a jejího obsahu
+                        Directory.Delete(tempFolderPath, true);
+                        Console.WriteLine($"Složka '{tempFolderPath}' a její obsah byly úspěšně smazány.");
+                    }
+                    else {
+                        Console.WriteLine($"Složka '{tempFolderPath}' neexistuje.");
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"Při mazání složky nastala chyba: {ex.Message}");
                 }
             }
         }

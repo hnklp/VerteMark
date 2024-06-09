@@ -121,6 +121,10 @@ namespace VerteMark.ObjectClasses
         }
 
 
+        public void DeleteTempFolder() {
+            folderUtilityManager.DeleteTempFolder();
+        }
+
 
         public BitmapImage? GetOriginalPicture() {
             return originalPicture;
