@@ -10,9 +10,6 @@ using System.Globalization;
 using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
 using System.Windows.Shapes;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations;
-
 
 
 namespace VerteMark
@@ -339,11 +336,6 @@ namespace VerteMark
             AboutWindow.Top = originalCenterY - AboutWindow.Height / 2;
 
             AboutWindow.Show();
-        }
-
-        //kliknuti na nastaveni aplikace
-        private void PropertiesItem_Click(object sender, RoutedEventArgs e) {
-            MessageBox.Show("Properties clicked");
         }
 
         //soubor - zavrit

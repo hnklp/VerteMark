@@ -31,6 +31,11 @@ namespace VerteMark.SubWindows {
             utility.saved = true;
             mainWindow.IsEnabled = true;
             this.Close();
+
+            if (!utility.isAnyProjectAvailable())
+            {
+                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+            }
         }
 
         private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e) {
@@ -39,6 +44,16 @@ namespace VerteMark.SubWindows {
             utility.saved = true;
             mainWindow.IsEnabled = true;
             this.Close();
+
+            if (!utility.isAnyProjectAvailable())
+            {
+                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            mainWindow.IsEnabled = true;
         }
     }
 }

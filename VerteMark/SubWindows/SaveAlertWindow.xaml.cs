@@ -33,6 +33,11 @@ namespace VerteMark.SubWindows
             Browse();
             mainWindow.IsEnabled = true;
             this.Close();
+
+            if (!utility.isAnyProjectAvailable())
+            {
+                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+            }
         }
 
         private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e) {
@@ -42,6 +47,8 @@ namespace VerteMark.SubWindows
             Browse();
             mainWindow.IsEnabled = true;
             this.Close();
+
+ 
         }
 
         public void Browse() {
@@ -59,6 +66,11 @@ namespace VerteMark.SubWindows
 
             mainWindow.Visibility = Visibility.Hidden;
             folderbrowserWindow.Show();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            mainWindow.IsEnabled = true;
         }
     }
 }
