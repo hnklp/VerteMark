@@ -31,6 +31,7 @@ namespace VerteMark.ObjectClasses
         bool IsAnotated = false;
         bool newProject;
         bool saved;
+        public bool anyProjectAvailable;
 
 
 
@@ -41,6 +42,7 @@ namespace VerteMark.ObjectClasses
             jsonManip = new JsonManipulator();
             newProject = false;
             saved = false;
+            anyProjectAvailable = true;
         }
 
 
@@ -118,6 +120,8 @@ namespace VerteMark.ObjectClasses
                 originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
                 savingParameter); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
+            this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
+            Debug.WriteLine(this.anyProjectAvailable);
         }
 
 
@@ -191,8 +195,6 @@ namespace VerteMark.ObjectClasses
                     Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
-
-
         }
 
 
