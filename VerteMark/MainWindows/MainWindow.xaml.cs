@@ -75,7 +75,8 @@ namespace VerteMark
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
-            this.Closing += DeleteTempFolder_Closing;
+            //this.Closing += DeleteTempFolder_Closing; 
+            // !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
 
             Loaded += delegate
             {
