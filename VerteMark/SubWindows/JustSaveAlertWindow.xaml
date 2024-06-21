@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark.SubWindows"
         mc:Ignorable="d"
-        Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png">
+        Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png" Closing="Window_Closing">
     <Grid>
         <TextBlock
                    TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>

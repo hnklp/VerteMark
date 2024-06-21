@@ -10,9 +10,6 @@ using System.Globalization;
 using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
 using System.Windows.Shapes;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations;
-
 
 
 namespace VerteMark
@@ -78,7 +75,8 @@ namespace VerteMark
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
-            this.Closing += DeleteTempFolder_Closing;
+            //this.Closing += DeleteTempFolder_Closing; 
+            // !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
 
             Loaded += delegate
             {
@@ -339,11 +337,6 @@ namespace VerteMark
             AboutWindow.Top = originalCenterY - AboutWindow.Height / 2;
 
             AboutWindow.Show();
-        }
-
-        //kliknuti na nastaveni aplikace
-        private void PropertiesItem_Click(object sender, RoutedEventArgs e) {
-            MessageBox.Show("Properties clicked");
         }
 
         //soubor - zavrit
