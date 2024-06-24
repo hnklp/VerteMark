@@ -36,7 +36,7 @@ namespace VerteMark.SubWindows
 
             if (!utility.isAnyProjectAvailable())
             {
-                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+                App.RestartApplication();
             }
         }
 
@@ -48,7 +48,6 @@ namespace VerteMark.SubWindows
             mainWindow.IsEnabled = true;
             this.Close();
 
- 
         }
 
         public void Browse() {

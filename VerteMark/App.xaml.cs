@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Windows;
 
 namespace VerteMark
@@ -23,12 +24,24 @@ namespace VerteMark
                   this.Shutdown();
                 }
             }
+
+            if (e.Args.Length > 0 && e.Args[0] == "allDone")
+            {
+                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+            }
         }
 
         private bool IsWindows81OrNewer()
         {
             Version winVersion = Environment.OSVersion.Version;
             return (winVersion >= new Version(6, 3));
+        }
+
+        public static void RestartApplication()
+        {
+            var currentExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+            Process.Start(currentExecutablePath, "allDone");
+            Current.Shutdown();
         }
     }
 
