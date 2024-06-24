@@ -85,9 +85,6 @@ namespace VerteMark.ObjectClasses
             project.DeleteTempFolder();
         }
 
-        public void ValidateAll() {
-            project.ValidateAll();
-        }
 
         public List<Anotace> GetAnnotationsList(){
             return project.GetAnotaces();
