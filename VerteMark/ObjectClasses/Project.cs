@@ -326,6 +326,13 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /*
+        public void ValidateAll() {
+            foreach (Anotace annotation in anotaces) {
+                annotation.Validate(true);
+            }
+        }
+        */
 
         public List<Anotace> GetAnotaces(){
             return anotaces;

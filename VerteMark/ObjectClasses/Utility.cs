@@ -85,6 +85,11 @@ namespace VerteMark.ObjectClasses
             project.DeleteTempFolder();
         }
 
+        /* Pro zvalidování všech anotací najednou
+        public void ValidateAll() {
+            project.ValidateAll();
+        }
+        */
 
         public List<Anotace> GetAnnotationsList(){
             return project.GetAnotaces();
