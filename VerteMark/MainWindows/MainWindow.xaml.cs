@@ -46,6 +46,12 @@ namespace VerteMark
         private List<Image> previewImageList;
         private int savingParam;
 
+        // Dotyková gesta
+        private Point touchStart1;
+        private Point touchStart2;
+        private double initialDistance;
+        private bool isPinching;
+
         public MainWindow() {
             InitializeComponent();
             utility = new Utility();
@@ -61,6 +67,7 @@ namespace VerteMark
                 ApplicationCommands.Save,
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
+
 
             CreateButtons();
 
@@ -93,8 +100,72 @@ namespace VerteMark
                 utility.ValidateAll();
                 savingParam = 2;
             }
-            
+
+            CanvasGrid.TouchDown += CanvasGrid_TouchDown;
+            CanvasGrid.TouchMove += CanvasGrid_TouchMove;
+            CanvasGrid.TouchUp += CanvasGrid_TouchUp;
+
+            CanvasScrollViewer.ManipulationDelta += CustomScrollViewer_ManipulationDelta; // Upravený řádek
+            CanvasScrollViewer.ManipulationInertiaStarting += CustomScrollViewer_ManipulationInertiaStarting; // Upravený řádek
         }
+
+        private void CanvasGrid_TouchDown(object sender, TouchEventArgs e) {
+            if (e.TouchDevice.GetIntermediateTouchPoints(CanvasGrid).Count == 2) {
+                var touchPoints = e.TouchDevice.GetIntermediateTouchPoints(CanvasGrid);
+                touchStart1 = touchPoints[0].Position;
+                touchStart2 = touchPoints[1].Position;
+                initialDistance = (touchStart1 - touchStart2).Length;
+                isPinching = true;
+            }
+        }
+
+        private void CanvasGrid_TouchMove(object sender, TouchEventArgs e) {
+            if (isPinching && e.TouchDevice.GetIntermediateTouchPoints(CanvasGrid).Count == 2) {
+                var touchPoints = e.TouchDevice.GetIntermediateTouchPoints(CanvasGrid);
+                Point currentPoint1 = touchPoints[0].Position;
+                Point currentPoint2 = touchPoints[1].Position;
+                double currentDistance = (currentPoint1 - currentPoint2).Length;
+
+                if (Math.Abs(currentDistance - initialDistance) > 10) {
+                    double zoomFactor = currentDistance / initialDistance;
+                    ZoomSlider.Value = Math.Min(Math.Max(ZoomSlider.Value * zoomFactor, ZoomSlider.Minimum), ZoomSlider.Maximum);
+                    initialDistance = currentDistance;
+                }
+            }
+        }
+
+        private void CanvasGrid_TouchUp(object sender, TouchEventArgs e) {
+            isPinching = false;
+            initialDistance = 0;
+        }
+
+        private T? FindParent<T>(DependencyObject child) where T : DependencyObject {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if (parentObject == null) return null;
+            T parent = parentObject as T;
+            if (parent != null) return parent;
+            else return FindParent<T>(parentObject);
+        }
+
+        private void CustomScrollViewer_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.DeltaManipulation.Translation.X);
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.DeltaManipulation.Translation.Y);
+
+                e.Handled = true;
+            }
+        }
+
+        private void CustomScrollViewer_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e)
+        {
+            e.TranslationBehavior.DesiredDeceleration = 10 * 96.0 / (1000.0 * 1000.0); // example value
+            e.Handled = true;
+        }
+
         // Debugovací konstruktor pro volání z debug tlačítka
         public MainWindow(bool debug) {
             InitializeComponent();
