@@ -285,7 +285,7 @@ namespace VerteMark.ObjectClasses
 
         public void ValidateAnnotationByID(int id) {
             Anotace anotace = FindAnotaceById(id);
-            Debug.WriteLine("ZAVOLANA VALIDACE");
+            Debug.WriteLine("ZAVOLANA VALIDACE TLACITKO");
             if (anotace.IsValidated) {
                 anotace.Validate(false);
                 Debug.WriteLine("FALSE");
@@ -326,11 +326,13 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /*
         public void ValidateAll() {
             foreach (Anotace annotation in anotaces) {
                 annotation.Validate(true);
             }
         }
+        */
 
         public List<Anotace> GetAnotaces(){
             return anotaces;

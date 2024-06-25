@@ -97,7 +97,7 @@ namespace VerteMark
 
             // zvalidneni vsech anotaci, pokud je user validator:
             if ( loggedInUser != null && loggedInUser.Validator) {
-                utility.ValidateAll();
+                //utility.ValidateAll()
                 savingParam = 2;
             }
 
