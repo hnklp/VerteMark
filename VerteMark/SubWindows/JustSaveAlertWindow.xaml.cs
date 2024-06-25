@@ -34,7 +34,7 @@ namespace VerteMark.SubWindows {
 
             if (!utility.isAnyProjectAvailable())
             {
-                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+                App.RestartApplication();
             }
         }
 
@@ -45,10 +45,6 @@ namespace VerteMark.SubWindows {
             mainWindow.IsEnabled = true;
             this.Close();
 
-            if (!utility.isAnyProjectAvailable())
-            {
-                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
-            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
