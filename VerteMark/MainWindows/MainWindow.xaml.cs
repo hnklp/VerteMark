@@ -68,8 +68,6 @@ namespace VerteMark
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
 
-            CreateButtons();
-
             User loggedInUser = utility.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
@@ -81,10 +79,10 @@ namespace VerteMark
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
-            //this.Closing += DeleteTempFolder_Closing; 
-            // !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
+			//this.Closing += DeleteTempFolder_Closing; 
+			// !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
 
-            Loaded += delegate
+			Loaded += delegate
             {
                 SetCanvasComponentsSize();
                 AddPreviewImages();
@@ -95,13 +93,15 @@ namespace VerteMark
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
             };
 
-            // zvalidneni vsech anotaci, pokud je user validator:
-            if ( loggedInUser != null && loggedInUser.Validator) {
-                //utility.ValidateAll()
-                savingParam = 2;
-            }
+			// zvalidneni vsech anotaci, pokud je user validator:
+			if (loggedInUser != null && loggedInUser.Validator) {
+				utility.ValidateAll();
+				savingParam = 2;
+			}
 
-            CanvasGrid.TouchDown += CanvasGrid_TouchDown;
+			CreateButtons();
+
+			CanvasGrid.TouchDown += CanvasGrid_TouchDown;
             CanvasGrid.TouchMove += CanvasGrid_TouchMove;
             CanvasGrid.TouchUp += CanvasGrid_TouchUp;
 
