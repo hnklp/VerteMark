@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Windows.Controls.Primitives;
 using VerteMark.SubWindows;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 
 namespace VerteMark
@@ -243,8 +244,8 @@ namespace VerteMark
         private void AddPreviewImage()
         {
             Image newImage = new Image();
-            newImage.Width = ImageHolder.ActualWidth;
-            newImage.Height = ImageHolder.ActualHeight;
+            newImage.Width = CroppedImage.ActualWidth;
+            newImage.Height = CroppedImage.ActualHeight;
             newImage.Margin = new Thickness(0);
             Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
             Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
@@ -695,6 +696,14 @@ namespace VerteMark
             AddPreviewImage();
 
             List<Anotace> Annotations = utility.GetAnnotationsList();
+
+            foreach (Image image in previewImageList) {
+                Debug.WriteLine(image.Width + "W");
+                Debug.WriteLine(image.Height + "H");
+                Debug.WriteLine(image.HorizontalAlignment + "H A ");
+                Debug.WriteLine(image.VerticalAlignment + " V A");
+            }
+
             AddNewRow(implant, isValidator, Annotations.Count - 1);
             MovePlusButton();
         }
