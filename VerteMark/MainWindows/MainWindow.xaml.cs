@@ -68,7 +68,6 @@ namespace VerteMark
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
 
-
             CreateButtons();
 
             User loggedInUser = utility.GetLoggedInUser();
@@ -88,8 +87,9 @@ namespace VerteMark
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
+                AddPreviewImages();
                 SwitchActiveAnot(0);
-
+                
                 // start at 25% zoom
                 double zoomFactor = 0.25;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
@@ -205,11 +205,6 @@ namespace VerteMark
         }
 
 
-        //dialog otevreni souboru s filtrem
-        //TODO odstranit moznost vsechny soubory??
-        //TODO pridat otevirani slozek - domluvit se jestli dve funkce nebo jedna
-        //TODO dodelat exception pri spatnem vyberu souboru (eg. .zip)
-
         // Podle velikosti ImageHolder nastaví plátno
         private void SetCanvasComponentsSize() {
             InkCanvas.Width = ImageHolder.ActualWidth;
@@ -227,24 +222,32 @@ namespace VerteMark
             Grid.SetRow(PreviewImage, Grid.GetRow(ImageHolder));
             Grid.SetColumn(CropCanvas, Grid.GetColumn(ImageHolder));
             Grid.SetRow(CropCanvas, Grid.GetRow(ImageHolder));
-            AddPreviewImages();
         }
 
         private void AddPreviewImages() {
             List<Anotace> Annotations = utility.GetAnnotationsList();
 
-            foreach (Anotace anotace in Annotations)
+            for (int i = 0; i < Annotations.Count; i++)
             {
                 AddPreviewImage();
             }
-            previewImageList.Add(PreviewImage);
         }
 
         private void AddPreviewImage()
         {
             Image newImage = new Image();
-            newImage.Width = ImageHolder.ActualWidth;
-            newImage.Height = ImageHolder.ActualHeight;
+            
+            if (CroppedImage.Source == null)
+            {
+                newImage.Width = ImageHolder.ActualWidth;
+                newImage.Height = ImageHolder.ActualHeight;
+            }
+            else
+            {
+                newImage.Width = CropRectangle.Width;
+                newImage.Height = CropRectangle.Height;
+            }
+
             newImage.Margin = new Thickness(0);
             Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
             Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
@@ -530,13 +533,9 @@ namespace VerteMark
          */
 
         private void SwitchActiveAnot(int id) {
-            // Stroking the connection (spojení od začátku ke konci)
         //    ConnectStrokeAnotace();
             SaveCanvasIntoAnot();
-            // The rest
-            UpdateElementsWithAnotace();
             utility.ChangeActiveAnotation(id);
-            //   previewImage.Source = utility.GetActiveAnotaceImage();
             InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
             //  InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
@@ -719,9 +718,9 @@ namespace VerteMark
                 int index;
                 if (int.TryParse(button.Tag.ToString(), out index))
                 {
-                    DeleteRow(index);
                     utility.DeleteAnnotation(index);
                     DeletePreviewImage(index);
+                    DeleteRow(index);
                     MovePlusButton(false);
                 }
             }
@@ -914,11 +913,11 @@ namespace VerteMark
             PreviewImage.Height = CropRectangle.Height;
             CropCanvas.Width = CropRectangle.Width;
             CropCanvas.Height = CropRectangle.Height;
+            PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
+            PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
             foreach(Image img in previewImageList) {
                 img.Width = CropRectangle.Width;
-                img.Height = CropRectangle.Height;
-                PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
-                PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
+                img.Height = CropRectangle.Height;   
             }
 
             utility.CropOriginalPicture(croppedImage);

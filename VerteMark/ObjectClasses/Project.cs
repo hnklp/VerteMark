@@ -267,6 +267,9 @@ namespace VerteMark.ObjectClasses
                 if(activeAnotace != anot) {
                     a.Add(anot.GetCanvas());
                 }
+                else {
+                    a.Add(null);
+                }
             }
             return a;
         }
