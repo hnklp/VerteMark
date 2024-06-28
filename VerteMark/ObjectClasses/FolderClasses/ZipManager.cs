@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
 using System.Diagnostics;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace VerteMark.ObjectClasses.FolderClasses{
     public class ZipManager{
@@ -14,49 +15,57 @@ namespace VerteMark.ObjectClasses.FolderClasses{
         public string? zipName;
 
         public void LoadZip(string zipPath){
-            try{
                 this.zipPath = zipPath;
                 this.zipName = Path.GetFileNameWithoutExtension(zipPath);
-                Debug.WriteLine(zipName);
                 tempFolderPath = Path.GetTempPath() + "/VerteMark/" + zipName ;
 
-                // Kontrola, zda je složka temp prázdná a pokud ne, smaž její obsah
-                if (Directory.Exists(tempFolderPath) && Directory.GetFileSystemEntries(tempFolderPath).Length > 0){
-                    Directory.Delete(tempFolderPath, true);
-                    Directory.CreateDirectory(tempFolderPath);
-                }
-                else{
-                    Directory.CreateDirectory(tempFolderPath);
-                }
+			try {
+				Console.WriteLine($"Extrahování souboru: {zipName}");
 
-                // Extrahování obsahu ZIP souboru do cílové složky
-                using (ZipArchive archive = ZipFile.OpenRead(zipPath)){
-                    foreach (ZipArchiveEntry entry in archive.Entries){
-                        // Vytvoření cesty pro každý vnitřní element ZIP souboru
-                        string entryExtractPath = Path.Combine(tempFolderPath, entry.FullName);
+				// Kontrola a vytvoření cílové složky
+				if (Directory.Exists(tempFolderPath)) {
+					Directory.Delete(tempFolderPath, true);
+				}
+				Directory.CreateDirectory(tempFolderPath);
 
-                        // Pokud se jedná o složku, vytvoříme ji
-                        if (entry.FullName.EndsWith("/")){
-                            Directory.CreateDirectory(entryExtractPath);
-                        }
-                        // Pokud se jedná o soubor, extrahujeme ho
-                        else{
-                            entry.ExtractToFile(entryExtractPath, true);
-                        }
-                    }
-                }
+				// Použití SharpZipLib pro otevření a extrakci ZIP souboru
+				using (var zipStream = new FileStream(zipPath, FileMode.Open, FileAccess.Read))
+				using (var zipInputStream = new ZipInputStream(zipStream)) {
+					ZipEntry entry;
+					while ((entry = zipInputStream.GetNextEntry()) != null) {
+						string entryExtractPath = Path.Combine(tempFolderPath, entry.Name);
 
-                Console.WriteLine("Obsah ZIP souboru byl úspěšně extrahován do složky Temp na ploše.");
-            }
-            catch (Exception ex){
-                Console.WriteLine($"Nastala chyba při extrahování obsahu ZIP souboru: {ex.Message}");
-            }
-        }
+						// Pokud je položka složka, vytvoříme ji
+						if (entry.IsDirectory) {
+							Directory.CreateDirectory(entryExtractPath);
+						}
+						else {
+							// Vytvoření potřebných složek, pokud nejsou
+							string directoryPath = Path.GetDirectoryName(entryExtractPath);
+							if (!Directory.Exists(directoryPath)) {
+								Directory.CreateDirectory(directoryPath);
+							}
+
+							// Extrakce souboru
+							using (var entryStream = File.Create(entryExtractPath)) {
+								zipInputStream.CopyTo(entryStream);
+							}
+						}
+					}
+				}
+
+				Console.WriteLine("Extrakce dokončena.");
+			}
+			catch (Exception ex) {
+				Console.WriteLine("Chyba při extrakci ZIP souboru: " + ex.Message);
+			}
+
+		}
 
 
         public void UpdateZipFromTempFolder(){
             try{
-                using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Update)){
+                using (ZipArchive archive = System.IO.Compression.ZipFile.Open(zipPath, ZipArchiveMode.Update)){
                     UpdateZipFromTempFolderRecursive(archive, "", tempFolderPath);
                 }
             }

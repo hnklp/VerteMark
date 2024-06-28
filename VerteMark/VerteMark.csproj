@@ -57,6 +57,7 @@
     <PackageReference Include="fo-dicom.Desktop" Version="4.0.8" />
     <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
 </Project>
