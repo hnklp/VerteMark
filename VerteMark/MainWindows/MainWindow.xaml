@@ -125,12 +125,14 @@
                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                           PreviewMouseRightButtonDown="ScrollViewer_PreviewMouseRightButtonDown"
                           PreviewMouseMove="ScrollViewer_PreviewMouseMove"
-                          PreviewMouseRightButtonUp="ScrollViewer_PreviewMouseRightButtonUp" 
+                          PreviewMouseWheel="Window_PreviewMouseWheel"
+                          PreviewMouseRightButtonUp="ScrollViewer_PreviewMouseRightButtonUp"
+                          IsManipulationEnabled="True"
                           Grid.ColumnSpan="2"
                           ManipulationDelta="CustomScrollViewer_ManipulationDelta"
                           ManipulationInertiaStarting="CustomScrollViewer_ManipulationInertiaStarting">
 
-                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" MouseEnter="CanvasGrid_MouseEnter" MouseLeave="CanvasGrid_MouseLeave">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="CanvasGrid" MouseEnter="CanvasGrid_MouseEnter" MouseLeave="CanvasGrid_MouseLeave" IsManipulationEnabled="True">
                     <Image x:Name="ImageHolder"  HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <Image x:Name="CroppedImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using VerteMark.ObjectClasses;
+using System.Windows.Input;
 
 namespace VerteMark.MainWindows
 {
@@ -40,7 +41,6 @@ namespace VerteMark.MainWindows
             }
         }
 
-
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -63,6 +63,15 @@ namespace VerteMark.MainWindows
             mainWindow.Show();
 
             this.Close();
+        }
+
+        // Využití ContinueButton_Click pro dvojklik na content
+        private void ContentDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (FileListBox.SelectedItem != null)
+            {
+                ContinueButton_Click(sender, new RoutedEventArgs());
+            }
         }
 
         private void FolderbrowserWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
