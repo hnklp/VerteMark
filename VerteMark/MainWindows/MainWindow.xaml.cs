@@ -150,12 +150,10 @@ namespace VerteMark
         private void CustomScrollViewer_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
             var scrollViewer = sender as ScrollViewer;
-
             if (scrollViewer != null)
             {
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.DeltaManipulation.Translation.X);
                 scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.DeltaManipulation.Translation.Y);
-
                 e.Handled = true;
             }
         }
@@ -950,6 +948,7 @@ namespace VerteMark
 
         private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (e.Delta > 0)
@@ -962,6 +961,40 @@ namespace VerteMark
                 }
                 e.Handled = true;
             }
+            else if(Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                if (CanvasScrollViewer != null)
+                {
+                    double newHorizontalOffset = CanvasScrollViewer.HorizontalOffset - e.Delta;
+                    if (newHorizontalOffset < 0){
+                        newHorizontalOffset = 0;
+                    }
+                    else if (newHorizontalOffset > CanvasScrollViewer.ExtentWidth - CanvasScrollViewer.ViewportWidth){
+                        newHorizontalOffset = CanvasScrollViewer.ExtentWidth - CanvasScrollViewer.ViewportWidth;
+                    }
+
+                    CanvasScrollViewer.ScrollToHorizontalOffset(newHorizontalOffset);
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                if (CanvasScrollViewer != null)
+                {
+                    double newVerticalOffset = CanvasScrollViewer.VerticalOffset - e.Delta;
+                    if (newVerticalOffset < 0){
+                        newVerticalOffset = 0;
+                    }
+                    else if (newVerticalOffset > CanvasScrollViewer.ExtentHeight - CanvasScrollViewer.ViewportHeight){
+                        newVerticalOffset = CanvasScrollViewer.ExtentHeight - CanvasScrollViewer.ViewportHeight;
+                    }
+
+                    CanvasScrollViewer.ScrollToVerticalOffset(newVerticalOffset);
+                    e.Handled = true;
+                }
+            }
+
+
         }
 
         private void ZoomIn(object sender, RoutedEventArgs e)
@@ -997,13 +1030,10 @@ namespace VerteMark
 
         private void ScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
                 _isDragging = true;
                 _startDragPoint = e.GetPosition(sender as UIElement);
                 (sender as ScrollViewer).CaptureMouse();
                 (sender as ScrollViewer).Cursor = Cursors.Hand;
-            }
         }
 
         private void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)

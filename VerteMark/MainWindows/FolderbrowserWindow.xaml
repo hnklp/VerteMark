@@ -18,7 +18,7 @@
         <!-- Levý sloupec pro přehled -->
         <Grid Grid.Column="0" Margin="10,10,32,10">
             <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="41,54,0,0"/>
-            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="41,100,30,75" Cursor="Hand"/>
+            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="41,100,30,75" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
         </Grid>
 
         <!-- Pravý sloupec pro RadioButtony a tlačítka -->
