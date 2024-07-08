@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Gifs\gif_test.gif" />
     <None Remove="Resources\Cursors\Draw_Cursor.cur" />
     <None Remove="Resources\Icons\bin_icon.ico" />
     <None Remove="Resources\Icons\crop_icon.ico" />
@@ -25,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Gifs\gif_test.gif" />
     <Resource Include="Pictures\icon.png" />
     <Resource Include="Pictures\textboxbackground.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -58,6 +60,7 @@
     <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
 
 </Project>
