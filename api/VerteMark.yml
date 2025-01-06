@@ -1,0 +1,65 @@
+### YamlMime:ManagedReference
+items:
+- uid: VerteMark
+  commentId: N:VerteMark
+  id: VerteMark
+  children:
+  - VerteMark.AboutWindow
+  - VerteMark.App
+  - VerteMark.MainWindow
+  - VerteMark.PercentageConverter
+  - VerteMark.SelectWindow
+  - VerteMark.WelcomeWindow
+  langs:
+  - csharp
+  - vb
+  name: VerteMark
+  nameWithType: VerteMark
+  fullName: VerteMark
+  type: Namespace
+  assemblies:
+  - VerteMark
+references:
+- uid: VerteMark.App
+  commentId: T:VerteMark.App
+  href: VerteMark.App.html
+  name: App
+  nameWithType: App
+  fullName: VerteMark.App
+- uid: VerteMark.MainWindow
+  commentId: T:VerteMark.MainWindow
+  parent: VerteMark
+  href: VerteMark.MainWindow.html
+  name: MainWindow
+  nameWithType: MainWindow
+  fullName: VerteMark.MainWindow
+- uid: VerteMark.PercentageConverter
+  commentId: T:VerteMark.PercentageConverter
+  href: VerteMark.PercentageConverter.html
+  name: PercentageConverter
+  nameWithType: PercentageConverter
+  fullName: VerteMark.PercentageConverter
+- uid: VerteMark.SelectWindow
+  commentId: T:VerteMark.SelectWindow
+  href: VerteMark.SelectWindow.html
+  name: SelectWindow
+  nameWithType: SelectWindow
+  fullName: VerteMark.SelectWindow
+- uid: VerteMark.WelcomeWindow
+  commentId: T:VerteMark.WelcomeWindow
+  href: VerteMark.WelcomeWindow.html
+  name: WelcomeWindow
+  nameWithType: WelcomeWindow
+  fullName: VerteMark.WelcomeWindow
+- uid: VerteMark.AboutWindow
+  commentId: T:VerteMark.AboutWindow
+  href: VerteMark.AboutWindow.html
+  name: AboutWindow
+  nameWithType: AboutWindow
+  fullName: VerteMark.AboutWindow
+- uid: VerteMark
+  commentId: N:VerteMark
+  href: VerteMark.html
+  name: VerteMark
+  nameWithType: VerteMark
+  fullName: VerteMark

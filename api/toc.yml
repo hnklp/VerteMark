@@ -1,0 +1,59 @@
+### YamlMime:TableOfContent
+items:
+- uid: VerteMark
+  name: VerteMark
+  type: Namespace
+  items:
+  - uid: VerteMark.AboutWindow
+    name: AboutWindow
+    type: Class
+  - uid: VerteMark.App
+    name: App
+    type: Class
+  - uid: VerteMark.MainWindow
+    name: MainWindow
+    type: Class
+  - uid: VerteMark.PercentageConverter
+    name: PercentageConverter
+    type: Class
+  - uid: VerteMark.SelectWindow
+    name: SelectWindow
+    type: Class
+  - uid: VerteMark.WelcomeWindow
+    name: WelcomeWindow
+    type: Class
+- uid: VerteMark.MainWindows
+  name: VerteMark.MainWindows
+  type: Namespace
+  items:
+  - uid: VerteMark.MainWindows.FolderbrowserWindow
+    name: FolderbrowserWindow
+    type: Class
+- uid: VerteMark.ObjectClasses
+  name: VerteMark.ObjectClasses
+  type: Namespace
+  items:
+  - uid: VerteMark.ObjectClasses.AppState
+    name: AppState
+    type: Enum
+  - uid: VerteMark.ObjectClasses.StateManager
+    name: StateManager
+    type: Class
+- uid: VerteMark.ObjectClasses.FolderClasses
+  name: VerteMark.ObjectClasses.FolderClasses
+  type: Namespace
+  items:
+  - uid: VerteMark.ObjectClasses.FolderClasses.ZipManager
+    name: ZipManager
+    type: Class
+- uid: VerteMark.SubWindows
+  name: VerteMark.SubWindows
+  type: Namespace
+  items:
+  - uid: VerteMark.SubWindows.JustSaveAlertWindow
+    name: JustSaveAlertWindow
+    type: Class
+  - uid: VerteMark.SubWindows.SaveAlertWindow
+    name: SaveAlertWindow
+    type: Class
+memberLayout: SamePage

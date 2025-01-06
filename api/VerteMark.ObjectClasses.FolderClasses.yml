@@ -1,0 +1,23 @@
+### YamlMime:ManagedReference
+items:
+- uid: VerteMark.ObjectClasses.FolderClasses
+  commentId: N:VerteMark.ObjectClasses.FolderClasses
+  id: VerteMark.ObjectClasses.FolderClasses
+  children:
+  - VerteMark.ObjectClasses.FolderClasses.ZipManager
+  langs:
+  - csharp
+  - vb
+  name: VerteMark.ObjectClasses.FolderClasses
+  nameWithType: VerteMark.ObjectClasses.FolderClasses
+  fullName: VerteMark.ObjectClasses.FolderClasses
+  type: Namespace
+  assemblies:
+  - VerteMark
+references:
+- uid: VerteMark.ObjectClasses.FolderClasses.ZipManager
+  commentId: T:VerteMark.ObjectClasses.FolderClasses.ZipManager
+  href: VerteMark.ObjectClasses.FolderClasses.ZipManager.html
+  name: ZipManager
+  nameWithType: ZipManager
+  fullName: VerteMark.ObjectClasses.FolderClasses.ZipManager

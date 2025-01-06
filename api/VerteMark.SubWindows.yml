@@ -1,0 +1,30 @@
+### YamlMime:ManagedReference
+items:
+- uid: VerteMark.SubWindows
+  commentId: N:VerteMark.SubWindows
+  id: VerteMark.SubWindows
+  children:
+  - VerteMark.SubWindows.JustSaveAlertWindow
+  - VerteMark.SubWindows.SaveAlertWindow
+  langs:
+  - csharp
+  - vb
+  name: VerteMark.SubWindows
+  nameWithType: VerteMark.SubWindows
+  fullName: VerteMark.SubWindows
+  type: Namespace
+  assemblies:
+  - VerteMark
+references:
+- uid: VerteMark.SubWindows.JustSaveAlertWindow
+  commentId: T:VerteMark.SubWindows.JustSaveAlertWindow
+  href: VerteMark.SubWindows.JustSaveAlertWindow.html
+  name: JustSaveAlertWindow
+  nameWithType: JustSaveAlertWindow
+  fullName: VerteMark.SubWindows.JustSaveAlertWindow
+- uid: VerteMark.SubWindows.SaveAlertWindow
+  commentId: T:VerteMark.SubWindows.SaveAlertWindow
+  href: VerteMark.SubWindows.SaveAlertWindow.html
+  name: SaveAlertWindow
+  nameWithType: SaveAlertWindow
+  fullName: VerteMark.SubWindows.SaveAlertWindow

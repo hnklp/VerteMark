@@ -15,10 +15,9 @@ using System.Windows.Shapes;
 namespace VerteMark
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Hlavní vstupní bod aplikace.
     /// </summary>
-    /// 
-    /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
+    /// <param name="args">Argumenty příkazového řádku.</param>
     public partial class MainWindow : Window {
         private Utility utility;
         private ToggleButton activeAnotButton;
@@ -529,6 +528,7 @@ namespace VerteMark
          *  Buttons
          * =========
          */
+
 
         private void SwitchActiveAnot(int id) {
         //    ConnectStrokeAnotace();

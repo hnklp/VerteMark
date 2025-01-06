@@ -1,0 +1,430 @@
+### YamlMime:ManagedReference
+items:
+- uid: VerteMark.ObjectClasses.StateManager
+  commentId: T:VerteMark.ObjectClasses.StateManager
+  id: StateManager
+  parent: VerteMark.ObjectClasses
+  children:
+  - VerteMark.ObjectClasses.StateManager.CurrentState
+  - VerteMark.ObjectClasses.StateManager.StateChanged
+  langs:
+  - csharp
+  - vb
+  name: StateManager
+  nameWithType: StateManager
+  fullName: VerteMark.ObjectClasses.StateManager
+  type: Class
+  source:
+    remote:
+      path: VerteMark/ObjectClasses/StateManager.cs
+      branch: docs
+      repo: https://github.com/hnklp/VerteMark.git
+    id: StateManager
+    path: VerteMark/ObjectClasses/StateManager.cs
+    startLine: 8
+  assemblies:
+  - VerteMark
+  namespace: VerteMark.ObjectClasses
+  syntax:
+    content: public class StateManager
+    content.vb: Public Class StateManager
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: VerteMark.ObjectClasses.StateManager.StateChanged
+  commentId: E:VerteMark.ObjectClasses.StateManager.StateChanged
+  id: StateChanged
+  parent: VerteMark.ObjectClasses.StateManager
+  langs:
+  - csharp
+  - vb
+  name: StateChanged
+  nameWithType: StateManager.StateChanged
+  fullName: VerteMark.ObjectClasses.StateManager.StateChanged
+  type: Event
+  source:
+    remote:
+      path: VerteMark/ObjectClasses/StateManager.cs
+      branch: docs
+      repo: https://github.com/hnklp/VerteMark.git
+    id: StateChanged
+    path: VerteMark/ObjectClasses/StateManager.cs
+    startLine: 10
+  assemblies:
+  - VerteMark
+  namespace: VerteMark.ObjectClasses
+  syntax:
+    content: public event EventHandler<AppState> StateChanged
+    return:
+      type: System.EventHandler{VerteMark.ObjectClasses.AppState}
+    content.vb: Public Event StateChanged As EventHandler(Of AppState)
+- uid: VerteMark.ObjectClasses.StateManager.CurrentState
+  commentId: P:VerteMark.ObjectClasses.StateManager.CurrentState
+  id: CurrentState
+  parent: VerteMark.ObjectClasses.StateManager
+  langs:
+  - csharp
+  - vb
+  name: CurrentState
+  nameWithType: StateManager.CurrentState
+  fullName: VerteMark.ObjectClasses.StateManager.CurrentState
+  type: Property
+  source:
+    remote:
+      path: VerteMark/ObjectClasses/StateManager.cs
+      branch: docs
+      repo: https://github.com/hnklp/VerteMark.git
+    id: CurrentState
+    path: VerteMark/ObjectClasses/StateManager.cs
+    startLine: 14
+  assemblies:
+  - VerteMark
+  namespace: VerteMark.ObjectClasses
+  syntax:
+    content: public AppState CurrentState { get; set; }
+    parameters: []
+    return:
+      type: VerteMark.ObjectClasses.AppState
+    content.vb: Public Property CurrentState As AppState
+  overload: VerteMark.ObjectClasses.StateManager.CurrentState*
+references:
+- uid: VerteMark.ObjectClasses
+  commentId: N:VerteMark.ObjectClasses
+  href: VerteMark.html
+  name: VerteMark.ObjectClasses
+  nameWithType: VerteMark.ObjectClasses
+  fullName: VerteMark.ObjectClasses
+  spec.csharp:
+  - uid: VerteMark
+    name: VerteMark
+    href: VerteMark.html
+  - name: .
+  - uid: VerteMark.ObjectClasses
+    name: ObjectClasses
+    href: VerteMark.ObjectClasses.html
+  spec.vb:
+  - uid: VerteMark
+    name: VerteMark
+    href: VerteMark.html
+  - name: .
+  - uid: VerteMark.ObjectClasses
+    name: ObjectClasses
+    href: VerteMark.ObjectClasses.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.EventHandler{VerteMark.ObjectClasses.AppState}
+  commentId: T:System.EventHandler{VerteMark.ObjectClasses.AppState}
+  parent: System
+  definition: System.EventHandler`1
+  href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  name: EventHandler<AppState>
+  nameWithType: EventHandler<AppState>
+  fullName: System.EventHandler<VerteMark.ObjectClasses.AppState>
+  nameWithType.vb: EventHandler(Of AppState)
+  fullName.vb: System.EventHandler(Of VerteMark.ObjectClasses.AppState)
+  name.vb: EventHandler(Of AppState)
+  spec.csharp:
+  - uid: System.EventHandler`1
+    name: EventHandler
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  - name: <
+  - uid: VerteMark.ObjectClasses.AppState
+    name: AppState
+    href: VerteMark.ObjectClasses.AppState.html
+  - name: '>'
+  spec.vb:
+  - uid: System.EventHandler`1
+    name: EventHandler
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: VerteMark.ObjectClasses.AppState
+    name: AppState
+    href: VerteMark.ObjectClasses.AppState.html
+  - name: )
+- uid: System.EventHandler`1
+  commentId: T:System.EventHandler`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  name: EventHandler<TEventArgs>
+  nameWithType: EventHandler<TEventArgs>
+  fullName: System.EventHandler<TEventArgs>
+  nameWithType.vb: EventHandler(Of TEventArgs)
+  fullName.vb: System.EventHandler(Of TEventArgs)
+  name.vb: EventHandler(Of TEventArgs)
+  spec.csharp:
+  - uid: System.EventHandler`1
+    name: EventHandler
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  - name: <
+  - name: TEventArgs
+  - name: '>'
+  spec.vb:
+  - uid: System.EventHandler`1
+    name: EventHandler
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.eventhandler-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TEventArgs
+  - name: )
+- uid: VerteMark.ObjectClasses.StateManager.CurrentState*
+  commentId: Overload:VerteMark.ObjectClasses.StateManager.CurrentState
+  href: VerteMark.ObjectClasses.StateManager.html#VerteMark_ObjectClasses_StateManager_CurrentState
+  name: CurrentState
+  nameWithType: StateManager.CurrentState
+  fullName: VerteMark.ObjectClasses.StateManager.CurrentState
+- uid: VerteMark.ObjectClasses.AppState
+  commentId: T:VerteMark.ObjectClasses.AppState
+  parent: VerteMark.ObjectClasses
+  href: VerteMark.ObjectClasses.AppState.html
+  name: AppState
+  nameWithType: AppState
+  fullName: VerteMark.ObjectClasses.AppState

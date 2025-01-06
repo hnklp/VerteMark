@@ -1,0 +1,23 @@
+### YamlMime:ManagedReference
+items:
+- uid: VerteMark.MainWindows
+  commentId: N:VerteMark.MainWindows
+  id: VerteMark.MainWindows
+  children:
+  - VerteMark.MainWindows.FolderbrowserWindow
+  langs:
+  - csharp
+  - vb
+  name: VerteMark.MainWindows
+  nameWithType: VerteMark.MainWindows
+  fullName: VerteMark.MainWindows
+  type: Namespace
+  assemblies:
+  - VerteMark
+references:
+- uid: VerteMark.MainWindows.FolderbrowserWindow
+  commentId: T:VerteMark.MainWindows.FolderbrowserWindow
+  href: VerteMark.MainWindows.FolderbrowserWindow.html
+  name: FolderbrowserWindow
+  nameWithType: FolderbrowserWindow
+  fullName: VerteMark.MainWindows.FolderbrowserWindow

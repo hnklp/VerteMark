@@ -1,0 +1,202 @@
+{
+  "source_base_path": "C:/Users/Sabina/source/repos/VerteMark",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.AboutWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.AboutWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.App.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.App.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.MainWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.MainWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.MainWindows.FolderbrowserWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.MainWindows.FolderbrowserWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.MainWindows.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.MainWindows.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.ObjectClasses.AppState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.ObjectClasses.AppState.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.ObjectClasses.FolderClasses.ZipManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.ObjectClasses.FolderClasses.ZipManager.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.ObjectClasses.FolderClasses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.ObjectClasses.FolderClasses.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.ObjectClasses.StateManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.ObjectClasses.StateManager.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.ObjectClasses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.ObjectClasses.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.PercentageConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.PercentageConverter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.SelectWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.SelectWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.SubWindows.JustSaveAlertWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.SubWindows.JustSaveAlertWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.SubWindows.SaveAlertWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.SubWindows.SaveAlertWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.SubWindows.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.SubWindows.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.WelcomeWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.WelcomeWindow.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/VerteMark.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/VerteMark.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
