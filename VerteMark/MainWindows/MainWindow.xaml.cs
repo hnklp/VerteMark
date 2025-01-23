@@ -53,7 +53,8 @@ namespace VerteMark
         private double initialDistance;
         private bool isPinching;
 
-        private List<Point> _points;
+        private List<PointMarker> _points;
+        private List<LineConnection> _lines;
 
         public MainWindow()
         {
@@ -61,9 +62,10 @@ namespace VerteMark
             utility = new Utility();
             previewImageList = new List<Image>();
 
-            _points = new List<Point>();
+            _points = new List<PointMarker>();
+            _lines = new List<LineConnection>();
 
-            CommandBinding openCommandBinding = new CommandBinding(
+        CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
                     OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
@@ -1138,48 +1140,72 @@ namespace VerteMark
             if (_points.Count >= 8) return;
 
             var position = e.GetPosition(PointCanvas);
-            var points = new Point(PointCanvas, position);
+            var points = new PointMarker(
+                PointCanvas,
+                position
+            );
             _points.Add(points);
 
             ToggleCropButton(_points.Count == 0);
 
             UpdatePointsScale(ZoomSlider.Value / 100);
 
-            /*if (_points.Count == 8)
-            {
-                DrawConnections();
-            }*/
+            DrawConnections();
         }
 
         private void DrawConnections()
         {
-            for (int i = 0; i < _points.Count; i++)
+            System.Diagnostics.Debug.WriteLine("Entering DrawConnections function");
+
+            if (_points.Count < 2)
             {
-                var start = _points[i];
-                var end = _points[(i + 1) % _points.Count];
-
-                var line = new Line
-                {
-                    X1 = start.Position.X,
-                    Y1 = start.Position.Y,
-                    X2 = end.Position.X,
-                    Y2 = end.Position.Y,
-                    Stroke = Brushes.Blue,
-                    StrokeThickness = 2
-                };
-
-                PointCanvas.Children.Add(line);
-
-                // start.AddConnectedLine(line);
-                // end.AddConnectedLine(line);
+                System.Diagnostics.Debug.WriteLine("Exiting DrawConnections function: fewer than 2 points");
+                return;
             }
 
-            _points.Clear();
+            if (_points.Count == 2)
+            {
+                var start = _points[_points.Count - 2]; // Poslední bod
+                var end = _points[_points.Count - 1]; // Aktuální bod
+
+                System.Diagnostics.Debug.WriteLine($"Drawing line between points {start} and {end}");
+                var line = new LineConnection(start, end, PointCanvas);
+                _lines.Add(line);
+                System.Diagnostics.Debug.WriteLine($"Added line to _lines collection");
+
+                UpdatePointsScale(ZoomSlider.Value / 100);
+
+                return;
+            }
+
+            // Odstranění poslední čáry, pokud je připojený počet bodů sudý
+            if (_points.Count % 2 == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("Removing last line from _lines collection");
+                var lastLine = _lines.Last();
+                lastLine.Remove(PointCanvas);
+                _lines.Remove(lastLine);
+                System.Diagnostics.Debug.WriteLine("Last line removed");
+            }
+
+            var lastLastPoint = _points[_points.Count - 3]; // Předposlední bod
+            var lastPoint = _points[_points.Count - 2]; // Poslední bod
+            var point = _points[_points.Count - 1]; // Aktuální bod
+
+            System.Diagnostics.Debug.WriteLine($"Drawing lines between points {lastLastPoint} and {point}, and {lastPoint} and {point}");
+            var line1 = new LineConnection(lastLastPoint, point, PointCanvas);
+            _lines.Add(line1);
+            System.Diagnostics.Debug.WriteLine($"Added line1 to _lines collection");
+
+            var line2 = new LineConnection(lastPoint, point, PointCanvas);
+            _lines.Add(line2);
+            System.Diagnostics.Debug.WriteLine($"Added line2 to _lines collection");
         }
 
         private void UpdatePointsScale(double zoomFactor)
         {
             double scale = 1 / zoomFactor;
+
             foreach (var point in _points)
             {
                 point.UpdateScale(scale);
@@ -1187,8 +1213,6 @@ namespace VerteMark
         }
 
     }
-
-
 
     public class PercentageConverter : IValueConverter
     {
