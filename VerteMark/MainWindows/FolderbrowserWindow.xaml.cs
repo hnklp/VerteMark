@@ -3,12 +3,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using VerteMark.ObjectClasses;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace VerteMark.MainWindows
 {
     public partial class FolderbrowserWindow : Window
     {
-        Utility utility;
+        Project project;
         string projectType; // create new project or load existing
         bool loadFromSelect;
         public MainWindow? oldMainWindow;
@@ -16,7 +17,7 @@ namespace VerteMark.MainWindows
         public FolderbrowserWindow(bool fromSelect)
         {
             InitializeComponent();
-            utility = new Utility();
+            project = Project.GetInstance();
             projectType = "";
             loadFromSelect = fromSelect;
             oldMainWindow = null;
@@ -47,7 +48,7 @@ namespace VerteMark.MainWindows
             string selectedFile = FileListBox.SelectedItem as string;
 
             // Zavolání metody Choose s názvem vybraného souboru
-            utility.Choose(selectedFile, projectType);
+            project.Choose(selectedFile, projectType);
 
             MainWindow mainWindow = new MainWindow();
 
@@ -138,15 +139,15 @@ namespace VerteMark.MainWindows
                 switch (selectedRadioButton.Name)
                 {
                     case "DicomRadioButton":
-                        FileListBox.ItemsSource = utility.ChooseNewProject();
+                        FileListBox.ItemsSource = project.ChooseNewProject();
                         projectType = "dicoms";
                         break;
                     case "InProgressRadioButton":
-                        FileListBox.ItemsSource = utility.ChooseContinueAnotation();
+                        FileListBox.ItemsSource = project.ChooseContinueAnotation();
                         projectType = "to_anotate";
                         break;
                     case "ValidationRadioButton":
-                        FileListBox.ItemsSource = utility.ChooseValidation();
+                        FileListBox.ItemsSource = project.ChooseValidation();
                         projectType = "to_validate";
                         break;
                     default:
@@ -180,8 +181,10 @@ namespace VerteMark.MainWindows
 
         void LoadforRole()
        {        
-            if (utility.GetLoggedInUser().Validator){
-                    FileListBox.ItemsSource = utility.ChooseValidation();
+            Debug.WriteLine(project.GetLoggedInUser());
+
+            if (project.GetLoggedInUser().Validator){
+                    FileListBox.ItemsSource = project.ChooseValidation();
                     projectType = "to_validate";
                     UpdateFileList();
                     SelectedRadioButtonTextBlock.Text = "K validaci";
@@ -189,7 +192,7 @@ namespace VerteMark.MainWindows
             }
             else
             {
-                FileListBox.ItemsSource = utility.ChooseNewProject();
+                FileListBox.ItemsSource = project.ChooseNewProject();
                 projectType = "dicoms";
                 UpdateFileList();
                 DicomRadioButton.IsChecked = true;
