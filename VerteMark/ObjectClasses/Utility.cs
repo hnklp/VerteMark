@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace VerteMark.ObjectClasses
@@ -10,7 +11,7 @@ namespace VerteMark.ObjectClasses
     /// </summary>
     internal class Utility {
         // Vlastnosti
-        Project project;
+        private Project project;
         public bool saved;
 
         // Konstruktor
@@ -107,14 +108,45 @@ namespace VerteMark.ObjectClasses
             project.ChangeAnnotationId(id);
         }
 
-            /*
-            * ==================
-            * Prace s uzivatelem
-            * ==================
-            */
+        public void AddPointActiveAnot(PointMarker point){
+            project.AddPointActiveAnot(point);
+        }
+        public int GetPointsCount(){
+            return project.GetPointsCount();
+        }
 
-            public void LoginUser(string id, bool validator) {
-            project.LoginNewUser(id, validator);
+        public PointMarker? GetPointByIndex(int index){
+            return project.GetPointByIndex(index);
+        }
+
+        public void UpdatePointsScale(double zoomFactor){
+            project.UpdatePointsScale(zoomFactor);
+        }
+
+        public void AddConnectionActiveAnot(LineConnection line){
+        project.AddConnectionActiveAnot(line);
+        }
+
+        public LineConnection? GetLastConnection(){
+            return project.GetLastConnection();
+        }
+
+        public void RemoveLastConnection(){
+            project.RemoveLastConnection();
+        }
+
+        public void RemovePointsAndConnections(Canvas Canvas) {
+            project.RemovePointsAndConnections(Canvas);
+        }
+
+        /*
+        * ==================
+        * Prace s uzivatelem
+        * ==================
+        */
+
+        public void LoginUser(string id, bool validator) {
+        project.LoginNewUser(id, validator);
         }
 
         public void LogoutUser() {

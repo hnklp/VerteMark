@@ -8,19 +8,22 @@ public class LineConnection
     private PointMarker _startPoint;
     private PointMarker _endPoint;
     private ScaleTransform _scaleTransform;
+    private Brush _colorBrush;
 
     public LineConnection(PointMarker startPoint, PointMarker endPoint,
-        Canvas canvas)
+        Canvas canvas, Brush colorBrush)
     {
         _startPoint = startPoint;
         _endPoint = endPoint;
+        _colorBrush = colorBrush;
 
         _scaleTransform = new ScaleTransform(1, 1);
 
         // Vytvoření čáry
         _line = new Line
         {
-            Stroke = Brushes.DarkRed,
+            Stroke = _colorBrush,
+            Opacity = 0.5,
             StrokeThickness = 3,
             RenderTransform = _scaleTransform
         };
@@ -35,12 +38,6 @@ public class LineConnection
         // Přihlášení k událostem bodů
         _startPoint.PositionChanged += OnPointMoved;
         _endPoint.PositionChanged += OnPointMoved;
-    }
-
-    public void UpdateScale(double scale)
-    {
-        _scaleTransform.ScaleX = scale;
-        _scaleTransform.ScaleY = scale;
     }
 
     public void Remove(Canvas canvas)

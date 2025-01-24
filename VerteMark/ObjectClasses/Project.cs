@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Windows.Annotations;
+using System.Windows.Controls;
 
 
 namespace VerteMark.ObjectClasses
@@ -308,7 +309,7 @@ namespace VerteMark.ObjectClasses
             if (activeAnotace != null) {
                 return activeAnotace.Id.ToString();
             }
-            return null;
+            return "";
         }
 
 
@@ -326,6 +327,9 @@ namespace VerteMark.ObjectClasses
         public void ClearActiveAnotace() {
             if (activeAnotace != null) {
                 activeAnotace.ClearCanvas();
+
+                activeAnotace.Points.Clear();
+                activeAnotace.Lines.Clear();
             }
         }
 
@@ -365,6 +369,85 @@ namespace VerteMark.ObjectClasses
                 annotation.SetAnnotationId(annotationId - 1);
             }
         }
+
+        public void AddPointActiveAnot(PointMarker point)
+        {
+            if (activeAnotace != null)
+            {
+                activeAnotace.Points.Add(point);
+            }
+        }
+
+        public int GetPointsCount()
+        {
+            if (activeAnotace != null)
+            {
+                return activeAnotace.Points.Count;
+            }
+            return 0;
+        }
+
+        public PointMarker? GetPointByIndex(int index)
+        {
+            if (activeAnotace != null)
+            {
+                return activeAnotace.Points[index];
+            }
+            return null;
+        }
+
+        public void UpdatePointsScale(double zoomFactor)
+        {
+            double scale = 1 / zoomFactor;
+
+            foreach (Anotace anotace in anotaces)
+                foreach (PointMarker point in anotace.Points)
+                {
+                    point.UpdateScale(scale);
+                }
+        }
+
+        public void AddConnectionActiveAnot(LineConnection line)
+        {
+            if (activeAnotace != null)
+            {
+                activeAnotace.Lines.Add(line);
+            }
+        }
+
+        public LineConnection? GetLastConnection()
+        {
+            if (activeAnotace != null)
+            {
+                return activeAnotace.Lines[activeAnotace.Lines.Count - 1];
+            }
+            return null;
+        }
+
+        public void RemoveLastConnection()
+        {
+            if (activeAnotace != null)
+            {
+                activeAnotace.Lines.RemoveAt(activeAnotace.Lines.Count - 1);
+            }
+        }
+
+        public void RemovePointsAndConnections(Canvas canvas)
+        {
+            if (activeAnotace != null)
+            {
+                foreach (LineConnection line in activeAnotace.Lines)
+                {
+                    line.Remove(canvas);
+                }
+                foreach (PointMarker point in activeAnotace.Points)
+                {
+                    point.Remove(canvas);
+                }
+            }
+        }
+
+
 
         /*
         * ===========

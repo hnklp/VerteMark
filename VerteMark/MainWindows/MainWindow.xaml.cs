@@ -53,19 +53,13 @@ namespace VerteMark
         private double initialDistance;
         private bool isPinching;
 
-        private List<PointMarker> _points;
-        private List<LineConnection> _lines;
-
         public MainWindow()
         {
             InitializeComponent();
             utility = new Utility();
             previewImageList = new List<Image>();
 
-            _points = new List<PointMarker>();
-            _lines = new List<LineConnection>();
-
-        CommandBinding openCommandBinding = new CommandBinding(
+            CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
                     OpenProject_Click);
             this.CommandBindings.Add(openCommandBinding);
@@ -546,8 +540,9 @@ namespace VerteMark
         }
 
         //Smaže obsah vybrané anotace
-        private void Delete_butt(object sender, RoutedEventArgs e)
+        private void Delete_button(object sender, RoutedEventArgs e)
         {
+            utility.RemovePointsAndConnections(PointCanvas);
             utility.ClearActiveAnotace();
             UpdateElementsWithAnotace();
 
@@ -1091,7 +1086,7 @@ namespace VerteMark
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
 
-                UpdatePointsScale(zoomFactor);
+                utility.UpdatePointsScale(zoomFactor);
             }
         }
 
@@ -1133,83 +1128,80 @@ namespace VerteMark
             }
         }
 
-        private void AnnotationCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        /*
+         * ==============
+         *  PointMarkers
+         * ==============
+         */
+
+        private void PointCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (stateManager.CurrentState != AppState.Drawing) return;
 
-            if (_points.Count >= 8) return;
+            if (utility.GetPointsCount() >= 8) return;
 
             var position = e.GetPosition(PointCanvas);
-            var points = new PointMarker(
-                PointCanvas,
-                position
+            var color = utility.GetActiveAnotaceColor();
+
+            var point = new PointMarker(
+            PointCanvas,
+            position,
+            new SolidColorBrush(color)
             );
-            _points.Add(points);
 
-            ToggleCropButton(_points.Count == 0);
+            utility.AddPointActiveAnot(point);
 
-            UpdatePointsScale(ZoomSlider.Value / 100);
+            ToggleCropButton(utility.GetPointsCount() == 0);
+
+            utility.UpdatePointsScale(ZoomSlider.Value / 100);
 
             DrawConnections();
         }
 
         private void DrawConnections()
         {
-            System.Diagnostics.Debug.WriteLine("Entering DrawConnections function");
+            int pointsCount = utility.GetPointsCount();
 
-            if (_points.Count < 2)
+            if (pointsCount < 2) return;
+
+            var color = utility.GetActiveAnotaceColor();
+            Brush brush = new SolidColorBrush(color);
+
+
+            if (pointsCount == 2)
             {
-                System.Diagnostics.Debug.WriteLine("Exiting DrawConnections function: fewer than 2 points");
-                return;
-            }
+                var start = utility.GetPointByIndex(pointsCount - 2); // Poslední bod
+                var end = utility.GetPointByIndex(pointsCount - 1); // Aktuální bod
 
-            if (_points.Count == 2)
-            {
-                var start = _points[_points.Count - 2]; // Poslední bod
-                var end = _points[_points.Count - 1]; // Aktuální bod
+                if (start == null || end == null) return;
 
-                System.Diagnostics.Debug.WriteLine($"Drawing line between points {start} and {end}");
-                var line = new LineConnection(start, end, PointCanvas);
-                _lines.Add(line);
-                System.Diagnostics.Debug.WriteLine($"Added line to _lines collection");
-
-                UpdatePointsScale(ZoomSlider.Value / 100);
+                var line = new LineConnection(start, end, PointCanvas, brush);
+                utility.AddConnectionActiveAnot(line);
 
                 return;
             }
 
             // Odstranění poslední čáry, pokud je připojený počet bodů sudý
-            if (_points.Count % 2 == 0)
+            if (pointsCount % 2 == 0)
             {
-                System.Diagnostics.Debug.WriteLine("Removing last line from _lines collection");
-                var lastLine = _lines.Last();
+                var lastLine = utility.GetLastConnection();
+                if (lastLine == null) return;
+
                 lastLine.Remove(PointCanvas);
-                _lines.Remove(lastLine);
-                System.Diagnostics.Debug.WriteLine("Last line removed");
+                utility.RemoveLastConnection();
             }
 
-            var lastLastPoint = _points[_points.Count - 3]; // Předposlední bod
-            var lastPoint = _points[_points.Count - 2]; // Poslední bod
-            var point = _points[_points.Count - 1]; // Aktuální bod
+            var lastLastPoint = utility.GetPointByIndex(pointsCount - 3); // Předposlední bod
+            var lastPoint = utility.GetPointByIndex(pointsCount - 2); // Poslední bod
+            var point = utility.GetPointByIndex(pointsCount - 1); // Aktuální bod
 
-            System.Diagnostics.Debug.WriteLine($"Drawing lines between points {lastLastPoint} and {point}, and {lastPoint} and {point}");
-            var line1 = new LineConnection(lastLastPoint, point, PointCanvas);
-            _lines.Add(line1);
-            System.Diagnostics.Debug.WriteLine($"Added line1 to _lines collection");
+            if (lastLastPoint == null || lastPoint == null || point == null) return;
 
-            var line2 = new LineConnection(lastPoint, point, PointCanvas);
-            _lines.Add(line2);
-            System.Diagnostics.Debug.WriteLine($"Added line2 to _lines collection");
-        }
+            var line1 = new LineConnection(lastLastPoint, point, PointCanvas, brush);
+            utility.AddConnectionActiveAnot(line1);
 
-        private void UpdatePointsScale(double zoomFactor)
-        {
-            double scale = 1 / zoomFactor;
-
-            foreach (var point in _points)
-            {
-                point.UpdateScale(scale);
-            }
+            var line2 = new LineConnection(lastPoint, point, PointCanvas, brush);
+            utility.AddConnectionActiveAnot(line2);
         }
 
     }

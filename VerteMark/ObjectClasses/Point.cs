@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows;
-using System.Windows.Input;
 
 public class PointMarker
 {
@@ -10,17 +10,20 @@ public class PointMarker
     public System.Windows.Point Position { get; private set; }
     private FrameworkElement _cross;
     public ScaleTransform _scaleTransform { get; private set; }
-    private const double BaseCrossSize = 15;
-    private const double HitBoxSize = 25;
+    private const double BaseCrossSize = 10;
+    private const double HitBoxSize = 20;
     public event Action PositionChanged;
+    private Brush _colorBrush;
 
     private bool _isDragging = false;
     private Point _dragOffset;
 
-    public PointMarker(Canvas canvas, System.Windows.Point position)
+    public PointMarker(Canvas canvas, System.Windows.Point position, Brush colorBrush)
     {
         _canvas = canvas;
         Position = position;
+        _colorBrush = colorBrush;
+
         _scaleTransform = new ScaleTransform(1, 1);
 
         // Vytvoření kříže
@@ -56,7 +59,7 @@ public class PointMarker
             Y1 = 0,
             X2 = BaseCrossSize / 2,
             Y2 = 0,
-            Stroke = Brushes.Red,
+            Stroke = _colorBrush,
             StrokeThickness = 2
         };
 
@@ -66,7 +69,7 @@ public class PointMarker
             Y1 = -BaseCrossSize / 2,
             X2 = 0,
             Y2 = BaseCrossSize / 2,
-            Stroke = Brushes.Red,
+            Stroke = _colorBrush,
             StrokeThickness = 2
         };
 
@@ -122,5 +125,10 @@ public class PointMarker
             _isDragging = false;
             _cross.ReleaseMouseCapture();
         }
+    }
+
+    public void Remove(Canvas canvas)
+    {
+        canvas.Children.Remove(_cross);
     }
 }
