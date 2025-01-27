@@ -1,41 +1,64 @@
-﻿<Window x:Class="VerteMark.WelcomeWindow"
+﻿<blurwindow:BlurWindow x:Class="VerteMark.WelcomeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
+        xmlns:blurwindow="clr-namespace:TianXiaTech;assembly=BlurWindow"
         mc:Ignorable="d"
-        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" Background="#FFF0F0F0" >
+        Title="VerteMark" Height="350" Width="348" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" BorderBrush="Transparent" TitleVisibility="Collapsed" MinimizeVisibility = "Collapsed" MaximizeVisibility="Collapsed" ContentSpan="True">
 
     <Window.Resources>
         <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
     </Window.Resources>
 
-    <Grid>
-        <Rectangle HorizontalAlignment="Left" Height="19" Margin="462,176,0,0" Fill="White" VerticalAlignment="Top" Width="190"/>
+    <Window.Background>
+        <!--Specify transparency here-->
+        <SolidColorBrush Color="#FF3E3A3A" Opacity=".45"/>
+    </Window.Background>
 
-        <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,196,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
-        <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="455,140,0,0" VerticalAlignment="Top" Height="36" Width="101" FontSize="18"/>
-        <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="376" Height="346">
+        <Rectangle HorizontalAlignment="Center" Height="24" VerticalAlignment="Top" Fill="#FF3E3A3A" Width="188" RadiusX="5.75" RadiusY="5.75" Margin="0,168,0,0">
+            <Rectangle.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Rectangle.Resources>
+        </Rectangle>
 
-        <Button x:Name="SignInButton" Content="Přihlásit se" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="SignInButton_Click" IsEnabled="False" IsDefault="True"/>
-        <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="462,210,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="69" Checked="RadioButton_Hint"/>
-        <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="586,210,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66"/>
+        <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="40,131,52,0" VerticalAlignment="Top" Width="284" Height="26" Foreground="#FFF0F0F0"/>
+        <Label Name="WelcomeLabel" Content="Vítejte ve VerteMark!" HorizontalAlignment="Center" Margin="0,81,0,0" VerticalAlignment="Top" FontSize="24" Foreground="#F0F0F0F0"/>
 
-        <TextBox x:Name ="IDTextBox" BorderBrush="Silver" HorizontalAlignment="Left" Margin="462,176,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="19" TabIndex="0" />
+        <Button x:Name="SignInButton" Content="Přihlásit se" HorizontalAlignment="Center" Margin="0,251,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="SignInButton_Click" IsEnabled="False" IsDefault="True">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
 
-        <GridSplitter HorizontalAlignment="Center" Height="282" VerticalAlignment="Center" Width="1">
-            <GridSplitter.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFABADB3" Offset="0.5"/>
-                    <GradientStop Color="#FFF0F0F0" Offset="1"/>
-                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                </LinearGradientBrush>
-            </GridSplitter.Background>
-        </GridSplitter>
-        <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
-        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="40,331,0,0" VerticalAlignment="Top" Height="27" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
+        <RadioButton x:Name="AnotatorRadioButton" Content="Anotátor" HorizontalAlignment="Left" Margin="94,206,0,0" VerticalAlignment="Top" IsChecked="True" Height="16" Width="68" Checked="RadioButton_Hint" Foreground="#F0F0F0F0"/>
+        <RadioButton x:Name="ValidatorRadioButton" Content="Validátor" HorizontalAlignment="Left" Margin="218,206,0,0" VerticalAlignment="Top" Checked="RadioButton_Hint" Height="15" Width="66" Foreground="#F0F0F0F0" Background="White"/>
+
+        <TextBox x:Name ="IDTextBox" BorderBrush="Silver" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermark}" Height="24" TabIndex="0" Foreground="#F0F0F0F0" Margin="0,168,0,0">
+            <TextBox.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </TextBox.Resources>
+        </TextBox>
+
+        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="21,154,0,0" VerticalAlignment="Top" Height="22" Width="45" Click="SettingsButtonUI_Kopírovat_Click" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="26.193"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
 
     </Grid>
 
-</Window>
+</blurwindow:BlurWindow>

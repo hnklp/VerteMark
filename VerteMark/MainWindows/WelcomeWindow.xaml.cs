@@ -8,7 +8,7 @@ namespace VerteMark
     /// <summary>
     /// Interaction logic for WelcomeWindow.xaml
     /// </summary>
-    public partial class WelcomeWindow : Window
+    public partial class WelcomeWindow : TianXiaTech.BlurWindow
     {
         Project project;
         public WelcomeWindow()
