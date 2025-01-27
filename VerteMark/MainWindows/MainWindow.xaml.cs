@@ -19,7 +19,7 @@ namespace VerteMark
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
-    public partial class MainWindow : Window
+    public partial class MainWindow : TianXiaTech.BlurWindow
     {
         private Project project;
         private ToggleButton activeAnotButton;

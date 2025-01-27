@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
+using TianXiaTech;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 
@@ -9,7 +10,7 @@ namespace VerteMark
     /// <summary>
     /// Interakční logika pro SelectWindow.xaml
     /// </summary>
-    public partial class SelectWindow : Window
+    public partial class SelectWindow : TianXiaTech.BlurWindow
     {
         Project project;
 

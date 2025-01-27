@@ -1,30 +1,47 @@
-﻿<Window x:Class="VerteMark.SelectWindow"
+﻿<blurwindow:BlurWindow x:Class="VerteMark.SelectWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
+        xmlns:blurwindow="clr-namespace:TianXiaTech;assembly=BlurWindow"
         mc:Ignorable="d"
-        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="VerteMark" Height="350" Width="350" ResizeMode="NoResize" Icon="../Pictures/icon.png" BorderBrush="Transparent" TitleVisibility="Collapsed" MinimizeVisibility = "Collapsed" MaximizeVisibility="Collapsed" ContentSpan="True">
 
-    <Grid>
-        <Button x:Name="SelectZIP" Content="Vybrat soubor" HorizontalAlignment="Left" Margin="437,210,0,0" VerticalAlignment="Top" Height="27" Width="324" Click="Select_Click" />
-        <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True"/>
-        <Button x:Name="BackButton" Content="Zpět" HorizontalAlignment="Left" Margin="547,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="BackButton_Click" IsEnabled="True"/>
+    <Window.Background>
+        <!--Specify transparency here-->
+        <SolidColorBrush Color="#FF3E3A3A" Opacity=".45"/>
+    </Window.Background>
+
+    <Grid Margin="0,0,0,0">
+        <Button x:Name="SelectZIP" Content="Vybrat soubor" HorizontalAlignment="Left" Margin="16,168,0,0" VerticalAlignment="Top" Height="27" Width="324" Click="Select_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+
+        <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="209,230,0,0" VerticalAlignment="Top" Height="27" Width="88" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" RenderTransformOrigin="0.441,0.535">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+
+        <Button x:Name="BackButton" Content="Zpět" HorizontalAlignment="Left" Margin="52,230,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="BackButton_Click" IsEnabled="True">
+
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
 
         <TextBlock x:Name="HintText" Text="" Margin="523,178,10,0" VerticalAlignment="Top" FontSize="12" TextTrimming="CharacterEllipsis"/>
-        <Label Name="WelcomeLabel" Content="Vyberte složku nebo soubor" HorizontalAlignment="Left" Margin="42,0,0,0" VerticalAlignment="Center" FontSize="24"/>
-        <Label x:Name="TextPath" Content="Vybraná cesta:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="437,173,0,0" VerticalAlignment="Top" Width="86"  FontSize="12" />
-
-        <GridSplitter HorizontalAlignment="Center" Height="282" VerticalAlignment="Center" Width="1">
-            <GridSplitter.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFABADB3" Offset="0.5"/>
-                    <GradientStop Color="#FFF0F0F0" Offset="1"/>
-                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                </LinearGradientBrush>
-            </GridSplitter.Background>
-        </GridSplitter>
+        <Label Name="WelcomeLabel" Content="Vyberte složku nebo soubor" HorizontalAlignment="Left" Margin="24,81,0,0" VerticalAlignment="Top" FontSize="24" Foreground="#F0F0F0F0"/>
+        <Label x:Name="TextPath" Content="Vybraná cesta:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="24,131,0,0" VerticalAlignment="Top" Width="86"  FontSize="12" Foreground="#F0F0F0F0" />
     </Grid>
 
-</Window>
+</blurwindow:BlurWindow>

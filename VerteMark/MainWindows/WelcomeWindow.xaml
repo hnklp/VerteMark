@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VerteMark"
         xmlns:blurwindow="clr-namespace:TianXiaTech;assembly=BlurWindow"
         mc:Ignorable="d"
-        Title="VerteMark" Height="350" Width="348" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" BorderBrush="Transparent" TitleVisibility="Collapsed" MinimizeVisibility = "Collapsed" MaximizeVisibility="Collapsed" ContentSpan="True">
+        Title="VerteMark" Height="350" Width="350" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen" BorderBrush="Transparent" TitleVisibility="Collapsed" MinimizeVisibility = "Collapsed" MaximizeVisibility="Collapsed" ContentSpan="True">
 
     <Window.Resources>
         <ImageBrush x:Key="watermark" ImageSource="../Pictures/textboxbackground.gif" AlignmentX="Left" Stretch="Uniform" />
