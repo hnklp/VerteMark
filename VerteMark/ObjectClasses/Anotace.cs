@@ -20,11 +20,17 @@ namespace VerteMark.ObjectClasses
         public bool IsAnotated { get; private set; }
         WriteableBitmap? canvas;
 
+        public List<PointMarker> Points;
+        public List<LineConnection> Lines;
+
         public Anotace(int id, string name, System.Drawing.Color color) {
             this.Id = id;
             this.Name = name;
             this.Color = color;
             this.IsAnotated = false;
+
+            Points = new List<PointMarker>();
+            Lines = new List<LineConnection>();
         }
 
 

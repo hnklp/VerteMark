@@ -148,11 +148,14 @@
                         <Image x:Name="PreviewImage" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     </Grid>
 
-                    <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="4" HorizontalAlignment="Left" VerticalAlignment="Top"
+                    <Canvas x:Name="CropCanvas" Visibility="Collapsed" Background="Transparent" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Top"
                             MouseLeftButtonDown="CropCanvas_MouseLeftButtonDown" MouseMove="CropCanvas_MouseMove" MouseLeftButtonUp="CropCanvas_MouseLeftButtonUp"
                             MouseLeave="CropCanvas_MouseLeave">
                         <Rectangle x:Name="CropRectangle" Width="0" Height="0" Stroke="LightBlue" Fill="#220000FF"/>
                     </Canvas>
+
+                    <Canvas x:Name="PointCanvas" Background="Transparent" Panel.ZIndex="4"  MouseLeftButtonDown="PointCanvas_MouseLeftButtonDown"
+                            HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 </Grid>
             </ScrollViewer>
@@ -183,7 +186,7 @@
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <Button x:Name="delete" HorizontalAlignment="Right" Height="30" Width="30" Click="Delete_butt">
+                    <Button x:Name="delete" HorizontalAlignment="Right" Height="30" Width="30" Click="Delete_button">
                         <Button.Content>
                             <Image Source="../Resources/Icons/bin_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
