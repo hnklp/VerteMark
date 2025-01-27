@@ -10,12 +10,12 @@ namespace VerteMark
     /// </summary>
     public partial class WelcomeWindow : Window
     {
-        Utility utility;
+        Project project;
         public WelcomeWindow()
         {
             InitializeComponent();
             IDTextBox.Focus();
-            utility = new Utility();
+            project = Project.GetInstance();
         }
 
         //textbox hint
@@ -70,7 +70,7 @@ namespace VerteMark
             
             string UserId = IDTextBox.Text;
 
-            utility.LoginUser(UserId, IsValidator);
+            project.LoginNewUser(UserId, IsValidator);
 
             // Switch to SelectWindow
             SelectWindow selectWindow = new SelectWindow();

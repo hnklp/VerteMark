@@ -11,12 +11,12 @@ namespace VerteMark
     /// </summary>
     public partial class SelectWindow : Window
     {
-        Utility utility;
+        Project project;
 
         public SelectWindow()
         {
             InitializeComponent();
-            utility = new Utility();
+            project = Project.GetInstance();
         }
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
@@ -48,7 +48,7 @@ namespace VerteMark
             if (openFileDialog.ShowDialog() == true)
             {
                 string selectedFilePath = openFileDialog.FileName;
-                utility.ChooseProjectFolder(selectedFilePath);
+                project.ChooseProjectFolder(selectedFilePath);
                 HintText.Text = selectedFilePath;
             }
 

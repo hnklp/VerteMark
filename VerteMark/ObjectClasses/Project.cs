@@ -4,8 +4,6 @@ using VerteMark.ObjectClasses.FolderClasses;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
-using System.Xml.Linq;
-using System.Windows.Annotations;
 using System.Windows.Controls;
 
 
@@ -31,7 +29,7 @@ namespace VerteMark.ObjectClasses
         JsonManipulator? jsonManip;
         bool IsAnotated = false;
         bool newProject;
-        bool saved;
+        public bool saved;
         public bool anyProjectAvailable;
 
 
@@ -46,9 +44,30 @@ namespace VerteMark.ObjectClasses
             anyProjectAvailable = true;
         }
 
+        public void CropOriginalPicture(BitmapSource image)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder(); // nebo jiný vhodný encoder podle vašich potřeb
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(stream);
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+            }
+            SetOriginalPicture(bitmapImage);
+        }
 
-        public bool TryOpeningProject(string path) {
+
+        public bool ChooseProjectFolder(string path) {
             return folderUtilityManager.ExtractZip(path);
+        }
+
+        public bool isAnyProjectAvailable()
+        {
+            return anyProjectAvailable;
         }
 
 
@@ -447,24 +466,16 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
-
         /*
         * ===========
         * User metody
         * ===========
         */
 
-
         public void LoginNewUser(string id, bool validator) {
             loggedInUser = new User(id, validator);
+            Debug.WriteLine(loggedInUser);
         }
-
-
-        public void LogoutUser() {
-            loggedInUser = null;
-        }
-
 
         public User GetLoggedInUser() {
             return loggedInUser;

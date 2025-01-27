@@ -21,7 +21,7 @@ namespace VerteMark
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
     public partial class MainWindow : Window
     {
-        private Utility utility;
+        private Project project;
         private ToggleButton activeAnotButton;
         private ToggleButton activeToolbarButton;
         private Button plusButton;
@@ -56,7 +56,7 @@ namespace VerteMark
         public MainWindow()
         {
             InitializeComponent();
-            utility = new Utility();
+            project = Project.GetInstance();
             previewImageList = new List<Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
@@ -70,10 +70,10 @@ namespace VerteMark
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
 
-            User loggedInUser = utility.GetLoggedInUser();
+            User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
-            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            ImageHolder.Source = project.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
             activeToolbarButton = DrawTButton;
@@ -98,7 +98,7 @@ namespace VerteMark
             // zvalidneni vsech anotaci, pokud je user validator:
             if (loggedInUser != null && loggedInUser.Validator)
             {
-                utility.ValidateAll();
+                project.ValidateAll();
                 savingParam = 2;
             }
 
@@ -169,9 +169,9 @@ namespace VerteMark
         public MainWindow(bool debug)
         {
             InitializeComponent();
-            utility = new Utility();
+            project = new Project();
             previewImageList = new List<Image>();
-            utility.LoginUser("debug_user", true);
+            project.LoginNewUser("debug_user", true);
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -183,12 +183,12 @@ namespace VerteMark
                 ApplicationCommands.Save,
                 Save_Click);
             this.CommandBindings.Add(saveCommandBinding);
-            User loggedInUser = utility.GetLoggedInUser();
+            User loggedInUser = project.GetLoggedInUser();
 
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
-            utility.CreateNewProjectDEBUG();
-            ImageHolder.Source = utility.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
+            project.CreateNewProjectDEBUG();
+            ImageHolder.Source = project.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
             activeToolbarButton = DrawTButton;
@@ -233,7 +233,7 @@ namespace VerteMark
 
         private void AddPreviewImages()
         {
-            List<Anotace> Annotations = utility.GetAnnotationsList();
+            List<Anotace> Annotations = project.GetAnotaces();
 
             for (int i = 0; i < Annotations.Count; i++)
             {
@@ -269,7 +269,7 @@ namespace VerteMark
             PreviewGrid.Children.Remove(previewImageList[anotaceId]);
             previewImageList.RemoveAt(anotaceId);
 
-            if (int.TryParse(utility.GetActiveAnotaceId(), out int activeAnotaceId))
+            if (int.TryParse(project.ActiveAnotaceId(), out int activeAnotaceId))
             {
                 if (activeAnotaceId == anotaceId)
                 {
@@ -289,9 +289,9 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, utility.GetLoggedInUser().Validator);
+            SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, project.GetLoggedInUser().Validator);
 
-            if (utility.saved)
+            if (project.saved)
             {
                 saveAlertWindow.Browse();
             }
@@ -443,7 +443,7 @@ namespace VerteMark
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, utility.GetLoggedInUser().Validator);
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
@@ -457,7 +457,7 @@ namespace VerteMark
 
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            utility.DeleteTempFolder();
+            project.DeleteTempFolder();
         }
 
         /*
@@ -493,7 +493,7 @@ namespace VerteMark
                     Stroke lineStroke = new Stroke(points);
 
                     // Set the color and thickness of the connecting line
-                    lineStroke.DrawingAttributes.Color = utility.GetActiveAnotaceColor();
+                    lineStroke.DrawingAttributes.Color = project.ActiveAnotaceColor();
                     lineStroke.DrawingAttributes.Width = InkCanvas.DefaultDrawingAttributes.Width;
                     lineStroke.DrawingAttributes.Height = InkCanvas.DefaultDrawingAttributes.Height;
 
@@ -507,7 +507,7 @@ namespace VerteMark
         {
             InkCanvas.Strokes.Clear();
 
-            WriteableBitmap activeAnotaceImage = utility.GetActiveAnotaceImage();
+            WriteableBitmap activeAnotaceImage = project.ActiveAnotaceImage();
 
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
@@ -516,7 +516,7 @@ namespace VerteMark
         {
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
             rtb.Render(InkCanvas);
-            utility.UpdateSelectedAnotation(new WriteableBitmap(rtb));
+            project.UpdateSelectedAnotaceCanvas(new WriteableBitmap(rtb));
         }
 
         // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
@@ -528,8 +528,8 @@ namespace VerteMark
                 SaveCanvasIntoAnot();
                 UpdateElementsWithAnotace();
 
-                utility.SetActiveAnotaceIsAnotated(true);
-                ToggleCropButton(!utility.GetIsAnotated());
+                project.SetActiveAnotaceIsAnotated(true);
+                ToggleCropButton(!project.GetIsAnotated());
             }
         }
 
@@ -542,12 +542,12 @@ namespace VerteMark
         //Smaže obsah vybrané anotace
         private void Delete_button(object sender, RoutedEventArgs e)
         {
-            utility.RemovePointsAndConnections(PointCanvas);
-            utility.ClearActiveAnotace();
+            project.RemovePointsAndConnections(PointCanvas);
+            project.ClearActiveAnotace();
             UpdateElementsWithAnotace();
 
-            utility.SetActiveAnotaceIsAnotated(false);
-            ToggleCropButton(!utility.GetIsAnotated());
+            project.SetActiveAnotaceIsAnotated(false);
+            ToggleCropButton(!project.GetIsAnotated());
         }
 
         /* Ukázka všech anotací */
@@ -555,7 +555,7 @@ namespace VerteMark
         {
             if (ImageHolder.Source != null)
             {
-                List<WriteableBitmap> bitmaps = utility.AllInactiveAnotaceImages();
+                List<WriteableBitmap> bitmaps = project.AllInactiveAnotaceImages();
                 for (int i = 0; i < bitmaps.Count; i++)
                 {
                     previewImageList[i].Source = bitmaps[i];
@@ -575,8 +575,8 @@ namespace VerteMark
         {
             //    ConnectStrokeAnotace();
             SaveCanvasIntoAnot();
-            utility.ChangeActiveAnotation(id);
-            InkCanvas.DefaultDrawingAttributes.Color = utility.GetActiveAnotaceColor();
+            project.SelectActiveAnotace(id);
+            InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
             //  InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
 
@@ -597,8 +597,8 @@ namespace VerteMark
 
         private void CreateButtons()
         {
-            List<Anotace> Annotations = utility.GetAnnotationsList();
-            bool isValidator = utility.GetLoggedInUser().Validator;
+            List<Anotace> Annotations = project.GetAnotaces();
+            bool isValidator = project.GetLoggedInUser().Validator;
 
             int i = 0;
             foreach (Anotace anotace in Annotations)
@@ -725,18 +725,18 @@ namespace VerteMark
                 int index;
                 if (int.TryParse(checkBox.Tag.ToString(), out index))
                 {
-                    utility.SwitchAnotationValidation(index);
+                    project.ValidateAnnotationByID(index);
                 }
             }
         }
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
-            bool isValidator = utility.GetLoggedInUser().Validator;
-            Anotace implant = utility.CreateImplantAnnotation();
+            bool isValidator = project.GetLoggedInUser().Validator;
+            Anotace implant = project.CreateImplantAnnotation();
             AddPreviewImage();
 
-            List<Anotace> Annotations = utility.GetAnnotationsList();
+            List<Anotace> Annotations = project.GetAnotaces();
             AddNewRow(implant, isValidator, Annotations.Count - 1);
             MovePlusButton();
         }
@@ -761,7 +761,7 @@ namespace VerteMark
                 int index;
                 if (int.TryParse(button.Tag.ToString(), out index))
                 {
-                    utility.DeleteAnnotation(index);
+                    project.DeleteAnnotation(index);
                     DeletePreviewImage(index);
                     DeleteRow(index);
                     MovePlusButton(false);
@@ -795,7 +795,7 @@ namespace VerteMark
                         toggleButton.Content = $"Implantát {tag - 7}";
                     }
 
-                    utility.ChangeAnnotationId(tag);
+                    project.ChangeAnnotationId(tag);
                 }
             }
         }
@@ -980,7 +980,7 @@ namespace VerteMark
                 img.Height = CropRectangle.Height;
             }
 
-            utility.CropOriginalPicture(croppedImage);
+            project.CropOriginalPicture(croppedImage);
         }
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
@@ -1086,7 +1086,7 @@ namespace VerteMark
                 double zoomFactor = ZoomSlider.Value / 100;
                 CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
 
-                utility.UpdatePointsScale(zoomFactor);
+                project.UpdatePointsScale(zoomFactor);
             }
         }
 
@@ -1138,10 +1138,10 @@ namespace VerteMark
         {
             if (stateManager.CurrentState != AppState.Drawing) return;
 
-            if (utility.GetPointsCount() >= 8) return;
+            if (project.GetPointsCount() >= 8) return;
 
             var position = e.GetPosition(PointCanvas);
-            var color = utility.GetActiveAnotaceColor();
+            var color = project.ActiveAnotaceColor();
 
             var point = new PointMarker(
             PointCanvas,
@@ -1149,34 +1149,34 @@ namespace VerteMark
             new SolidColorBrush(color)
             );
 
-            utility.AddPointActiveAnot(point);
+            project.AddPointActiveAnot(point);
 
-            ToggleCropButton(utility.GetPointsCount() == 0);
+            ToggleCropButton(project.GetPointsCount() == 0);
 
-            utility.UpdatePointsScale(ZoomSlider.Value / 100);
+            project.UpdatePointsScale(ZoomSlider.Value / 100);
 
             DrawConnections();
         }
 
         private void DrawConnections()
         {
-            int pointsCount = utility.GetPointsCount();
+            int pointsCount = project.GetPointsCount();
 
             if (pointsCount < 2) return;
 
-            var color = utility.GetActiveAnotaceColor();
+            var color = project.ActiveAnotaceColor();
             Brush brush = new SolidColorBrush(color);
 
 
             if (pointsCount == 2)
             {
-                var start = utility.GetPointByIndex(pointsCount - 2); // Poslední bod
-                var end = utility.GetPointByIndex(pointsCount - 1); // Aktuální bod
+                var start = project.GetPointByIndex(pointsCount - 2); // Poslední bod
+                var end = project.GetPointByIndex(pointsCount - 1); // Aktuální bod
 
                 if (start == null || end == null) return;
 
                 var line = new LineConnection(start, end, PointCanvas, brush);
-                utility.AddConnectionActiveAnot(line);
+                project.AddConnectionActiveAnot(line);
 
                 return;
             }
@@ -1184,24 +1184,24 @@ namespace VerteMark
             // Odstranění poslední čáry, pokud je připojený počet bodů sudý
             if (pointsCount % 2 == 0)
             {
-                var lastLine = utility.GetLastConnection();
+                var lastLine = project.GetLastConnection();
                 if (lastLine == null) return;
 
                 lastLine.Remove(PointCanvas);
-                utility.RemoveLastConnection();
+                project.RemoveLastConnection();
             }
 
-            var lastLastPoint = utility.GetPointByIndex(pointsCount - 3); // Předposlední bod
-            var lastPoint = utility.GetPointByIndex(pointsCount - 2); // Poslední bod
-            var point = utility.GetPointByIndex(pointsCount - 1); // Aktuální bod
+            var lastLastPoint = project.GetPointByIndex(pointsCount - 3); // Předposlední bod
+            var lastPoint = project.GetPointByIndex(pointsCount - 2); // Poslední bod
+            var point = project.GetPointByIndex(pointsCount - 1); // Aktuální bod
 
             if (lastLastPoint == null || lastPoint == null || point == null) return;
 
             var line1 = new LineConnection(lastLastPoint, point, PointCanvas, brush);
-            utility.AddConnectionActiveAnot(line1);
+            project.AddConnectionActiveAnot(line1);
 
             var line2 = new LineConnection(lastPoint, point, PointCanvas, brush);
-            utility.AddConnectionActiveAnot(line2);
+            project.AddConnectionActiveAnot(line2);
         }
 
     }

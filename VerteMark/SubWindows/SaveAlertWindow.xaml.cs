@@ -8,13 +8,13 @@ namespace VerteMark.SubWindows
     /// Interakční logika pro Window1.xaml
     /// </summary>
     public partial class SaveAlertWindow : Window {
-        Utility utility;
+        Project project;
         MainWindow mainWindow;
         bool validator;
 
         public SaveAlertWindow(MainWindow mainWindow, bool validator) {
             InitializeComponent();
-            utility = new Utility();
+            project = Project.GetInstance();
             this.mainWindow = mainWindow;
             this.validator = validator;
 
@@ -27,23 +27,23 @@ namespace VerteMark.SubWindows
         }
 
         private void SaveAndContinue_Click(object sender, RoutedEventArgs e) {
-            if (!validator) { utility.SaveProject(1); }
-            else {  utility.SaveProject(2); }
-            utility.saved = true;
+            if (!validator) { project.SaveProject(1); }
+            else {  project.SaveProject(2); }
+            project.saved = true;
             Browse();
             mainWindow.IsEnabled = true;
             this.Close();
 
-            if (!utility.isAnyProjectAvailable())
+            if (!project.isAnyProjectAvailable())
             {
-                App.RestartApplication();
+                App.RestartApplication(); 
             }
         }
 
         private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e) {
-            if (!validator) { utility.SaveProject(0); }
-            else { utility.SaveProject(1); }
-            utility.saved = true;
+            if (!validator) { project.SaveProject(0); }
+            else { project.SaveProject(1); }
+            project.saved = true;
             Browse();
             mainWindow.IsEnabled = true;
             this.Close();
