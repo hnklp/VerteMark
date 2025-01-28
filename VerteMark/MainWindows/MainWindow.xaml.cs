@@ -11,7 +11,6 @@ using System.Windows.Shapes;
 using VerteMark.ObjectClasses;
 using VerteMark.SubWindows;
 
-
 namespace VerteMark
 {
     /// <summary>

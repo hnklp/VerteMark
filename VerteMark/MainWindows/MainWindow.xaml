@@ -36,7 +36,30 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu Background="#FFF0F0F0" DockPanel.Dock="Top">
+
+        <Ribbon x:Name="MainRibbon" DockPanel.Dock="Top" Title="Ribbon">
+
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed" >
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+
+            <RibbonTab x:Name="Tab" 
+                         Header="Nástroje">
+                <RibbonGroup x:Name="file_group" Header="Soubor">
+                    <RibbonButton x:Name="open_button_ribbon"
+                                    LargeImageSource="../Resources/Icons/folder_icon.ico"
+                                    Label="Otevřít"
+                                    Click="OpenProject_Click" />
+                    <RibbonButton x:Name="save_button_ribbon"
+                                    LargeImageSource="../Resources/Icons/floppy_icon.ico"
+                                    Label="Uložit"
+                                    Click="Save_Click" />
+                </RibbonGroup>
+            </RibbonTab>
+
+        </Ribbon>
+        <!--<Menu Background="#FFF0F0F0" DockPanel.Dock="Top">
             <MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>
@@ -49,7 +72,7 @@
             </MenuItem>
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
-        </Menu>
+        </Menu>-->
 
         <DockPanel Height="35" DockPanel.Dock="Bottom">
             <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" >
@@ -205,24 +228,6 @@
                 <Grid x:Name="ButtonGrid" Grid.Column="2"/>
             </ScrollViewer>
 
-
-            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="142,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">
-                <Button.Content>
-                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Button.Content>
-                <Button.ToolTip>
-                    <ToolTip Content="Uložit..."/>
-                </Button.ToolTip>
-            </Button>
-
-            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="76,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="2">
-                <Button.Content>
-                    <Image Source="../Resources/Icons/folder_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Button.Content>
-                <Button.ToolTip>
-                    <ToolTip Content="Otevřít soubor..."/>
-                </Button.ToolTip>
-            </Button>
 
             <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
