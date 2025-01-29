@@ -5,8 +5,8 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
 
 ### Aktuální funkčnost
 * Extrahování DICOM (PNG, JSON)
-* Kreslení
-* Vlastní file format
+* Anotování
+* Kontejnerový file format
 * Ukládání anotovaných snímků
 
 ### Vytváření .vmk souborů
