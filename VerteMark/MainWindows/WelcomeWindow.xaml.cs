@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 
 namespace VerteMark
@@ -90,6 +91,14 @@ namespace VerteMark
 
         private void SettingsButtonUI_Kopírovat_Click(object sender, RoutedEventArgs e) {
             new MainWindow(true).Show();
+            this.Close();
+        }
+
+        // otevření návodu
+        private void OpenGuide(object sender, RoutedEventArgs e)
+        { 
+            Window1 window1 = new Window1();
+            window1.Show();
             this.Close();
         }
     }
