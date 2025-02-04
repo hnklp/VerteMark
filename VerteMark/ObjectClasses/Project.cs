@@ -174,7 +174,7 @@ namespace VerteMark.ObjectClasses
         * ===========
         */
 
-
+        // *****************************************************************************************
         List<int> LoadAnnotations(JArray annotations, JArray validations) {
             List<int> createdIds = new List<int>();
             HashSet<int> validationSet = validations.ToObject<HashSet<int>>();
@@ -187,7 +187,16 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    // Obratel >= 8
+                    if (annotationId >= 8)
+                    {
+                        createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    }
+                    // Obratel <1,7>
+                    if (annotationId < 8) {
+                        createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                    }
+
 
                     if (validationSet.Contains(annotationId)) {
                         createdAnnotation.Validate(true);
@@ -196,6 +205,7 @@ namespace VerteMark.ObjectClasses
             }
             return createdIds;
         }
+        // *****************************************************************************************
 
 
         void CreateNewAnotaces() {
