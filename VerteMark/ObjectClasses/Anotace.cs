@@ -86,6 +86,7 @@ namespace VerteMark.ObjectClasses
         // NACITANI BODU
         public void LoadAnnotationPointMarker(JArray pixelsArray, int width, int height) {
             // ze souradnic udelat body
+
         }
         // *****************************************************************************************
 
@@ -136,10 +137,10 @@ namespace VerteMark.ObjectClasses
             if (Points != null) {
                 List<Tuple<int, int>> list = new List<Tuple<int, int>>();
 
-                foreach (PointMarker point in Anotace.Points)
+                foreach (PointMarker point in this.Points)
                 {
-                    int point_x = point.Position.X;
-                    int point_y = point.Position.Y;
+                    int point_x = (int)point.Position.X;
+                    int point_y = (int)point.Position.Y;
 
                     list.Add(Tuple.Create(point_x, point_y));
                 }
