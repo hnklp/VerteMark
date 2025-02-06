@@ -89,6 +89,7 @@ namespace VerteMark
                 SetCanvasComponentsSize();
                 AddPreviewImages();
                 SwitchActiveAnot(0);
+                LoadPointMarkers();
 
                 // start at 25% zoom
                 double zoomFactor = 0.25;
@@ -1155,55 +1156,15 @@ namespace VerteMark
 
             project.UpdatePointsScale(ZoomSlider.Value / 100);
 
-            DrawConnections();
-        }
-
-        private void DrawConnections()
-        {
             int pointsCount = project.GetPointsCount();
-
-            if (pointsCount < 2) return;
-
-            var color = project.ActiveAnotaceColor();
-            Brush brush = new SolidColorBrush(color);
-
-
-            if (pointsCount == 2)
-            {
-                var start = project.GetPointByIndex(pointsCount - 2); // Poslední bod
-                var end = project.GetPointByIndex(pointsCount - 1); // Aktuální bod
-
-                if (start == null || end == null) return;
-
-                var line = new LineConnection(start, end, PointCanvas, brush);
-                project.AddConnectionActiveAnot(line);
-
-                return;
-            }
-
-            // Odstranění poslední čáry, pokud je připojený počet bodů sudý
-            if (pointsCount % 2 == 0)
-            {
-                var lastLine = project.GetLastConnection();
-                if (lastLine == null) return;
-
-                lastLine.Remove(PointCanvas);
-                project.RemoveLastConnection();
-            }
-
-            var lastLastPoint = project.GetPointByIndex(pointsCount - 3); // Předposlední bod
-            var lastPoint = project.GetPointByIndex(pointsCount - 2); // Poslední bod
-            var point = project.GetPointByIndex(pointsCount - 1); // Aktuální bod
-
-            if (lastLastPoint == null || lastPoint == null || point == null) return;
-
-            var line1 = new LineConnection(lastLastPoint, point, PointCanvas, brush);
-            project.AddConnectionActiveAnot(line1);
-
-            var line2 = new LineConnection(lastPoint, point, PointCanvas, brush);
-            project.AddConnectionActiveAnot(line2);
+            project.DrawLineConnection(PointCanvas, pointsCount);
         }
 
+        public void LoadPointMarkers()
+        {
+            project.LoadPointMarkers(PointCanvas);
+            project.UpdatePointsScale(ZoomSlider.Value / 100);
+        }
     }
 
     public class PercentageConverter : IValueConverter

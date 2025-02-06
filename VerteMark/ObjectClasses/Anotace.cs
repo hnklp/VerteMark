@@ -61,7 +61,7 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
+        // NACITANI CARY
         public void LoadAnnotationCanvas(JArray pixelsArray, int width, int height) {
             // Vytvoření pole pixelů
             byte[] pixels = new byte[width * height * 4];
@@ -82,6 +82,23 @@ namespace VerteMark.ObjectClasses
             this.UpdateCanvas(newBitmap);
         }
 
+        // *****************************************************************************************
+        // NACITANI BODU
+        public void LoadAnnotationPointMarker(JArray pixelsArray) {
+            // ze souradnic udelat body
+
+            foreach (JObject pixelObj in pixelsArray) {
+                int x = (int)pixelObj["Item1"];
+                int y = (int)pixelObj["Item2"];
+                System.Windows.Point position = new System.Windows.Point(x, y);
+                System.Windows.Media.Color color = System.Windows.Media.Color.FromArgb(this.Color.A, this.Color.R, this.Color.G, this.Color.B);
+
+                PointMarker point = new(position, new SolidColorBrush(color));
+                this.Points.Add(point);
+            }
+        }
+
+        // *****************************************************************************************
 
         public WriteableBitmap GetCanvas() {
             return canvas;
@@ -122,19 +139,41 @@ namespace VerteMark.ObjectClasses
             return list;
         }
 
-
+        // *****************************************************************************************
         public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
             Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
-            if (canvas != null) {
+
+            // Obratle <1, 7>
+            if (Points != null) {
+                List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+
+                foreach (PointMarker point in this.Points)
+                {
+                    int point_x = (int)point.Position.X;
+                    int point_y = (int)point.Position.Y;
+
+                    list.Add(Tuple.Create(point_x, point_y));
+                }
+
+                result.Add(Id.ToString(), list);
+            }
+
+            // Obratle >= 8
+            else if (canvas != null)
+            {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
                 result.Add(Id.ToString(), bitmap);
             }
-            else {
+
+            // Neidentifikovane objekty
+            else
+            {
                 List<Tuple<int, int>> bitmap = new List<Tuple<int, int>>();
                 result.Add(Id.ToString(), bitmap);
             }
             return result;
         }
+        // *****************************************************************************************
 
         public void SetIsAnotated(bool isAnotated)
         {
