@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 
 namespace VerteMark.ObjectClasses
@@ -194,7 +195,7 @@ namespace VerteMark.ObjectClasses
                     }
                     // Obratel <1,7>
                     if (annotationId < 8) {
-                        createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
+                        createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
 
 
@@ -416,15 +417,6 @@ namespace VerteMark.ObjectClasses
             return 0;
         }
 
-        public PointMarker? GetPointByIndex(int index)
-        {
-            if (activeAnotace != null)
-            {
-                return activeAnotace.Points[index];
-            }
-            return null;
-        }
-
         public void UpdatePointsScale(double zoomFactor)
         {
             double scale = 1 / zoomFactor;
@@ -434,31 +426,6 @@ namespace VerteMark.ObjectClasses
                 {
                     point.UpdateScale(scale);
                 }
-        }
-
-        public void AddConnectionActiveAnot(LineConnection line)
-        {
-            if (activeAnotace != null)
-            {
-                activeAnotace.Lines.Add(line);
-            }
-        }
-
-        public LineConnection? GetLastConnection()
-        {
-            if (activeAnotace != null)
-            {
-                return activeAnotace.Lines[activeAnotace.Lines.Count - 1];
-            }
-            return null;
-        }
-
-        public void RemoveLastConnection()
-        {
-            if (activeAnotace != null)
-            {
-                activeAnotace.Lines.RemoveAt(activeAnotace.Lines.Count - 1);
-            }
         }
 
         public void RemovePointsAndConnections(Canvas canvas)
@@ -474,6 +441,70 @@ namespace VerteMark.ObjectClasses
                     point.Remove(canvas);
                 }
             }
+        }
+
+        public void LoadPointMarkers(Canvas canvas)
+        {
+            foreach (Anotace anotace in anotaces)
+            {
+                for (int i = 0; i < anotace.Points.Count; i++)
+                {
+                    anotace.Points[i].DrawPointMarker(canvas);
+                    DrawLineConnection(canvas, i + 1, anotace);
+                }
+            }
+
+
+        }
+
+        public void DrawLineConnection(Canvas pointCanvas, int index, Anotace? anotace = null)
+        {
+            if (anotace == null && activeAnotace != null)
+            {
+                anotace = this.activeAnotace;
+            }
+
+            if (anotace == null) return;
+
+            if (index < 2) return;
+
+            var color = Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B);
+            Brush brush = new SolidColorBrush(color);
+
+            if (index == 2)
+            {
+                var start = anotace.Points[index - 2]; // Poslední bod
+                var end = anotace.Points[index - 1]; // Aktuální bod
+
+                if (start == null || end == null) return;
+
+                var line = new LineConnection(start, end, pointCanvas, brush);
+                anotace.Lines.Add(line);
+
+                return;
+            }
+
+            // Odstranění poslední čáry, pokud je připojený počet bodů sudý
+            if (index % 2 == 0)
+            {
+                var lastLine = anotace.Lines[^1];
+                if (lastLine == null) return;
+
+                lastLine.Remove(pointCanvas);
+                anotace.Lines.RemoveAt(anotace.Lines.Count - 1);
+            }
+
+            var lastLastPoint = anotace.Points[index - 3]; // Předposlední bod
+            var lastPoint = anotace.Points[index - 2]; // Poslední bod
+            var point = anotace.Points[index - 1]; // Aktuální bod
+
+            if (lastLastPoint == null || lastPoint == null || point == null) return;
+
+            var line1 = new LineConnection(lastLastPoint, point, pointCanvas, brush);
+            anotace.Lines.Add(line1);
+
+            var line2 = new LineConnection(lastPoint, point, pointCanvas, brush);
+            anotace.Lines.Add(line2);
         }
 
         /*
