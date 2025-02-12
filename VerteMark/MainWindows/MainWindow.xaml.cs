@@ -79,6 +79,13 @@ namespace VerteMark
             activeToolbarButton = DrawTButton;
             savingParam = 0;
 
+            // tohle jsem pochopil z toho, co mi sabina ukazovala v hospode prstama, dik
+            // InkCanvas je layer 1
+            Panel.SetZIndex(InkCanvas, 1);
+
+            // PointCanvas je layer 2 (nad InkCanvas)
+            Panel.SetZIndex(PointCanvas, 2);
+
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
             //this.Closing += DeleteTempFolder_Closing; 
@@ -572,15 +579,45 @@ namespace VerteMark
          * =========
          */
 
+        //private void SwitchActiveAnot(int id)
+        //{
+        //    //    ConnectStrokeAnotace();
+        //    SaveCanvasIntoAnot();
+        //    project.SelectActiveAnotace(id);
+        //    InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
+        //    //  InkCanvas.Strokes.Clear();
+        //    UpdateElementsWithAnotace();
+
+        //    PreviewAllAnotaces();
+        //}
+
+        // tady zacina hynek kod pripravte se na bolest
+
         private void SwitchActiveAnot(int id)
         {
-            //    ConnectStrokeAnotace();
-            SaveCanvasIntoAnot();
-            project.SelectActiveAnotace(id);
-            InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
-            //  InkCanvas.Strokes.Clear();
-            UpdateElementsWithAnotace();
 
+            SaveCanvasIntoAnot();
+
+            project.SelectActiveAnotace(id);
+
+            // check jestli je nazev "Implantát"
+            var anotace = project.GetAnotaces()[id];
+            bool isImplant = anotace.Name.StartsWith("Implantát", StringComparison.OrdinalIgnoreCase);
+
+            if (isImplant)
+            {
+                // pokud chci kreslit => InkCanvas
+                PointCanvas.IsHitTestVisible = false;
+            }
+            else
+            {
+                // pokud chci bodovat => PointCanvas
+                PointCanvas.IsHitTestVisible = true;
+            }
+
+            InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
+            InkCanvas.Strokes.Clear();
+            UpdateElementsWithAnotace();
             PreviewAllAnotaces();
         }
 
@@ -1137,23 +1174,53 @@ namespace VerteMark
 
         private void PointCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (stateManager.CurrentState != AppState.Drawing) return;
+            // 1) Pokud není stav kreslení, nic nedělat
+            if (stateManager.CurrentState != AppState.Drawing)
+                return;
 
-            if (project.GetPointsCount() >= 8) return;
+            // 2) Zjistit aktivní anotaci podle ID
+            var activeAnotaceIdString = project.ActiveAnotaceId();
+            if (int.TryParse(activeAnotaceIdString, out int activeIndex))
+            {
+                var allAnnots = project.GetAnotaces();
+                if (activeIndex >= 0 && activeIndex < allAnnots.Count)
+                {
+                    var anot = allAnnots[activeIndex];
+                    // 3) Je-li aktivní anotace „Implantát“, body nevytváříme 
+                    //    (kreslí se tahy na InkCanvas)
+                    if (anot.Name.StartsWith("Implantát", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+                }
+            }
 
+            // -------------------------
+            // 4) Jinak vytvořit bod
+            // -------------------------
+
+            // Zabraňte třeba překročení max. bodů (pokud máte takový limit)
+            if (project.GetPointsCount() >= 8)
+                return;
+
+            // a) Pozice kliku 
             var position = e.GetPosition(PointCanvas);
+
+            // b) Barva aktivní anotace
             var color = project.ActiveAnotaceColor();
 
+            // c) Samotné vytvoření bodu
             var point = new PointMarker(
-            PointCanvas,
-            position,
-            new SolidColorBrush(color)
+                PointCanvas,
+                position,
+                new SolidColorBrush(color)
             );
-
             project.AddPointActiveAnot(point);
 
+            // d) Ovládání tlačítka pro ořez atd.
             ToggleCropButton(project.GetPointsCount() == 0);
 
+            // e) Vykreslení, měřítko, spojnice mezi body...
             project.UpdatePointsScale(ZoomSlider.Value / 100);
 
             int pointsCount = project.GetPointsCount();
