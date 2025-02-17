@@ -79,13 +79,6 @@ namespace VerteMark
             activeToolbarButton = DrawTButton;
             savingParam = 0;
 
-            // tohle jsem pochopil z toho, co mi sabina ukazovala v hospode prstama, dik
-            // InkCanvas je layer 1
-            Panel.SetZIndex(InkCanvas, 1);
-
-            // PointCanvas je layer 2 (nad InkCanvas)
-            Panel.SetZIndex(PointCanvas, 2);
-
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
             //this.Closing += DeleteTempFolder_Closing; 
@@ -520,6 +513,7 @@ namespace VerteMark
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
+        //TODO: PEPO CO TO JE DPI JE DYNAMICKE VE WOKNECH PODLE SKALOVANI
         private void SaveCanvasIntoAnot()
         {
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
@@ -616,7 +610,7 @@ namespace VerteMark
             }
 
             InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
-            InkCanvas.Strokes.Clear();
+            //InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
             PreviewAllAnotaces();
         }
