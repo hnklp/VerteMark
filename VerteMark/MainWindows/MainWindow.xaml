@@ -37,10 +37,27 @@
 
     <DockPanel>
 
-        <Ribbon x:Name="MainRibbon" DockPanel.Dock="Top" Title="Ribbon">
-
+        <Ribbon x:Name="MainRibbon" DockPanel.Dock="Top" Title="">
             <Ribbon.ApplicationMenu>
-                <RibbonApplicationMenu Visibility="Collapsed" >
+                <RibbonApplicationMenu Label="Soubor">
+                    <!--Visibility="Collapsed"-->
+                    <!-- První položka: Otevřít -->
+                    <RibbonApplicationMenuItem
+                Header="Otevřít"
+                ImageSource="../Resources/Icons/folder_icon.ico"
+                Click="OpenProject_Click" />
+
+                <RibbonSeparator/>
+
+                <RibbonApplicationMenuItem
+                Header="O aplikaci"
+                ImageSource="../Resources/Icons/folder_icon.ico"
+                Click="AboutItem_Click" />
+
+                <RibbonApplicationMenuItem
+                Header="Konec"
+                ImageSource="../Resources/Icons/folder_icon.ico"
+                Click="Quit_Click" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
@@ -55,6 +72,16 @@
                                     LargeImageSource="../Resources/Icons/floppy_icon.ico"
                                     Label="Uložit"
                                     Click="Save_Click" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="obratle_group" Header="Obratůe">
+                    <RibbonButton x:Name="obratel1_button_ribbon"
+                    LargeImageSource="../Resources/Icons/folder_icon.ico"
+                    Label="Otevřít"
+                    Click="OpenProject_Click" />
+                    <RibbonButton x:Name="obratel2_button_ribbon"
+                    LargeImageSource="../Resources/Icons/floppy_icon.ico"
+                    Label="Uložit"
+                    Click="Save_Click" />
                 </RibbonGroup>
             </RibbonTab>
 

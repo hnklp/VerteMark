@@ -1,18 +1,53 @@
-﻿<Window x:Class="VerteMark.SubWindows.JustSaveAlertWindow"
+﻿<blurwindow:BlurWindow x:Class="VerteMark.SubWindows.JustSaveAlertWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark.SubWindows"
         mc:Ignorable="d"
-        Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png" Closing="Window_Closing">
-    <Grid>
+        xmlns:blurwindow="clr-namespace:TianXiaTech;assembly=BlurWindow"
+        Title="Varování" ShowInTaskbar="False" Height="350" Width="350" Icon="../Pictures/icon.png" Closing="Window_Closing" BorderBrush="Transparent">
+
+    <Window.Background>
+        <!--Specify transparency here-->
+        <SolidColorBrush Color="#FF3E3A3A" Opacity=".45"/>
+    </Window.Background>
+
+    <Grid Margin="0,0,0,0">
         <TextBlock
-                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,57,0,0" Width="320" Height="58">
-            <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="95" Height="30" FontSize="10" Margin="5,5,40,5"/>
-            <Button Content="Uložit" Width="94" Height="30" Margin="5" Click="SaveAndContinue_Click"/>
-            <Button Content="Zpět" Width="70" Height="30" Margin="5" Click="Back_Click"/>
+                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="72" Width="254" Margin="0,56,0,0" TextAlignment="Center" Foreground="#F0F0F0F0" FontSize="20"><Run Language="en-gb" Text="Jak c"/><Run Text="hcete uložit "/><Run Text="rozpracovanou anotaci?"/></TextBlock>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,142,0,0" Width="210" Height="148">
+            <Button Content="Uložit jako rozpracované" Click="PreSaveAndContinue_Click" Width="197" Height="30" FontSize="12" Margin="5">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="6"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button Content="Uložit jako dokončené" Width="197" Height="30" FontSize="12" Margin="1" Click="SaveAndContinue_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="6"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button Content="Zpět do editoru" Width="197" Height="30" FontSize="12" Margin="5" Click="Back_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="6"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button Content="Ukončit bez uložení" Width="197" Height="30" FontSize="12" Margin="1" Click="NoSave_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="6"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </StackPanel>
     </Grid>
-</Window>
+</blurwindow:BlurWindow>

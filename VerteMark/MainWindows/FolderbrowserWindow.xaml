@@ -1,40 +1,50 @@
-﻿<Window x:Class="VerteMark.MainWindows.FolderbrowserWindow"
+﻿<blurwindow:BlurWindow x:Class="VerteMark.MainWindows.FolderbrowserWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:VerteMark.MainWindows"
+        xmlns:blurwindow="clr-namespace:TianXiaTech;assembly=BlurWindow"
         mc:Ignorable="d" 
-        d:DesignHeight="415" d:DesignWidth="800"
-        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        d:DesignHeight="350" d:DesignWidth="500"
+        Title="VerteMark" Height="350" Width="500" ResizeMode="NoResize" Icon="../Pictures/icon.png" BorderBrush="Transparent" TitleVisibility="Collapsed" MinimizeVisibility = "Collapsed" MaximizeVisibility="Collapsed">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="277*"/>
-            <ColumnDefinition Width="123*"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+    <Window.Background>
+        <!--Specify transparency here-->
+        <SolidColorBrush Color="#FF3E3A3A" Opacity=".45"/>
+    </Window.Background>
 
-        <!-- Levý sloupec pro přehled -->
-        <Grid Grid.Column="0" Margin="10,10,32,10">
-            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="41,54,0,0"/>
-            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="41,100,30,75" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
-        </Grid>
+    <Grid HorizontalAlignment="Center" Width="500">
 
-        <!-- Pravý sloupec pro RadioButtony a tlačítka -->
+        <TextBlock x:Name="SelectedRadioButtonTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="25,48,0,0" Foreground="#F0F0F0F0"><Run Language="en-gb" Text="Seznam snímků"/></TextBlock>
+        <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Margin="23,88,256,87" Cursor="Hand" MouseDoubleClick="ContentDoubleClick" Background="#BF0F0F0F" Foreground="#F0F0F0F0">
+            <ListBox.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </ListBox.Resources>
+        </ListBox>
 
+        <StackPanel Margin="250,91,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118">
+            <RadioButton x:Name="DicomRadioButton" Content="Nové snímky" Checked="RadioButton_Checked" FontSize="16" Width="112" Foreground="#F0F0F0F0" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Foreground="#F0F0F0F0" Width="180" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <RadioButton x:Name="ValidationRadioButton" Content="Připraveno k validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Foreground="#F0F0F0F0" Width="164" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        </StackPanel>
 
-        <Grid Grid.ColumnSpan="2" Margin="10,5,0,5">
-            <StackPanel Margin="539,104,19,0" VerticalAlignment="Top">
-                <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Width="448"/>
-                <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
-                <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
-            </StackPanel>
+        <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="90" Cursor="Hand" Margin="23,266,0,0">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
 
-            <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="90" Cursor="Hand" Margin="539,323,0,0"/>
-            <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand" HorizontalAlignment="Left" Margin="663,323,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
-        </Grid>
-
-
+        <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand" HorizontalAlignment="Left" Margin="154,266,0,0" VerticalAlignment="Top" Height="27" Width="90">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </Button.Resources>
+        </Button>
     </Grid>
-</Window>
+</blurwindow:BlurWindow>

@@ -39,9 +39,9 @@
             </Button.Resources>
         </Button>
 
-        <TextBlock x:Name="HintText" Text="" Margin="523,178,10,0" VerticalAlignment="Top" FontSize="12" TextTrimming="CharacterEllipsis"/>
-        <Label Name="WelcomeLabel" Content="Vyberte složku nebo soubor" HorizontalAlignment="Left" Margin="24,81,0,0" VerticalAlignment="Top" FontSize="24" Foreground="#F0F0F0F0"/>
-        <Label x:Name="TextPath" Content="Vybraná cesta:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="24,131,0,0" VerticalAlignment="Top" Width="86"  FontSize="12" Foreground="#F0F0F0F0" />
+        <TextBlock x:Name="HintText" Text="" Margin="126,137,26,0" VerticalAlignment="Top" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="#F0F0F0F0"/>
+        <Label Name="WelcomeLabel" Content="Vyberte soubor VerteMark" HorizontalAlignment="Center" Margin="0,76,0,0" VerticalAlignment="Top" FontSize="24" Foreground="#F0F0F0F0"/>
+        <Label x:Name="TextPath" Content="Vybraný soubor:" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="24,131,0,0" VerticalAlignment="Top" Width="99"  FontSize="12" Foreground="#F0F0F0F0" />
     </Grid>
 
 </blurwindow:BlurWindow>

@@ -454,6 +454,24 @@ namespace VerteMark
             saveAlertWindow.Show();
         }
 
+        private void Quit_Click(object sender, RoutedEventArgs e)
+        {
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+
+            double originalCenterX = Left + Width / 2;
+            double originalCenterY = Top + Height / 2;
+
+            saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
+            saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
+
+
+            saveAlertWindow.Show();
+
+            this.Close();
+        }
+
+
+
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             project.DeleteTempFolder();

@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace VerteMark.MainWindows
 {
-    public partial class FolderbrowserWindow : Window
+    public partial class FolderbrowserWindow : TianXiaTech.BlurWindow
     {
         Project project;
         string projectType; // create new project or load existing

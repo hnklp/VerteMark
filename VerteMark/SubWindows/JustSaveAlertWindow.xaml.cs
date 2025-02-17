@@ -6,7 +6,7 @@ namespace VerteMark.SubWindows {
     /// <summary>
     /// Interakční logika pro Window1.xaml
     /// </summary>
-    public partial class JustSaveAlertWindow : Window {
+    public partial class JustSaveAlertWindow : TianXiaTech.BlurWindow{
         Project project;
         MainWindow mainWindow;
         bool validator;
@@ -43,6 +43,14 @@ namespace VerteMark.SubWindows {
             else { project.SaveProject(1); }
             project.saved = true;
             mainWindow.IsEnabled = true;
+            this.Close();
+
+        }
+
+        private void NoSave_Click(object sender, RoutedEventArgs e)
+        {
+           
+            mainWindow.IsEnabled = false;
             this.Close();
 
         }
