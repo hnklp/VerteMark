@@ -18,6 +18,7 @@
     <None Remove="Resources\Icons\folder_icon.ico" />
     <None Remove="Resources\Icons\unzoom_icon.ico" />
     <None Remove="Resources\Icons\zoom_icon.ico" />
+	<None Remove="Resources\Icons\bomb_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,9 @@
     <Resource Include="Resources\Icons\zoom_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+	<Resource Include="Resources\Icons\bomb_icon.ico">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
     <PackageReference Include="fo-dicom" Version="5.1.2" />
     <PackageReference Include="fo-dicom.Desktop" Version="4.0.8" />
     <PackageReference Include="fo-dicom.Drawing" Version="4.0.8" />

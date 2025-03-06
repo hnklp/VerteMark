@@ -2,16 +2,19 @@
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 
-namespace VerteMark.SubWindows {
+namespace VerteMark.SubWindows
+{
     /// <summary>
     /// Interakční logika pro Window1.xaml
     /// </summary>
-    public partial class JustSaveAlertWindow : Window {
+    public partial class JustSaveAlertWindow : Window
+    {
         Project project;
         MainWindow mainWindow;
         bool validator;
 
-        public JustSaveAlertWindow(MainWindow mainWindow, bool validator) {
+        public JustSaveAlertWindow(MainWindow mainWindow, bool validator)
+        {
             InitializeComponent();
             project = Project.GetInstance();
             this.mainWindow = mainWindow;
@@ -20,12 +23,14 @@ namespace VerteMark.SubWindows {
             mainWindow.IsEnabled = false;
         }
 
-        private void Back_Click(object sender, RoutedEventArgs e) {
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
             mainWindow.IsEnabled = true;
             this.Close();
         }
 
-        private void SaveAndContinue_Click(object sender, RoutedEventArgs e) {
+        private void SaveAndContinue_Click(object sender, RoutedEventArgs e)
+        {
             if (!validator) { project.SaveProject(1); }
             else { project.SaveProject(2); }
             project.saved = true;
@@ -38,13 +43,19 @@ namespace VerteMark.SubWindows {
             }
         }
 
-        private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e) {
+        private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e)
+        {
             if (!validator) { project.SaveProject(0); }
             else { project.SaveProject(1); }
             project.saved = true;
             mainWindow.IsEnabled = true;
             this.Close();
 
+        }
+        private void Discard_Click(object sender, RoutedEventArgs e)
+        {
+           this.Close();
+           App.RestartApplication();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

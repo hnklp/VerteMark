@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 using VerteMark.SubWindows;
 
@@ -454,6 +455,18 @@ namespace VerteMark
 
 
             saveAlertWindow.Show();
+        }
+
+        private void Discard_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Opravdu chcete zahodit veškeré změny provedené na aktuálním snímku?",
+                    "Zahodit změny",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                this.Close();
+                App.RestartApplication();
+            }
         }
 
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1165,6 +1178,7 @@ namespace VerteMark
             project.LoadPointMarkers(PointCanvas);
             project.UpdatePointsScale(ZoomSlider.Value / 100);
         }
+
     }
 
     public class PercentageConverter : IValueConverter

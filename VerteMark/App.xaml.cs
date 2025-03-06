@@ -27,7 +27,7 @@ namespace VerteMark
 
             if (e.Args.Length > 0 && e.Args[0] == "allDone")
             {
-                MessageBox.Show("Tady máš hotovo. Otevři další soubor a pokračuj.");
+                MessageBox.Show("Projekt uzavřen. Pokračujte otevřením dalšího.");
             }
         }
 
