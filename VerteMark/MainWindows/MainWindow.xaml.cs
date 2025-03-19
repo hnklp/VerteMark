@@ -536,10 +536,17 @@ namespace VerteMark
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
-        //TODO: PEPO CO TO JE DPI JE DYNAMICKE VE WOKNECH PODLE SKALOVANI
         private void SaveCanvasIntoAnot()
         {
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(InkCanvas.ActualWidth), (int)(InkCanvas.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+            var dpi = VisualTreeHelper.GetDpi(InkCanvas);
+            RenderTargetBitmap rtb = new RenderTargetBitmap(
+                (int)(InkCanvas.ActualWidth * dpi.DpiScaleX),
+                (int)(InkCanvas.ActualHeight * dpi.DpiScaleY),
+                dpi.PixelsPerInchX,
+                dpi.PixelsPerInchY,
+                PixelFormats.Pbgra32
+            );
+
             rtb.Render(InkCanvas);
             project.UpdateSelectedAnotaceCanvas(new WriteableBitmap(rtb));
         }
