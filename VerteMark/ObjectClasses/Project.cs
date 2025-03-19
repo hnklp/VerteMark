@@ -142,7 +142,6 @@ namespace VerteMark.ObjectClasses
                 savingParameter); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
-            //Debug.WriteLine(this.anyProjectAvailable);
         }
 
 
@@ -581,6 +580,16 @@ namespace VerteMark.ObjectClasses
 
         public List<string> ChooseValidation() {
             return folderUtilityManager.ChooseValidation();
+        }
+
+        public List<string> InvalidDicoms()
+        {
+            return folderUtilityManager.InvalidDicoms();
+        }
+
+        public List<string> ValidatedDicoms()
+        {
+            return folderUtilityManager.ValidatedDicoms();
         }
     }
 }

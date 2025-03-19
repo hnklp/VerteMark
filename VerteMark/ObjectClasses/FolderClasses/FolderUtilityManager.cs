@@ -25,9 +25,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated
+        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
         public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter) {
             switch (savingParameter) {
+                //Ulokladani do jednotlivych slozek
                 case 0:
                     fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
                     break;
@@ -36,6 +37,9 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                     break;
                 case 2:
                     fileManager.outputPath = Path.Combine(tempPath, "validated");
+                    break;
+                case 3:
+                    fileManager.outputPath = Path.Combine(tempPath, "invalid");
                     break;
             }
 
@@ -56,7 +60,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
             fileManager.SaveJson(jsonString);
             fileManager.SaveCroppedImage(image);
-            folderManager.ProcessFolders(); // deletes duplicity folders
+            folderManager.ProcessFolders(); // deletes duplicit folders
             SaveZip();
         }
 
@@ -149,6 +153,16 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         public List<string> ChooseValidation() {
             return folderManager.ChooseValidation();
+        }
+
+        public List<string> InvalidDicoms()
+        {
+            return folderManager.InvalidDicoms();
+        }
+
+        public List<string> ValidatedDicoms()
+        {
+            return folderManager.ValidatedDicoms();
         }
 
         /*
