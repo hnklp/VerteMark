@@ -187,13 +187,14 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    // Obratel >= 8
-                    if (annotationId >= 8)
+                    // Anotace >= 7
+                    if (annotationId >= 7)
                     {
                         createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                     }
-                    // Obratel <1,7>
-                    if (annotationId < 8) {
+                    // Anotace <0,6>
+                    if (annotationId <= 6)
+                    {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
 
