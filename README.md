@@ -40,4 +40,4 @@ Jakub Kepič - Backend
 
 **Přírodovědecká fakulta UJEP\
 Ústí nad Labem\
-2024**
+2024-2025**
