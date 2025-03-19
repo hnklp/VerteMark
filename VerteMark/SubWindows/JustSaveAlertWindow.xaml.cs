@@ -54,17 +54,9 @@ namespace VerteMark.SubWindows
         }
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
-            if (!validator) { project.SaveProject(3); }
-            else { project.SaveProject(3); }
-            project.saved = false;
             Browse();
             mainWindow.IsEnabled = true;
             this.Close();
-
-            if (!project.isAnyProjectAvailable())
-            {
-                App.RestartApplication();
-            }
         }
 
         public void Browse()
@@ -83,6 +75,8 @@ namespace VerteMark.SubWindows
 
             mainWindow.Visibility = Visibility.Hidden;
             folderbrowserWindow.Show();
+            
+            this.Close();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

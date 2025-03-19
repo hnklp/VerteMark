@@ -582,5 +582,10 @@ namespace VerteMark.ObjectClasses
         public List<string> ChooseValidation() {
             return folderUtilityManager.ChooseValidation();
         }
+
+        public List<string> InvalidDicoms()
+        {
+            return folderUtilityManager.InvalidDicoms();
+        }
     }
 }

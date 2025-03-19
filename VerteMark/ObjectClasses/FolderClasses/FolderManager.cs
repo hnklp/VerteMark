@@ -57,10 +57,12 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             string validatedPath = Path.Combine(tempFolderPath, "validated");
             string toValidatePath = Path.Combine(tempFolderPath, "to_validate");
             string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
+            //string invalidPath = Path.Combine(tempFolderPath, "invalid");
             try {
                 // Get all directories in the validated and to_validate folders
                 var validatedDirectories = Directory.GetDirectories(validatedPath);
                 var toValidateDirectories = Directory.GetDirectories(toValidatePath);
+                //var invalidDirectories = Directory.GetDirectories(invalidPath);
 
                 // Check and delete matching directories from to_validate
                 foreach (var validatedDir in validatedDirectories) {
@@ -87,6 +89,25 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                         Debug.WriteLine($"Deleted {matchingDirInToAnnotate} from to_anotate");
                     }
                 }
+
+                //TODO: Opravit tohle, ted to rozbiji ukladani invalid a nevim proc. I bez toho to funguje jak ma so idk. /hynek/
+
+                // Get all directories in the invalid folder again
+                //invalidDirectories = Directory.GetDirectories(invalidPath);
+                //var toInvalidDirectories = Directory.GetDirectories(invalidPath);
+
+                //// Check and delete matching directories from invalid
+                //foreach (var invalidDir in invalidDirectories)
+                //{
+                //    var directoryName = Path.GetFileName(invalidDir);
+                //    var matchingDirInInvalid = Path.Combine(invalidPath, directoryName);
+
+                //    if (Directory.Exists(matchingDirInInvalid))
+                //    {
+                //        Directory.Delete(matchingDirInInvalid, true);
+                //        Debug.WriteLine($"Deleted {matchingDirInInvalid} from invalid");
+                //    }
+                //}
             }
             catch (Exception ex) {
                 Console.WriteLine($"An error occurred: {ex.Message}");
@@ -123,6 +144,13 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             List<string> validatedProjects = GetSubfolders("validated");
             List<string> toValidateProjects = GetSubfolders("to_validate");
             return toValidateProjects.Except(validatedProjects).ToList();
+        }
+        //vrati list nevalidnich snimku
+        public List<string> InvalidDicoms()
+        {
+            List<string> invalidDicoms = GetSubfolders("invalid");
+            
+            return invalidDicoms.ToList();
         }
 
 

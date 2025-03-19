@@ -151,7 +151,7 @@ namespace VerteMark.MainWindows
                         projectType = "to_validate";
                         break;
                     case "InvalidRadioButton":
-                        FileListBox.ItemsSource = project.ChooseValidation();
+                        FileListBox.ItemsSource = project.InvalidDicoms();
                         projectType = "invalid";
                         break;
                     default:
