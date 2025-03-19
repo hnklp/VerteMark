@@ -85,16 +85,22 @@ namespace VerteMark.ObjectClasses
         // *****************************************************************************************
         // NACITANI BODU
         public void LoadAnnotationPointMarker(JArray pixelsArray) {
+            string[] labels = { "A", "B", "C", "D", "E", "F", "G", "H" };
+            int index = 0;
             // ze souradnic udelat body
 
             foreach (JObject pixelObj in pixelsArray) {
+                if (index >= labels.Length) break;
+
                 int x = (int)pixelObj["Item1"];
                 int y = (int)pixelObj["Item2"];
                 System.Windows.Point position = new System.Windows.Point(x, y);
                 System.Windows.Media.Color color = System.Windows.Media.Color.FromArgb(this.Color.A, this.Color.R, this.Color.G, this.Color.B);
 
-                PointMarker point = new(position, new SolidColorBrush(color));
+                PointMarker point = new(position, new SolidColorBrush(color), labels[index]);
                 this.Points.Add(point);
+
+                index++;
             }
         }
 

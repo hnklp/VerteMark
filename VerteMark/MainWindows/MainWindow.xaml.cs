@@ -1139,25 +1139,26 @@ namespace VerteMark
         {
             if (stateManager.CurrentState != AppState.Drawing) return;
 
-            if (project.GetPointsCount() >= 8) return;
+            int pointsCount = project.GetPointsCount();
+            if (pointsCount >= 8) return;
 
+            string[] labels = { "A", "B", "C", "D", "E", "F", "G", "H" };
             var position = e.GetPosition(PointCanvas);
             var color = project.ActiveAnotaceColor();
 
             var point = new PointMarker(
             PointCanvas,
             position,
-            new SolidColorBrush(color)
+            new SolidColorBrush(color),
+            labels[pointsCount]
             );
 
             project.AddPointActiveAnot(point);
 
-            ToggleCropButton(project.GetPointsCount() == 0);
+            ToggleCropButton(pointsCount == 0);
 
             project.UpdatePointsScale(ZoomSlider.Value / 100);
-
-            int pointsCount = project.GetPointsCount();
-            project.DrawLineConnection(PointCanvas, pointsCount);
+            project.DrawLineConnection(PointCanvas, pointsCount + 1);
         }
 
         public void LoadPointMarkers()
