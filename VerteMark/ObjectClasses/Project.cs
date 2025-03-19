@@ -142,7 +142,8 @@ namespace VerteMark.ObjectClasses
                 savingParameter); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
-            Debug.WriteLine(this.anyProjectAvailable);
+            // odebereme nekdy ty debug lines?
+            //Debug.WriteLine(this.anyProjectAvailable);
         }
 
 
