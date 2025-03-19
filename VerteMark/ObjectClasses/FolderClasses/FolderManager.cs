@@ -33,7 +33,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                     string parentDirectory = Path.GetDirectoryName(tempFolderPath);
 
                     if (string.IsNullOrEmpty(parentDirectory)) {
-                        Console.WriteLine("Cesta je neplatná nebo nemá nadřazenou složku.");
                         return;
                     }
 
@@ -41,7 +40,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                     if (Directory.Exists(tempFolderPath)) {
                         // Smazání složky a jejího obsahu
                         Directory.Delete(tempFolderPath, true);
-                        Console.WriteLine($"Složka '{tempFolderPath}' a její obsah byly úspěšně smazány.");
                     }
                     else {
                         Console.WriteLine($"Složka '{tempFolderPath}' neexistuje.");
@@ -71,7 +69,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
                     if (Directory.Exists(matchingDirInToValidate)) {
                         Directory.Delete(matchingDirInToValidate, true);
-                        Debug.WriteLine($"Deleted {matchingDirInToValidate} from to_validate");
                     }
                 }
 
@@ -86,7 +83,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
                     if (Directory.Exists(matchingDirInToAnnotate)) {
                         Directory.Delete(matchingDirInToAnnotate, true);
-                        Debug.WriteLine($"Deleted {matchingDirInToAnnotate} from to_anotate");
                     }
                 }
 
