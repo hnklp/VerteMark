@@ -51,62 +51,64 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
-        public void ProcessFolders() {
+        public void ProcessFolders()
+        {
             string validatedPath = Path.Combine(tempFolderPath, "validated");
             string toValidatePath = Path.Combine(tempFolderPath, "to_validate");
             string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
-            //string invalidPath = Path.Combine(tempFolderPath, "invalid");
-            try {
-                // Get all directories in the validated and to_validate folders
+            string invalidPath = Path.Combine(tempFolderPath, "invalid");  // Přidání invalidPath
+
+            try
+            {
+                // Získání všech adresářů
                 var validatedDirectories = Directory.GetDirectories(validatedPath);
                 var toValidateDirectories = Directory.GetDirectories(toValidatePath);
-                //var invalidDirectories = Directory.GetDirectories(invalidPath);
+                var invalidDirectories = Directory.GetDirectories(invalidPath);  // Nové zpracování invalid složky
 
-                // Check and delete matching directories from to_validate
-                foreach (var validatedDir in validatedDirectories) {
+                // Vymazání shodujících se složek mezi validated a to_validate
+                foreach (var validatedDir in validatedDirectories)
+                {
                     var directoryName = Path.GetFileName(validatedDir);
                     var matchingDirInToValidate = Path.Combine(toValidatePath, directoryName);
 
-                    if (Directory.Exists(matchingDirInToValidate)) {
+                    if (Directory.Exists(matchingDirInToValidate))
+                    {
                         Directory.Delete(matchingDirInToValidate, true);
                     }
                 }
 
-                // Get all directories in the to_validate and to_anotate folders again
+                // Získání aktualizovaných seznamů složek
                 toValidateDirectories = Directory.GetDirectories(toValidatePath);
                 var toAnnotateDirectories = Directory.GetDirectories(toAnnotatePath);
 
-                // Check and delete matching directories from to_anotate
-                foreach (var toValidateDir in toValidateDirectories) {
+                // Vymazání shodujících se složek mezi to_validate a to_anotate
+                foreach (var toValidateDir in toValidateDirectories)
+                {
                     var directoryName = Path.GetFileName(toValidateDir);
                     var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
 
-                    if (Directory.Exists(matchingDirInToAnnotate)) {
+                    if (Directory.Exists(matchingDirInToAnnotate))
+                    {
                         Directory.Delete(matchingDirInToAnnotate, true);
                     }
                 }
 
-                //TODO: Opravit tohle, ted to rozbiji ukladani invalid a nevim proc. I bez toho to funguje jak ma so idk. /hynek/
+                // Nové zpracování složek invalid - odstranění shodujících se složek z to_anotate
+                foreach (var invalidDir in invalidDirectories)
+                {
+                    var directoryName = Path.GetFileName(invalidDir);
+                    var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
 
-                // Get all directories in the invalid folder again
-                //invalidDirectories = Directory.GetDirectories(invalidPath);
-                //var toInvalidDirectories = Directory.GetDirectories(invalidPath);
-
-                //// Check and delete matching directories from invalid
-                //foreach (var invalidDir in invalidDirectories)
-                //{
-                //    var directoryName = Path.GetFileName(invalidDir);
-                //    var matchingDirInInvalid = Path.Combine(invalidPath, directoryName);
-
-                //    if (Directory.Exists(matchingDirInInvalid))
-                //    {
-                //        Directory.Delete(matchingDirInInvalid, true);
-                //        Debug.WriteLine($"Deleted {matchingDirInInvalid} from invalid");
-                //    }
-                //}
+                    if (Directory.Exists(matchingDirInToAnnotate))
+                    {
+                        Directory.Delete(matchingDirInToAnnotate, true);
+                    }
+                }
             }
-            catch (Exception ex) {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+            catch (Exception ex)
+            {
+                // Přidání chybového hlášení pro debugging
+                Console.WriteLine($"Error processing folders: {ex.Message}");
             }
         }
 
@@ -117,10 +119,12 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             List<string> anotatedProjects = GetSubfolders("to_anotate");
             List<string> validatedProjects = GetSubfolders("validated");
             List<string> toValidateProjects = GetSubfolders("to_validate");
+            List<string> invalidProjects = GetSubfolders("invalid");
 
             dicomFiles = dicomFiles.Except(anotatedProjects)
                              .Except(validatedProjects)
                              .Except(toValidateProjects)
+                             .Except(invalidProjects)
                              .ToList();
 
             return dicomFiles;
@@ -131,7 +135,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             List<string> toAnotateFiles = GetSubfolders("to_anotate");
             List<string> validatedProjects = GetSubfolders("validated");
             List<string> toValidateProjects = GetSubfolders("to_validate");
-            return toAnotateFiles.Except(validatedProjects).Except(toValidateProjects).ToList();
+            List<string> invalidProjects = GetSubfolders("invalid");
+            return toAnotateFiles.Except(validatedProjects).Except(toValidateProjects).Except(invalidProjects).ToList();
         }
 
 
@@ -139,7 +144,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         public List<string> ChooseValidation() {
             List<string> validatedProjects = GetSubfolders("validated");
             List<string> toValidateProjects = GetSubfolders("to_validate");
-            return toValidateProjects.Except(validatedProjects).ToList();
+            List<string> invalidProjects = GetSubfolders("invalid");
+            return toValidateProjects.Except(validatedProjects).Except(invalidProjects).ToList();
         }
         //vrati list nevalidnich snimku
         public List<string> InvalidDicoms()

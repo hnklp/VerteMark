@@ -12,7 +12,7 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,43,0,0" Width="320" Height="101">
             <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="148" Height="20" FontSize="10"/>
             <Button Content="Uložit" Width="148" Height="20" Margin="2" Click="SaveAndContinue_Click"/>
-            <Button Content="Zahodit změny" Width="148" Height="19" Margin="1" Click="Discard_Click"/>
+            <!--<Button Content="Zahodit změny" Width="148" Height="19" Margin="1" Click="Discard_Click"/>-->
             <Button Content="Zpět" Width="148" Height="20" Margin="2" Click="Back_Click"/>
         </StackPanel>
     </Grid>
