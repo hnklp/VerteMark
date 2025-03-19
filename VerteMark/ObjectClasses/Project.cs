@@ -585,5 +585,10 @@ namespace VerteMark.ObjectClasses
         {
             return folderUtilityManager.InvalidDicoms();
         }
+
+        public List<string> ValidatedDicoms()
+        {
+            return folderUtilityManager.ValidatedDicoms();
+        }
     }
 }

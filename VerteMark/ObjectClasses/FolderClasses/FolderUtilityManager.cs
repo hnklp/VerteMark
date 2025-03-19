@@ -160,6 +160,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return folderManager.InvalidDicoms();
         }
 
+        public List<string> ValidatedDicoms()
+        {
+            return folderManager.ValidatedDicoms();
+        }
+
         /*
         * =============================
         * Kontrola pokracovani v praci

@@ -149,6 +149,13 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return invalidDicoms.ToList();
         }
 
+        public List<string> ValidatedDicoms()
+        {
+            List<string> validatedDicoms = GetSubfolders("validated");
+
+            return validatedDicoms.ToList();
+        }
+
 
         private List<string> GetSubfolders(string parentFolderName) {
             string parentFolderPath = Path.Combine(tempFolderPath, parentFolderName);

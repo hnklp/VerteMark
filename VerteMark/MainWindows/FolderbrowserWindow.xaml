@@ -30,6 +30,7 @@
                 <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
                 <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
                 <RadioButton x:Name="InvalidRadioButton" Content="Nevalidní snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
+                <RadioButton x:Name="ValidatedRadioButton" Content="Validované snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
             </StackPanel>
 
             <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="90" Cursor="Hand" Margin="539,323,0,0"/>
