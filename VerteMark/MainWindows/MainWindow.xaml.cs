@@ -1172,6 +1172,11 @@ namespace VerteMark
             if (stateManager.CurrentState != AppState.Drawing)
                 return;
 
+            int pointsCount = project.GetPointsCount();
+            if (pointsCount >= 8) return;
+
+            string[] labels = { "A", "B", "C", "D", "E", "F", "G", "H" };
+
             // 2) Zjistit aktivní anotaci podle ID
             var activeAnotaceIdString = project.ActiveAnotaceId();
             if (int.TryParse(activeAnotaceIdString, out int activeIndex))
@@ -1205,20 +1210,19 @@ namespace VerteMark
 
             // c) Samotné vytvoření bodu
             var point = new PointMarker(
-                PointCanvas,
-                position,
-                new SolidColorBrush(color)
+              PointCanvas,
+              position,
+              new SolidColorBrush(color),
+              labels[pointsCount]
             );
             project.AddPointActiveAnot(point);
 
-            // d) Ovládání tlačítka pro ořez atd.
-            ToggleCropButton(project.GetPointsCount() == 0);
+            ToggleCropButton(pointsCount == 0);
+
 
             // e) Vykreslení, měřítko, spojnice mezi body...
             project.UpdatePointsScale(ZoomSlider.Value / 100);
-
-            int pointsCount = project.GetPointsCount();
-            project.DrawLineConnection(PointCanvas, pointsCount);
+            project.DrawLineConnection(PointCanvas, pointsCount + 1);
         }
 
         public void LoadPointMarkers()

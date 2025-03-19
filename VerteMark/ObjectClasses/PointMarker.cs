@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Reflection.Emit;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 
 public class PointMarker
@@ -14,24 +16,27 @@ public class PointMarker
     private const double HitBoxSize = 20;
     public event Action? PositionChanged;
     private Brush _colorBrush;
+    private String _label;
 
     private bool _isDragging = false;
     private Point _dragOffset;
 
-    public PointMarker(Canvas canvas, Point position, Brush colorBrush)
+    public PointMarker(Canvas canvas, Point position, Brush colorBrush, string label)
     {
         Position = position;
         _colorBrush = colorBrush;
+        _label = label;
 
         _scaleTransform = new ScaleTransform(1, 1);
 
         DrawPointMarker(canvas);
     }
 
-    public PointMarker(Point position, Brush colorBrush)
+    public PointMarker(Point position, Brush colorBrush, string label)
     {
         Position = position;
         _colorBrush = colorBrush;
+        _label = label;
 
         _scaleTransform = new ScaleTransform(1, 1);
     }
@@ -88,9 +93,26 @@ public class PointMarker
             StrokeThickness = 2
         };
 
+        var label = new TextBlock
+        {
+            Text = _label,
+            Foreground = Brushes.White, // Bílé písmo
+            FontWeight = FontWeights.Bold,
+            FontSize = 14,
+            Effect = new DropShadowEffect
+            {
+                Color = Colors.Black, // Černý obrys
+                ShadowDepth = 0
+            }
+        };
+
+        Canvas.SetLeft(label, 10);
+        Canvas.SetTop(label, - 10);
+
         group.Children.Add(line1);
         group.Children.Add(line2);
         group.Children.Add(hitbox);
+        group.Children.Add(label);
         group.RenderTransform = _scaleTransform;
 
         group.MouseLeftButtonDown += OnMouseLeftButtonDown;
