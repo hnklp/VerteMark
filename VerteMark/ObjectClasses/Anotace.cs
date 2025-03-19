@@ -143,8 +143,8 @@ namespace VerteMark.ObjectClasses
         public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
             Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
 
-            // Obratle <1, 7>
-            if (Points != null) {
+            // Anotace <0, 6>
+            if (Points != null && Points.Count > 0) {
                 List<Tuple<int, int>> list = new List<Tuple<int, int>>();
 
                 foreach (PointMarker point in this.Points)
@@ -158,7 +158,7 @@ namespace VerteMark.ObjectClasses
                 result.Add(Id.ToString(), list);
             }
 
-            // Obratle >= 8
+            // Anotace >= 7
             else if (canvas != null)
             {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
