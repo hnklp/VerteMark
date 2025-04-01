@@ -185,7 +185,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 Directory.CreateDirectory(dicomsFolderPath); // Zajistí vytvoření složky, pokud ještě neexistuje
             }
             List<string?> dicomFiles = Directory.GetFiles(dicomsFolderPath, "*.*")
-                                               .Select(Path.GetFileNameWithoutExtension)
+                                               .Select(Path.GetFileName)
                                                .ToList();
 
             if (dicomFiles.Count == 0) { // Pokud je seznam prázdný, vrátí prázdný sezna{

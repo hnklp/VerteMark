@@ -149,7 +149,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             DicomImage image = new DicomImage(dicomFile.Dataset);
             Bitmap bmp = image.RenderImage().As<Bitmap>();
 
-            fileName = Path.GetFileNameWithoutExtension(dicomPath);
+            fileName = Path.GetFileName(dicomPath);
             pngPath = Path.Combine(outputPath, fileName + ".png");
             jsonPath = Path.Combine(outputPath, fileName + ".json");
             bmp.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
@@ -161,7 +161,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             if (!File.Exists(dicomPath)) {
                 return;
             }
-            string csvFileName = key + "-" + Path.GetFileNameWithoutExtension(dicomPath) + ".meta";
+            string csvFileName = key + "-" + Path.GetFileName(dicomPath) + ".meta";
             metaPath = Path.Combine(outputPath, csvFileName);
 
             DicomFile dicomFile = DicomFile.Open(dicomPath);

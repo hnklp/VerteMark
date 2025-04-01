@@ -17,15 +17,15 @@
 
         <!-- Levý sloupec pro přehled -->
         <Grid Grid.Column="0" Margin="10,10,32,10">
-            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="41,54,0,0"/>
-            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=15}" FontSize="16" Margin="41,100,30,75" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
+            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="30,35,0,0"/>
+            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=15}" FontSize="16" Margin="30,85,20,33" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
         </Grid>
 
         <!-- Pravý sloupec pro RadioButtony a tlačítka -->
 
 
         <Grid Grid.ColumnSpan="2" Margin="10,5,0,5">
-            <StackPanel Margin="539,104,19,0" VerticalAlignment="Top">
+            <StackPanel Margin="539,89,19,0" VerticalAlignment="Top">
                 <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Width="448"/>
                 <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
                 <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
@@ -33,8 +33,8 @@
                 <RadioButton x:Name="ValidatedRadioButton" Content="Validované snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10"/>
             </StackPanel>
 
-            <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="90" Cursor="Hand" Margin="539,323,0,0"/>
-            <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand" HorizontalAlignment="Left" Margin="663,323,0,0" VerticalAlignment="Top" Height="27" Width="90"/>
+            <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" Width="90" Cursor="Hand" Margin="539,0,0,39" Height="27" VerticalAlignment="Bottom"/>
+            <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand" HorizontalAlignment="Left" Margin="663,0,0,39" VerticalAlignment="Bottom" Height="27" Width="90"/>
         </Grid>
 
 
