@@ -101,5 +101,20 @@ namespace VerteMark
             guideWin.Show();
             // this.Close();
         }
+
+        private void AboutItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow AboutWindow = new AboutWindow();
+
+            // Získání středu původního okna
+            double originalCenterX = Left + Width / 2;
+            double originalCenterY = Top + Height / 2;
+
+            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+            AboutWindow.Left = originalCenterX - AboutWindow.Width / 2;
+            AboutWindow.Top = originalCenterY - AboutWindow.Height / 2;
+
+            AboutWindow.Show();
+        }
     }
 }

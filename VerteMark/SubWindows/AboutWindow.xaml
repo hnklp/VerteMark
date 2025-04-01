@@ -5,38 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="O Aplikaci" Height="350" Width="350" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="O Aplikaci" Height="350" Width="360" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png" Background="#FFF0F0F0">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="56*"/>
-            <ColumnDefinition Width="19*"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock HorizontalAlignment="Left" Margin="63,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="VerteMark verze "/><Run Language="en-gb" Text="1.0"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="65,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"><Run Text="VerteMark "/><Run Language="en-gb" Text="2.0 RC2"/></TextBlock>
 
-        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="214,241,16,16" Height="27" Width="90" Grid.ColumnSpan="2" RenderTransformOrigin="0.411,0.075"/>
+        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="260,28,20,284" Height="22" Width="70" RenderTransformOrigin="0.411,0.075" Grid.ColumnSpan="2"/>
 
-        <Image Margin="16,10,201,267" Source="/Pictures/icon.png" Stretch="Fill" RenderTransformOrigin="0.173,0.375">
-            <Image.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Image.RenderTransform>
-        </Image>
+        <Image Margin="12,14,292,256" Source="/Pictures/icon.png" Stretch="Fill" RenderTransformOrigin="0.284,0.487"/>
 
-        <GroupBox Header="Autoři" FontSize="10" Margin="10,71,92,83" Background="White">
+        <GroupBox Header="Autoři" FontSize="10" Margin="10,71,231,83" Background="White">
             <StackPanel>
-                <Label Content="Alex Schönfelder" FontSize="10" Height="24"/>
+                <Label Content="Sabina Ajksnerová" FontSize="10"/>
                 <Label Content="Hynek Půta" FontSize="10"/>
                 <Label Content="Jakub Kepič" FontSize="10"/>
+                <Label Content="Alex Schönfelder" FontSize="10" Height="24"/>
                 <Label Content="Josef Bér" FontSize="10"/>
-                <Label Content="Sabina Ajksnerová" FontSize="10"/>
             </StackPanel>
         </GroupBox>
-        <Label Content="UJEP Ústí nad Labem 2024" HorizontalAlignment="Left" Margin="16,256,0,0" VerticalAlignment="Top" Width="158" FontSize="10"/>
-        <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="59,32,0,0" VerticalAlignment="Top" FontSize="10"/>
-
+        <Label Content="Oddělení pro datovou analýzu a simulace UJEP&#10;2024 - 2025" HorizontalAlignment="Left" Margin="74,261,0,0" VerticalAlignment="Top" Width="217" FontSize="10" Height="44"/>
+        <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="61,36,0,0" VerticalAlignment="Top" FontSize="10"/>
+        <Image Margin="15,265,273,12" Source="/Resources/Icons/ODAS.ico" Stretch="Fill"/>
     </Grid>
 </Window>

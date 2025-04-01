@@ -36,6 +36,16 @@
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
         <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="40,331,0,0" VerticalAlignment="Top" Height="27" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
         <Button x:Name="GuideButton" Content="Návod" Margin="143,331,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="80" Click="OpenGuide"/>
+        <Button x:Name="About" Content="About" Margin="287,303,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="80" Click="AboutItem_Click" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform AngleX="4.298"/>
+                    <RotateTransform Angle="21.176"/>
+                    <TranslateTransform X="12.167"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
     </Grid>
 
 </Window>

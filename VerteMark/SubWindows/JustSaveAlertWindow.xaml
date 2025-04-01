@@ -8,12 +8,12 @@
         Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png" Closing="Window_Closing">
     <Grid>
         <TextBlock
-                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,22,0,0"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,43,0,0" Width="320" Height="101">
-            <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="148" Height="20" FontSize="10"/>
-            <Button Content="Uložit" Width="148" Height="20" Margin="2" Click="SaveAndContinue_Click"/>
-            <!--<Button Content="Zahodit změny" Width="148" Height="19" Margin="1" Click="Discard_Click"/>-->
-            <Button Content="Zpět" Width="148" Height="20" Margin="2" Click="Back_Click"/>
+                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,23,0,0" TextAlignment="Center"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,57,0,0" Width="320" Height="93">
+            <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="148" Height="22" FontSize="10"/>
+            <Button Content="Předat k validaci" Width="148" Height="22" Margin="10" Click="SaveAndContinue_Click" FontSize="10"/>
+            <!--<Button Content="Zahodit změny" Width="148" Height="19" Click="Discard_Click"/>-->
+            <Button Content="Zpět" Width="148" Height="22" Click="Back_Click" FontSize="10"/>
         </StackPanel>
     </Grid>
 </Window>

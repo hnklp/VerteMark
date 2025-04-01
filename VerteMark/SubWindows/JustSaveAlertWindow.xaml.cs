@@ -34,6 +34,7 @@ namespace VerteMark.SubWindows
             if (!validator) { project.SaveProject(1); }
             else { project.SaveProject(2); }
             project.saved = true;
+            Browse();
             mainWindow.IsEnabled = true;
             this.Close();
 
