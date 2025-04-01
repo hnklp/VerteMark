@@ -93,7 +93,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         public void CreateNewProject(string path) {
-            string folderName = Path.GetFileNameWithoutExtension(path);
+            string folderName = Path.GetFileName(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
             fileManager.dicomPath = path;
             fileManager.CreateOutputFile(folderName);
