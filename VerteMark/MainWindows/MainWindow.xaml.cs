@@ -291,10 +291,16 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            SaveAlertWindow saveAlertWindow = new SaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
 
             if (project.saved)
             {
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
+
+                saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
+                saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
+
                 saveAlertWindow.Browse();
             }
             else
