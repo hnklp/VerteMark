@@ -223,7 +223,6 @@ namespace VerteMark.ObjectClasses
             foreach (int id in allIds) {
                 if (!existingIds.Contains(id)) {
                     CreateNewAnnotation(id);
-                    Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
         }
@@ -311,7 +310,6 @@ namespace VerteMark.ObjectClasses
                 return foundAnotace;
             }
             else {
-                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
                 return null;
             }
         }
