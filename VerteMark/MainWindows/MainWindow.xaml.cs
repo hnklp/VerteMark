@@ -301,7 +301,7 @@ namespace VerteMark
                 saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
                 saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
 
-                saveAlertWindow.Browse();
+                saveAlertWindow.Browse(false);
             }
             else
             {
@@ -463,24 +463,20 @@ namespace VerteMark
             saveAlertWindow.Show();
         }
 
-        private void Discard_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show("Opravdu chcete zahodit veškeré změny provedené na aktuálním snímku?",
-                    "Zahodit změny",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question) == MessageBoxResult.Yes)
-            {
-                this.Close();
-                App.RestartApplication();
-            }
-        }
 
         private void Invalid_Click(object sender, RoutedEventArgs e)
         {
             project.SaveProject(3);
             project.saved = true;
-            JustSaveAlertWindow justSaveAlertWindow = new JustSaveAlertWindow(this, true);
-            justSaveAlertWindow.Browse();
+            JustSaveAlertWindow justSaveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+
+            double originalCenterX = Left + Width / 2;
+            double originalCenterY = Top + Height / 2;
+
+            justSaveAlertWindow.Left = originalCenterX - justSaveAlertWindow.Width / 2;
+            justSaveAlertWindow.Top = originalCenterY - justSaveAlertWindow.Height / 2;
+
+            justSaveAlertWindow.Browse(true);
             this.Close();
 
         }
@@ -580,12 +576,27 @@ namespace VerteMark
         //Smaže obsah vybrané anotace
         private void Delete_button(object sender, RoutedEventArgs e)
         {
-            project.RemovePointsAndConnections(PointCanvas);
+            project.RemoveActivePointsAndConnections(PointCanvas);
             project.ClearActiveAnotace();
             UpdateElementsWithAnotace();
 
             project.SetActiveAnotaceIsAnotated(false);
             ToggleCropButton(!project.GetIsAnotated());
+        }
+
+        private void Discard_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Opravdu chcete zahodit veškeré změny provedené na aktuálním snímku?",
+                    "Zahodit změny",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                UpdateElementsWithAnotace();
+                project.ClearAllAnotace(PointCanvas);
+                UpdateElementsWithAnotace();
+                ToggleCropButton(true);
+                PreviewAllAnotaces();
+            }
         }
 
         /* Ukázka všech anotací */

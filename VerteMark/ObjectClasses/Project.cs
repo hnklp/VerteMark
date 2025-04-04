@@ -361,6 +361,23 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        public void ClearAnotace(Anotace annotation)
+        {
+            annotation.ClearCanvas();
+            annotation.Points.Clear();
+            annotation.Lines.Clear();   
+        }
+
+        public void ClearAllAnotace(Canvas PointCanvas)
+        {
+            foreach (Anotace annotation in anotaces)
+            {
+                this.RemovePointsAndConnections(PointCanvas, annotation);
+                this.ClearAnotace(annotation);
+                this.SetActiveAnotaceIsAnotated(false);
+            }
+        }
+
 
         public void ValidateAll() {
             bool wasValidated = false;
@@ -426,7 +443,7 @@ namespace VerteMark.ObjectClasses
                 }
         }
 
-        public void RemovePointsAndConnections(Canvas canvas)
+        public void RemoveActivePointsAndConnections(Canvas canvas)
         {
             if (activeAnotace != null)
             {
@@ -438,6 +455,19 @@ namespace VerteMark.ObjectClasses
                 {
                     point.Remove(canvas);
                 }
+            }
+        }
+
+        public void RemovePointsAndConnections(Canvas canvas, Anotace anotace)
+        {
+            
+            foreach (LineConnection line in anotace.Lines)
+            {
+                line.Remove(canvas);
+            }
+            foreach (PointMarker point in anotace.Points)
+            {
+                point.Remove(canvas);
             }
         }
 
