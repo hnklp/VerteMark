@@ -1,8 +1,8 @@
 using Newtonsoft.Json.Linq;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace VerteMark.ObjectClasses
 {
@@ -13,17 +13,27 @@ namespace VerteMark.ObjectClasses
     /// </summary>
     internal class Anotace {
 
-        public int Id { get; private set; }
+        public enum AnotaceType
+            {
+                Vertebra,
+                Implant,
+                Fusion
+            }
+        
+        public string Id { get; private set; }
         public string Name { get; private set; }
         public System.Drawing.Color Color { get; private set; }
         public bool IsValidated { get; private set; }
         public bool IsAnotated { get; private set; }
-        WriteableBitmap? canvas;
+        public AnotaceType Type { get; private set; }
+        public WriteableBitmap? Canvas;
+        public Image PreviewImage;
 
         public List<PointMarker> Points;
         public List<LineConnection> Lines;
 
-        public Anotace(int id, string name, System.Drawing.Color color) {
+        public Anotace(string id, string name, System.Drawing.Color color, AnotaceType type = AnotaceType.Vertebra)
+        {
             this.Id = id;
             this.Name = name;
             this.Color = color;
@@ -31,21 +41,22 @@ namespace VerteMark.ObjectClasses
 
             Points = new List<PointMarker>();
             Lines = new List<LineConnection>();
+            Type = type;
         }
 
 
         public void CreateEmptyCanvas(int width, int height) {
-            canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
+            Canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
 
 
         public void UpdateCanvas(WriteableBitmap bitmapSource) {
             if (bitmapSource is WriteableBitmap writableBitmap) {
-                if (canvas == null) {
-                    canvas = new WriteableBitmap(writableBitmap.PixelWidth, writableBitmap.PixelHeight, writableBitmap.DpiX, writableBitmap.DpiY, PixelFormats.Bgra32, null);
+                if (Canvas == null) {
+                    Canvas = new WriteableBitmap(writableBitmap.PixelWidth, writableBitmap.PixelHeight, writableBitmap.DpiX, writableBitmap.DpiY, PixelFormats.Bgra32, null);
                 }
                 try {
-                    canvas = new WriteableBitmap(bitmapSource);
+                    Canvas = new WriteableBitmap(bitmapSource);
                 }
                 catch (Exception) {
                     // Handle exception if needed
@@ -53,7 +64,7 @@ namespace VerteMark.ObjectClasses
             }
             else {
                 try {
-                    canvas = new WriteableBitmap(bitmapSource);
+                    Canvas = new WriteableBitmap(bitmapSource);
                 }
                 catch (Exception) {
                     // Handle exception if needed
@@ -107,14 +118,21 @@ namespace VerteMark.ObjectClasses
         // *****************************************************************************************
 
         public WriteableBitmap GetCanvas() {
-            return canvas;
+            return Canvas;
 
         }
 
+        public void SetPreviewImage()
+        {
+            if (PreviewImage != null && Canvas != null) {
+                PreviewImage.Source = Canvas;
+                PreviewImage.Opacity = 0.5;
+            }
+        }
 
         public void ClearCanvas() {
-            if (canvas != null) {
-                canvas = new WriteableBitmap((int)canvas.Width, (int)canvas.Height, 96, 96, PixelFormats.Bgra32, null);
+            if (Canvas != null) {
+                Canvas = new WriteableBitmap((int)Canvas.Width, (int)Canvas.Height, 96, 96, PixelFormats.Bgra32, null);
             }
         }
 
@@ -122,17 +140,16 @@ namespace VerteMark.ObjectClasses
             IsValidated = validate;
         }
 
-
         List<Tuple<int, int>> BitmapAsList() {
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-            if (canvas != null) {
-                int stride = canvas.PixelWidth * 4;
-                int size = canvas.PixelHeight * stride;
+            if (Canvas != null) {
+                int stride = Canvas.PixelWidth * 4;
+                int size = Canvas.PixelHeight * stride;
                 byte[] pixels = new byte[size];
-                canvas.CopyPixels(pixels, stride, 0);
+                Canvas.CopyPixels(pixels, stride, 0);
 
-                for (int y = 0; y < canvas.PixelHeight; y++) {
-                    for (int x = 0; x < canvas.PixelWidth; x++) {
+                for (int y = 0; y < Canvas.PixelHeight; y++) {
+                    for (int x = 0; x < Canvas.PixelWidth; x++) {
                         int index = y * stride + 4 * x;
                         byte alpha = pixels[index + 3]; // Alpha kanál (průhlednost)
                         if (alpha > 0) // Kontrola průhlednosti
@@ -165,7 +182,7 @@ namespace VerteMark.ObjectClasses
             }
 
             // Anotace >= 7
-            else if (canvas != null)
+            else if (Canvas != null)
             {
                 List<Tuple<int, int>> bitmap = BitmapAsList();
                 result.Add(Id.ToString(), bitmap);
@@ -186,10 +203,17 @@ namespace VerteMark.ObjectClasses
             this.IsAnotated = isAnotated;
         }
 
-        public void SetAnnotationId(int Id)
+        public void SetId(string id)
         {
-            this.Id = Id;
-            this.Name = "Implantát " + (Id - 6);
+           Id = id;
+        }
+
+        public void DecreaseAnotby1()
+        {
+            string prefix = Id.Substring(0, 1);
+            int numId = int.TryParse(Id.AsSpan(1), out int result) ? result : 0;
+            this.Id = prefix + (numId - 1);
+            this.Name = (Type == AnotaceType.Fusion ? "Fúze" : "Implantát") + numId;
         }
     }
 }
