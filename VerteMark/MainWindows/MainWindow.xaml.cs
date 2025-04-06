@@ -695,11 +695,12 @@ namespace VerteMark
             ButtonGrid.Children.Add(plusButton);
         }
 
-        private void AddNewRow(Anotace anotace, bool isValidator, int i)
+        private void AddNewRow(Anotace anotace, bool isValidator, int rowIndex)
         {
             Brush color = new SolidColorBrush(Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B));
+            int numId = project.ExtractNumericId(anotace.Id);
 
-            if (anotace.Type != AnotaceType.Vertebra)
+            if (numId !=0 && anotace.Type != AnotaceType.Vertebra)
             {
                 Button minusButton = new Button
                 {
@@ -707,7 +708,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Margin = new Thickness(20, 5 + 30 * rowIndex, 0, 0),
                     Tag = anotace.Id
                 };
                 Image binIcon = new Image
@@ -735,7 +736,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
+                    Margin = new Thickness(20, 5 + 30 * rowIndex, 0, 0),
                     Tag = anotace.Id
                 };
                 ButtonGrid.Children.Add(rect);
@@ -748,12 +749,12 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 125,
                 Height = 20,
-                Margin = new Thickness(60, 5 + 30 * i, 0, 0),
+                Margin = new Thickness(60, 5 + 30 * rowIndex, 0, 0),
                 Tag = anotace.Id
             };
             toggleButton.Click += Button_Click;
 
-            if (i == 0)
+            if (rowIndex == 0)
                 SwitchActiveAnotButton(toggleButton);
 
             CheckBox checkBox = new CheckBox
@@ -762,7 +763,7 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 20,
                 Height = 20,
-                Margin = new Thickness(205, 6 + 30 * i, 0, 0),
+                Margin = new Thickness(205, 6 + 30 * rowIndex, 0, 0),
                 Tag = anotace.Id,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated
@@ -805,8 +806,9 @@ namespace VerteMark
                     .Select(a => project.ExtractNumericId(a.Id));
                 int nextNumber = existing.Any() ? existing.Max() : 1;
 
-                AddNewRow(anot, isValidator, nextNumber);
-                MovePlusButton(plusButton);
+                int rowIndex = (int)(plusButton.Margin.Top / 30);
+                AddNewRow(anot, isValidator, rowIndex);
+                MoveElementsBelow(plusButton.Margin.Top);
             }
         }
 
@@ -837,10 +839,27 @@ namespace VerteMark
                     .FirstOrDefault(b => b.Name.StartsWith("PlusButton") && b.Tag is AnotaceType t && t == type);
                 if (plusButton != null)
                 {
-                    MovePlusButton(plusButton, false);
+                    MoveElementsBelow(plusButton.Margin.Top);
                 }
             }
         }
+
+        private void MoveElementsBelow(double topThreshold, bool down = true)
+        {
+            foreach (var element in ButtonGrid.Children.OfType<FrameworkElement>())
+            {
+                if (element.Margin.Top >= topThreshold)
+                {
+                    element.Margin = new Thickness(
+                        element.Margin.Left,
+                        element.Margin.Top + (down ? 30 : -30),
+                        element.Margin.Right,
+                        element.Margin.Bottom
+                    );
+                }
+            }
+        }
+
         private AnotaceType GetAnotaceTypeFromPrefix(string prefix)
         {
             return prefix switch
@@ -851,6 +870,8 @@ namespace VerteMark
                 _ => AnotaceType.Vertebra
             };
         }
+
+        
 
         private void DeleteRow(string id)
         {
