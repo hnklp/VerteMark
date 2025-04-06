@@ -694,6 +694,8 @@ namespace VerteMark
 
             ButtonGrid.Children.Add(plusButton);
         }
+        
+        // Toto funguje a nikdo na to prosim uz nesahejte nevim proc to funguje dik -hp
 
         private void AddNewRow(Anotace anotace, bool isValidator, int rowIndex)
         {
@@ -708,7 +710,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * rowIndex, 0, 0),
+                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
                     Tag = anotace.Id
                 };
                 Image binIcon = new Image
@@ -736,8 +738,8 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * rowIndex, 0, 0),
-                    Tag = anotace.Id
+                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
+                    Tag = anotace.Id,
                 };
                 ButtonGrid.Children.Add(rect);
             }
@@ -749,8 +751,8 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 125,
                 Height = 20,
-                Margin = new Thickness(60, 5 + 30 * rowIndex, 0, 0),
-                Tag = anotace.Id
+                Margin = new Thickness(60, 4 + 30 * rowIndex, 0, 0),
+                Tag = anotace.Id,
             };
             toggleButton.Click += Button_Click;
 
@@ -763,7 +765,7 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 20,
                 Height = 20,
-                Margin = new Thickness(205, 6 + 30 * rowIndex, 0, 0),
+                Margin = new Thickness(205, 4 + 30 * rowIndex, 0, 0),
                 Tag = anotace.Id,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated
@@ -812,17 +814,6 @@ namespace VerteMark
             }
         }
 
-        private void MovePlusButton(Button plusButton, bool down = true)
-        {
-            var margin = plusButton.Margin;
-            plusButton.Margin = new Thickness(
-                margin.Left,
-                margin.Top + (down ? 30 : -30),
-                margin.Right,
-                margin.Bottom
-            );
-        }
-
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is string id)
@@ -834,13 +825,7 @@ namespace VerteMark
                 // najdi odpovídající plusButton podle typu anotace (např. prefix "V", "I", "F")
                 string prefix = id.Substring(0, 1);
                 AnotaceType type = GetAnotaceTypeFromPrefix(prefix);
-                var plusButton = ButtonGrid.Children
-                    .OfType<Button>()
-                    .FirstOrDefault(b => b.Name.StartsWith("PlusButton") && b.Tag is AnotaceType t && t == type);
-                if (plusButton != null)
-                {
-                    MoveElementsBelow(plusButton.Margin.Top);
-                }
+                MoveElementsBelow(button.Margin.Top - 1, false);
             }
         }
 
@@ -901,7 +886,7 @@ namespace VerteMark
                     fe.Tag = newId;
 
                     // Upravíme margin pro zachování správného rozložení
-                    fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
+                    //fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
 
                     // Aktualizujeme obsah ToggleButton
                     if (element is ToggleButton toggleButton)
@@ -916,6 +901,7 @@ namespace VerteMark
                                 break;
                             default:
                                 toggleButton.Content = tagIndex - 1;
+                                MessageBox.Show("Toto nemělo nastat. Restartujte aplikaci.");
                                 break;
                         }
                     }
