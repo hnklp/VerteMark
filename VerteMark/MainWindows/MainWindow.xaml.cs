@@ -794,7 +794,7 @@ namespace VerteMark
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button plusButton && (AnotaceType)plusButton.Tag is AnotaceType type)
+            if (sender is Button plusButton && plusButton.Tag is AnotaceType type)
             {
                 bool isValidator = project.GetLoggedInUser().Validator;
                 Anotace anot = project.CreateNewAnnotation(type);
@@ -806,20 +806,19 @@ namespace VerteMark
                 int nextNumber = existing.Any() ? existing.Max() : 1;
 
                 AddNewRow(anot, isValidator, nextNumber);
-                MovePlusButton();
+                MovePlusButton(plusButton);
             }
         }
 
-        private void MovePlusButton(bool down = true)
-        { 
-            if (down)
-            {
-                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top + 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
-            }
-            else
-            {
-                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top - 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
-            }
+        private void MovePlusButton(Button plusButton, bool down = true)
+        {
+            var margin = plusButton.Margin;
+            plusButton.Margin = new Thickness(
+                margin.Left,
+                margin.Top + (down ? 30 : -30),
+                margin.Right,
+                margin.Bottom
+            );
         }
 
         private void MinusButton_Click(object sender, RoutedEventArgs e)
@@ -829,8 +828,28 @@ namespace VerteMark
                 project.DeleteAnnotation(id);
                 DeletePreviewImage(id);
                 DeleteRow(id);
-                MovePlusButton(false);
+
+                // najdi odpovídající plusButton podle typu anotace (např. prefix "V", "I", "F")
+                string prefix = id.Substring(0, 1);
+                AnotaceType type = GetAnotaceTypeFromPrefix(prefix);
+                var plusButton = ButtonGrid.Children
+                    .OfType<Button>()
+                    .FirstOrDefault(b => b.Name.StartsWith("PlusButton") && b.Tag is AnotaceType t && t == type);
+                if (plusButton != null)
+                {
+                    MovePlusButton(plusButton, false);
+                }
             }
+        }
+        private AnotaceType GetAnotaceTypeFromPrefix(string prefix)
+        {
+            return prefix switch
+            {
+                "V" => AnotaceType.Vertebra,
+                "I" => AnotaceType.Implant,
+                "F" => AnotaceType.Fusion,
+                _ => AnotaceType.Vertebra
+            };
         }
 
         private void DeleteRow(string id)
