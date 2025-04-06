@@ -91,7 +91,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
             catch (Exception ex) {
                 // Handle any exceptions, e.g., file not found or invalid image format
-                Console.WriteLine("Error loading image: " + ex.Message);
                 return null;
             }
         }
