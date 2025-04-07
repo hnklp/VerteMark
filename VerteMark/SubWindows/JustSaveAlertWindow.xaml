@@ -5,15 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark.SubWindows"
         mc:Ignorable="d"
-        Title="Varování" ShowInTaskbar="False" Height="170" Width="350" Icon="../Pictures/icon.png" Closing="Window_Closing">
-    <Grid>
-        <TextBlock
-                   TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="304" Margin="0,23,0,0" TextAlignment="Center"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,57,0,0" Width="320" Height="93">
-            <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="148" Height="22" FontSize="10"/>
-            <Button Content="Předat k validaci" Width="148" Height="22" Margin="10" Click="SaveAndContinue_Click" FontSize="10"/>
-            <!--<Button Content="Zahodit změny" Width="148" Height="19" Click="Discard_Click"/>-->
-            <Button Content="Zpět" Width="148" Height="22" Click="Back_Click" FontSize="10"/>
-        </StackPanel>
+        Title="Varování" ResizeMode="NoResize" ShowInTaskbar="False" Height="196" Width="571" Icon="../Pictures/icon.png" Closing="Window_Closing">
+    <Grid HorizontalAlignment="Center" Width="571" Height="270" VerticalAlignment="Top">
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="446" Margin="0,23,0,0" TextAlignment="Center" FontSize="25"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
+        <Button Content="Uložit rozpracované" Click="PreSaveAndContinue_Click" Width="148" Height="22" FontSize="13" Margin="43,81,380,167"/>
+        <Button Content="Předat k validaci" Width="148" Height="22" Margin="212,81,211,167" Click="SaveAndContinue_Click" FontSize="13"/>
+        <Button Content="Zahodit změny" Width="148" Height="22" Click="Discard_Click" Margin="382,81,41,167" FontSize="13"/>
+        <Button Content="Zpět" Width="148" Height="22" Click="Back_Click" Margin="212,119,211,129" FontSize="13"/>
     </Grid>
 </Window>

@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0" Loaded="Select_Click">
 
     <Grid>
-        <Button x:Name="SelectZIP" Content="Vybrat soubor" HorizontalAlignment="Left" Margin="437,210,0,0" VerticalAlignment="Top" Height="27" Width="324" Click="Select_Click" />
+        <Button x:Name="SelectZIP" Content="Změnit výběr" HorizontalAlignment="Left" Margin="437,210,0,0" VerticalAlignment="Top" Height="27" Width="324" Click="Select_Click" />
         <Button x:Name="ContinueButton" Content="Pokračovat" HorizontalAlignment="Left" Margin="671,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True"/>
         <Button x:Name="BackButton" Content="Zpět" HorizontalAlignment="Left" Margin="547,331,0,0" VerticalAlignment="Top" Height="27" Width="90" Click="BackButton_Click" IsEnabled="True"/>
 

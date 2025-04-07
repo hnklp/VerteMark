@@ -34,7 +34,7 @@ namespace VerteMark.SubWindows
             if (!validator) { project.SaveProject(1); }
             else { project.SaveProject(2); }
             project.saved = true;
-            Browse();
+            Browse(false);
             mainWindow.IsEnabled = true;
             this.Close();
 
@@ -55,14 +55,14 @@ namespace VerteMark.SubWindows
         }
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
-            Browse();
+            Browse(true);
             mainWindow.IsEnabled = true;
             this.Close();
         }
 
-        public void Browse()
+        public void Browse(bool select)
         {
-            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(false);
+            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(select);
 
             folderbrowserWindow.oldMainWindow = mainWindow;
 

@@ -223,7 +223,6 @@ namespace VerteMark.ObjectClasses
             foreach (int id in allIds) {
                 if (!existingIds.Contains(id)) {
                     CreateNewAnnotation(id);
-                    Debug.WriteLine("VYTVARIM NOVE ANOTACE " + id);
                 }
             }
         }
@@ -311,7 +310,6 @@ namespace VerteMark.ObjectClasses
                 return foundAnotace;
             }
             else {
-                //throw new InvalidOperationException($"Anotace with ID {idAnotace} not found.");
                 return null;
             }
         }
@@ -360,6 +358,23 @@ namespace VerteMark.ObjectClasses
 
                 activeAnotace.Points.Clear();
                 activeAnotace.Lines.Clear();
+            }
+        }
+
+        public void ClearAnotace(Anotace annotation)
+        {
+            annotation.ClearCanvas();
+            annotation.Points.Clear();
+            annotation.Lines.Clear();   
+        }
+
+        public void ClearAllAnotace(Canvas PointCanvas)
+        {
+            foreach (Anotace annotation in anotaces)
+            {
+                this.RemovePointsAndConnections(PointCanvas, annotation);
+                this.ClearAnotace(annotation);
+                this.SetActiveAnotaceIsAnotated(false);
             }
         }
 
@@ -428,7 +443,7 @@ namespace VerteMark.ObjectClasses
                 }
         }
 
-        public void RemovePointsAndConnections(Canvas canvas)
+        public void RemoveActivePointsAndConnections(Canvas canvas)
         {
             if (activeAnotace != null)
             {
@@ -440,6 +455,19 @@ namespace VerteMark.ObjectClasses
                 {
                     point.Remove(canvas);
                 }
+            }
+        }
+
+        public void RemovePointsAndConnections(Canvas canvas, Anotace anotace)
+        {
+            
+            foreach (LineConnection line in anotace.Lines)
+            {
+                line.Remove(canvas);
+            }
+            foreach (PointMarker point in anotace.Points)
+            {
+                point.Remove(canvas);
             }
         }
 

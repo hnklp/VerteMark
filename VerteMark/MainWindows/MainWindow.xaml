@@ -205,7 +205,7 @@
             </ScrollViewer>
 
 
-            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="106,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">
+            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">
                 <Button.Content>
                     <Image Source="../Resources/Icons/floppy_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
@@ -214,24 +214,24 @@
                 </Button.ToolTip>
             </Button>
 
-            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="189,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Invalid_Click" Grid.Column="2">
+            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="204,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Invalid_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/bomb_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/invalid_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
-                    <ToolTip Content="Označit jako neplatný snímek..."/>
+                    <ToolTip Content="Označit snímek jako neplatný..."/>
                 </Button.ToolTip>
             </Button>
 
 
-            <!--<Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="189,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Discard_Click" Grid.Column="2">
+            <Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="143,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Discard_Click" Grid.Column="2">
                 <Button.Content>
                     <Image Source="../Resources/Icons/bomb_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
-                    <ToolTip Content="Zahodit změny..."/>
+                    <ToolTip Content="Zahodit všechny změny..."/>
                 </Button.ToolTip>
-            </Button>-->
+            </Button>
 
             <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="23,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="2">
                 <Button.Content>
