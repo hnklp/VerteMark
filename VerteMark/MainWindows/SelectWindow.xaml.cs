@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
@@ -12,6 +13,7 @@ namespace VerteMark
     public partial class SelectWindow : Window
     {
         Project project;
+        
 
         public SelectWindow()
         {
