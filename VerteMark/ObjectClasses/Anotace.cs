@@ -38,10 +38,10 @@ namespace VerteMark.ObjectClasses
             this.Name = name;
             this.Color = color;
             this.IsAnotated = false;
+            this.Type = type;
 
             Points = new List<PointMarker>();
             Lines = new List<LineConnection>();
-            Type = type;
         }
 
 
@@ -206,14 +206,6 @@ namespace VerteMark.ObjectClasses
         public void SetId(string id)
         {
            Id = id;
-        }
-
-        public void DecreaseAnotby1()
-        {
-            string prefix = Id.Substring(0, 1);
-            int numId = int.TryParse(Id.AsSpan(1), out int result) ? result : 0;
-            this.Id = prefix + (numId - 1);
-            this.Name = (Type == AnotaceType.Fusion ? "Fúze" : "Implantát") + numId;
         }
     }
 }

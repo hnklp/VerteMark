@@ -269,6 +269,7 @@ namespace VerteMark
             if (anot?.PreviewImage != null)
             {
                 PreviewGrid.Children.Remove(anot.PreviewImage);
+                anot.PreviewImage = null;
             }
 
             string activeAnotaceId = project.ActiveAnotaceId();
@@ -291,7 +292,6 @@ namespace VerteMark
                 }
                 else
                 {
-                    // Pokud byla anotace "V0" apod., žádná předchozí není – deaktivujeme vše
                     SwitchActiveAnotButton(null);
                 }
             }
@@ -608,7 +608,6 @@ namespace VerteMark
 
             project.SelectActiveAnotace(id);
 
-            // check jestli je nazev "Implantát"
             var anotace = project.FindAnotaceById(id);
 
             if (anotace.Type == AnotaceType.Implant)
@@ -803,11 +802,6 @@ namespace VerteMark
                 Anotace anot = project.CreateNewAnnotation(type);
                 AddPreviewImage(anot);
 
-                var existing = project.GetAnotaces()
-                    .Where(a => a.Type == type)
-                    .Select(a => project.ExtractNumericId(a.Id));
-                int nextNumber = existing.Any() ? existing.Max() : 1;
-
                 int rowIndex = (int)(plusButton.Margin.Top / 30);
                 AddNewRow(anot, isValidator, rowIndex);
                 MoveElementsBelow(plusButton.Margin.Top);
@@ -856,8 +850,6 @@ namespace VerteMark
             };
         }
 
-        
-
         private void DeleteRow(string id)
         {
             string prefix = id.Substring(0, 1);         // např. "I", "F"
@@ -894,19 +886,19 @@ namespace VerteMark
                         switch (prefix)
                         {
                             case "I":
-                                toggleButton.Content = $"Implantát {tagIndex - 1}";
+                                toggleButton.Content = $"Implantát {tagIndex}";
                                 break;
                             case "F":
-                                toggleButton.Content = $"Fúze {tagIndex - 1}";
+                                toggleButton.Content = $"Fúze {tagIndex}";
                                 break;
                             default:
-                                toggleButton.Content = tagIndex - 1;
+                                toggleButton.Content = tagIndex;
                                 MessageBox.Show("Toto nemělo nastat. Restartujte aplikaci.");
                                 break;
                         }
                     }
 
-                    project.ChangeAnnotationId(newId);
+                    project.ChangeAnnotationId(tag, newId);
                 }
             }
         }
@@ -1262,7 +1254,7 @@ namespace VerteMark
                     var anot = allAnnots[activeIndex];
                     // 3) Je-li aktivní anotace „Implantát“, body nevytváříme 
                     //    (kreslí se tahy na InkCanvas)
-                    if (anot.Name.StartsWith("Implantát", StringComparison.OrdinalIgnoreCase))
+                    if (anot.Type == AnotaceType.Implant)
                     {
                         return;
                     }

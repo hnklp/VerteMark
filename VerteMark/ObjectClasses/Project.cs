@@ -180,12 +180,11 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    // Anotace >= 7
                     if (createdAnnotation.Type == AnotaceType.Implant)
                     {
                         createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                     }
-                    // Anotace <0,6>
+
                     if (createdAnnotation.Type == AnotaceType.Vertebra || createdAnnotation.Type == AnotaceType.Fusion)
                     {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
@@ -269,7 +268,7 @@ namespace VerteMark.ObjectClasses
             else
             {
                 int idInt = ExtractNumericId(id);
-                color = System.Drawing.Color.Wheat;
+                color = System.Drawing.Color.Gold;
                 name = idInt == 0 ? "Fúze" : "Fúze" + (idInt + 1);
             }
 
@@ -303,12 +302,12 @@ namespace VerteMark.ObjectClasses
 
             int nextNumber = existing.Any() ? existing.Max() + 1 : 1;
             string prefix = type == AnotaceType.Fusion ? "F" : "I";
-            System.Drawing.Color color = type == AnotaceType.Fusion ? System.Drawing.Color.Wheat : System.Drawing.Color.DeepPink;
+            System.Drawing.Color color = type == AnotaceType.Fusion ? System.Drawing.Color.Gold : System.Drawing.Color.DeepPink;
 
             var newAnnotation = new Anotace
             (
                 prefix + nextNumber,
-                $"{(type == AnotaceType.Fusion ? "Fúze" : "Implantát")} {nextNumber}",
+                $"{(type == AnotaceType.Fusion ? "Fúze" : "Implantát")} {nextNumber + 1}",
                 color,
                 type
             );
@@ -413,12 +412,12 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-        public void ChangeAnnotationId(string annotationId)
+        public void ChangeAnnotationId(string annotationId, string newId)
         {
             Anotace annotation = FindAnotaceById(annotationId);
             if (annotation != null)
             {
-                annotation.SetId(annotationId);
+                annotation.SetId(newId);
             }
         }
 
