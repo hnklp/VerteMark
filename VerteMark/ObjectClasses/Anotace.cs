@@ -133,6 +133,7 @@ namespace VerteMark.ObjectClasses
         public void ClearCanvas() {
             if (Canvas != null) {
                 Canvas = new WriteableBitmap((int)Canvas.Width, (int)Canvas.Height, 96, 96, PixelFormats.Bgra32, null);
+                PreviewImage.Source = Canvas;
             }
         }
 

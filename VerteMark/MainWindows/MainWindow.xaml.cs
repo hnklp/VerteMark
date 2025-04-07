@@ -542,7 +542,6 @@ namespace VerteMark
             InkCanvas.Strokes.Clear();
 
             WriteableBitmap activeAnotaceImage = project.ActiveAnotaceImage();
-
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -592,20 +591,19 @@ namespace VerteMark
             ToggleCropButton(!project.GetIsAnotated());
         }
 
-        /* Ukázka všech anotací */
-        private void PreviewAllAnotaces()
+        private void Discard_Click(object sender, RoutedEventArgs e)
         {
-            if (ImageHolder.Source != null)
+            if (MessageBox.Show("Opravdu chcete zahodit veškeré změny provedené na aktuálním snímku?",
+                    "Zahodit změny",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                List<WriteableBitmap> bitmaps = project.AllInactiveAnotaceImages();
-                for (int i = 0; i < bitmaps.Count; i++)
-                {
-                    previewImageList[i].Source = bitmaps[i];
-                    previewImageList[i].Opacity = 0.5;
-                }
+                project.ClearAllAnotace(PointCanvas);
+                UpdateElementsWithAnotace();
+                ToggleCropButton(true);
+                project.PreviewAllAnotaces();
             }
         }
-
 
         /*
          * =========
@@ -616,10 +614,7 @@ namespace VerteMark
         private void SwitchActiveAnot(string id)
         {
             SaveCanvasIntoAnot();
-
-            project.SelectActiveAnotace(id);
-
-            var anotace = project.FindAnotaceById(id);
+            var anotace = project.SelectActiveAnotace(id);
 
             if (anotace.Type == AnotaceType.Implant)
             {
@@ -633,17 +628,14 @@ namespace VerteMark
             }
 
             InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
-            //InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
             project.PreviewAllAnotaces();
         }
 
         private void SwitchActiveAnotButton(ToggleButton pressedButton)
         {
-
             if (activeAnotButton != null)
             {
-
                 activeAnotButton.IsChecked = false;
             }
             pressedButton.IsChecked = true;
@@ -823,8 +815,12 @@ namespace VerteMark
         {
             if (sender is Button button && button.Tag is string id)
             {
-                project.DeleteAnnotation(id);
+                Anotace anot = project.FindAnotaceById(id);
+                project.RemovePointsAndConnections(PointCanvas, anot);
+                UpdateElementsWithAnotace();
+
                 DeletePreviewImage(id);
+                project.DeleteAnnotation(id);
                 DeleteRow(id);
 
                 // najdi odpovídající plusButton podle typu anotace (např. prefix "V", "I", "F")
@@ -1295,7 +1291,8 @@ namespace VerteMark
             );
             project.AddPointActiveAnot(point);
 
-            ToggleCropButton(pointsCount == 0);
+            project.SetActiveAnotaceIsAnotated(true);
+            ToggleCropButton(!project.GetIsAnotated());
 
 
             // e) Vykreslení, měřítko, spojnice mezi body...

@@ -324,7 +324,6 @@ namespace VerteMark.ObjectClasses
         }
 
         public void PreviewAllAnotaces() {
-            List <WriteableBitmap> a = new List<WriteableBitmap>();
             foreach(Anotace anot in anotaces) {
                 if (activeAnotace != anot) {
                     anot.SetPreviewImage();
@@ -352,8 +351,9 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-        public void SelectActiveAnotace(string id) {
+        public Anotace SelectActiveAnotace(string id) {
             activeAnotace = FindAnotaceById(id);
+            return activeAnotace;
         }
 
 
