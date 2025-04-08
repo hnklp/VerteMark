@@ -21,6 +21,7 @@ namespace VerteMark.MainWindows
             projectType = "";
             loadFromSelect = fromSelect;
             oldMainWindow = null;
+            project.saved = false;
             
 
             // Přidání obslužné metody pro událost SelectionChanged pro FileListBox
