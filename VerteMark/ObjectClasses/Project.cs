@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static VerteMark.ObjectClasses.Anotace;
 
 
 namespace VerteMark.ObjectClasses
@@ -33,8 +34,6 @@ namespace VerteMark.ObjectClasses
         public bool saved;
         public bool anyProjectAvailable;
 
-
-
         public Project() {
             anotaces = new List<Anotace>();
             originalPicture = new BitmapImage();
@@ -61,7 +60,6 @@ namespace VerteMark.ObjectClasses
             SetOriginalPicture(bitmapImage);
         }
 
-
         public bool ChooseProjectFolder(string path) {
             return folderUtilityManager.ExtractZip(path);
         }
@@ -70,7 +68,6 @@ namespace VerteMark.ObjectClasses
         {
             return anyProjectAvailable;
         }
-
 
         void CreateNewProject(string path) {
             anotaces = new List<Anotace>();
@@ -108,7 +105,7 @@ namespace VerteMark.ObjectClasses
                 JArray validations = annotations[1];
 
                 originalPicture = folderUtilityManager.GetImage();
-                List<int> created = LoadAnnotations(canvasAnnotations, validations);
+                List<string> created = LoadAnnotations(canvasAnnotations, validations);
                 AddMissingAnnotations(created);
             }
             else {
@@ -119,17 +116,14 @@ namespace VerteMark.ObjectClasses
             anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
-
         public void SaveProject(int savingParameter) {
 
             // pred ulozenim - pokud je uzivatel anotator:
                     // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
-            
-
 
             // kombinace starsi metody SaveJson()
             List<Dictionary<string, List<Tuple<int, int>>>> dicts = new List<Dictionary<string, List<Tuple<int, int>>>>();
-            List<int>? valids = new List<int>();
+            List<string>? valids = new List<string>();
 
             foreach (Anotace anot in anotaces) {
                 dicts.Add(anot.GetAsDict());
@@ -143,7 +137,6 @@ namespace VerteMark.ObjectClasses
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
         }
-
 
         public void DeleteTempFolder() {
             folderUtilityManager.DeleteTempFolder();
@@ -175,25 +168,24 @@ namespace VerteMark.ObjectClasses
         */
 
         // *****************************************************************************************
-        List<int> LoadAnnotations(JArray annotations, JArray validations) {
-            List<int> createdIds = new List<int>();
-            HashSet<int> validationSet = validations.ToObject<HashSet<int>>();
+        List<string> LoadAnnotations(JArray annotations, JArray validations) {
+            List<string> createdIds = new List<string>();
+            HashSet<string> validationSet = validations.ToObject<HashSet<string>>();
 
             foreach (JObject annotationObj in annotations) {
                 foreach (var annotation in annotationObj) {
-                    int annotationId = int.Parse(annotation.Key);
+                    string annotationId = annotation.Key;
                     createdIds.Add(annotationId);
                     CreateNewAnnotation(annotationId);
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    // Anotace >= 7
-                    if (annotationId >= 7)
+                    if (createdAnnotation.Type == AnotaceType.Implant)
                     {
                         createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                     }
-                    // Anotace <0,6>
-                    if (annotationId <= 6)
+
+                    if (createdAnnotation.Type == AnotaceType.Vertebra || createdAnnotation.Type == AnotaceType.Fusion)
                     {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
@@ -210,101 +202,136 @@ namespace VerteMark.ObjectClasses
 
 
         void CreateNewAnotaces() {
-            for (int i = 0; i < 8; i++) {
-                CreateNewAnnotation(i);
+            List<string> allIds = new List<string> { "V0", "V1", "V2", "V3", "V4", "V5", "V6", "I0", "F0" };
+
+            foreach (string id in allIds)
+            {
+                CreateNewAnnotation(id);
             }
         }
 
+        void AddMissingAnnotations(List<string> existingIds) {
+            List<string> allIds = new List<string> {"V0", "V1", "V2", "V3", "V4", "V5", "V6", "I0", "F0"};
 
-        void AddMissingAnnotations(List<int> existingIds) {
-            // Seznam všech možných ID od 0 do 7
-            List<int> allIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
-
-            foreach (int id in allIds) {
+            foreach (string id in allIds) {
                 if (!existingIds.Contains(id)) {
                     CreateNewAnnotation(id);
                 }
             }
         }
 
-
-        void CreateNewAnnotation(int id) {
+        void CreateNewAnnotation(string id) {
             // Barva odpovídající danému ID
-            System.Drawing.Color color;
-            string name;
-            switch (id) {
-                case 0:
-                    color = System.Drawing.Color.Red;
-                    name = "C" + (id + 1);
-                    break;
-                case 1:
-                    color = System.Drawing.Color.Orange;
-                    name = "C" + (id + 1);
-                    break;
-                case 2:
-                    color = System.Drawing.Color.Yellow;
-                    name = "C" + (id + 1);
-                    break;
-                case 3:
-                    color = System.Drawing.Color.Lime;
-                    name = "C" + (id + 1);
-                    break;
-                case 4:
-                    color = System.Drawing.Color.Aquamarine;
-                    name = "C" + (id + 1);
-                    break;
-                case 5:
-                    color = System.Drawing.Color.Aqua;
-                    name = "C" + (id + 1);
-                    break;
-                case 6:
-                    color = System.Drawing.Color.BlueViolet;
-                    name = "C" + (id + 1);
-                    break;
-                case 7:
-                    color = System.Drawing.Color.DeepPink;
-                    name = "Implantát";
-                    break;
-                default:
-                    color = System.Drawing.Color.DeepPink;
-                    name = "Implantát " + (id - 6);
-                    break;
+            System.Drawing.Color color = System.Drawing.Color.DeepPink;
+            string name = "";
+            AnotaceType type = GetTypeForId(id);
+            
+            if (type == AnotaceType.Vertebra)
+            {
+                switch (id) {
+                    case "V0":
+                        color = System.Drawing.Color.Red;
+                        name = "C1";
+                        break;
+                    case "V1":
+                        color = System.Drawing.Color.Orange;
+                        name = "C2";
+                        break;
+                    case "V2":
+                        color = System.Drawing.Color.Yellow;
+                        name = "C3";
+                        break;
+                    case "V3":
+                        color = System.Drawing.Color.Lime;
+                        name = "C4";
+                        break;
+                    case "V4":
+                        color = System.Drawing.Color.Aquamarine;
+                        name = "C5";
+                        break;
+                    case "V5":
+                        color = System.Drawing.Color.Aqua;
+                        name = "C6";
+                        break;
+                    case "V6":
+                        color = System.Drawing.Color.BlueViolet;
+                        name = "C7";
+                        break;
+                }
+            }
+            else if (type == AnotaceType.Implant)
+            {
+                int idInt = ExtractNumericId(id);
+                color = System.Drawing.Color.DeepPink;
+                name = idInt == 0  ? "Implantát" : "Implantát" + (idInt + 1);   
+            }
+            else
+            {
+                int idInt = ExtractNumericId(id);
+                color = System.Drawing.Color.Gold;
+                name = idInt == 0 ? "Fúze" : "Fúze" + (idInt + 1);
             }
 
             // Vytvoření nové anotace s odpovídající barvou a názvem
-            anotaces.Add(new Anotace(id, name, color));
+            anotaces.Add(new Anotace(id, name, color, type));
         }
 
-        public Anotace CreateImplantAnnotation()
+        // Funkce pro získání správného typu podle ID
+        public static AnotaceType GetTypeForId(string id)
         {
-            int id = anotaces.Count;
-            string name = "Implantát " + (id - 6);
-            Anotace implant = new Anotace(id, name, System.Drawing.Color.DeepPink);
-            anotaces.Add(implant);
-            return implant;
+            if (id.StartsWith("V"))
+                return AnotaceType.Vertebra;
+            if (id.StartsWith("I"))
+                return AnotaceType.Implant;
+            if (id.StartsWith("F"))
+                return AnotaceType.Fusion;
+
+            return AnotaceType.Vertebra;
+        }
+
+        public int ExtractNumericId(string id)
+        {
+            return int.TryParse(id.Substring(1), out int result) ? result : 0;
+        }
+
+        public Anotace CreateNewAnnotation(AnotaceType type)
+        {
+            var existing = anotaces
+                .Where(a => a.Type == type)
+                .Select(a => ExtractNumericId(a.Id));
+
+            int nextNumber = existing.Any() ? existing.Max() + 1 : 1;
+            string prefix = type == AnotaceType.Fusion ? "F" : "I";
+            System.Drawing.Color color = type == AnotaceType.Fusion ? System.Drawing.Color.Gold : System.Drawing.Color.DeepPink;
+
+            var newAnnotation = new Anotace
+            (
+                prefix + nextNumber,
+                $"{(type == AnotaceType.Fusion ? "Fúze" : "Implantát")} {nextNumber + 1}",
+                color,
+                type
+            );
+
+            anotaces.Add(newAnnotation);
+            return newAnnotation;
         }
 
         public WriteableBitmap ActiveAnotaceImage() {
             if (activeAnotace == null) {
-                SelectActiveAnotace(0);
+                SelectActiveAnotace("V0");
             }
             return activeAnotace.GetCanvas();
         }
 
-        public List<WriteableBitmap> AllInactiveAnotaceImages() {
-            List <WriteableBitmap> a = new List<WriteableBitmap>();
+        public void PreviewAllAnotaces() {
             foreach(Anotace anot in anotaces) {
-                if(activeAnotace != anot) {
-                    a.Add(anot.GetCanvas());
-                }
-                else {
-                    a.Add(null);
+                if (activeAnotace != anot) {
+                    anot.SetPreviewImage();
                 }
             }
-            return a;
         }
 
-        public Anotace FindAnotaceById(int idAnotace) {
+        public Anotace FindAnotaceById(string idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
             if (foundAnotace != null) {
                 return foundAnotace;
@@ -314,28 +341,25 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
-        public void ValidateAnnotationByID(int id) {
+        public void ValidateAnnotationByID(string id) {
             Anotace anotace = FindAnotaceById(id);
-            Debug.WriteLine("ZAVOLANA VALIDACE TLACITKO");
             if (anotace.IsValidated) {
                 anotace.Validate(false);
-                Debug.WriteLine("FALSE");
             }
             else {
                 anotace.Validate(true);
             }
         }
 
-
-        public void SelectActiveAnotace(int id) {
+        public Anotace SelectActiveAnotace(string id) {
             activeAnotace = FindAnotaceById(id);
+            return activeAnotace;
         }
 
 
         public string ActiveAnotaceId() {
             if (activeAnotace != null) {
-                return activeAnotace.Id.ToString();
+                return activeAnotace.Id;
             }
             return "";
         }
@@ -344,7 +368,6 @@ namespace VerteMark.ObjectClasses
         public System.Windows.Media.Color ActiveAnotaceColor() {
             return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
         }
-
 
         public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
             if (activeAnotace != null) {
@@ -398,7 +421,7 @@ namespace VerteMark.ObjectClasses
             return anotaces;
         }
 
-        public void DeleteAnnotation(int annotationId) { 
+        public void DeleteAnnotation(string annotationId) { 
             Anotace annotation = FindAnotaceById(annotationId);
             if (annotation != null)
             {
@@ -406,12 +429,12 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-        public void ChangeAnnotationId(int annotationId)
+        public void ChangeAnnotationId(string annotationId, string newId)
         {
             Anotace annotation = FindAnotaceById(annotationId);
             if (annotation != null)
             {
-                annotation.SetAnnotationId(annotationId - 1);
+                annotation.SetId(newId);
             }
         }
 
@@ -533,6 +556,15 @@ namespace VerteMark.ObjectClasses
 
             var line2 = new LineConnection(lastPoint, point, pointCanvas, brush);
             anotace.Lines.Add(line2);
+        }
+
+        public void CropPreviewImages(double width, double height)
+        {
+            foreach (Anotace anotace in anotaces)
+            {
+                anotace.PreviewImage.Width = width;
+                anotace.PreviewImage.Height = height;
+            }
         }
 
         /*

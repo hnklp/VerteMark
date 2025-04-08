@@ -9,7 +9,7 @@
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="65,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"><Run Text="VerteMark "/><Run Language="en-gb" Text="2.0 RC2"/></TextBlock>
 
-        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="260,28,20,284" Height="22" Width="70" RenderTransformOrigin="0.411,0.075" Grid.ColumnSpan="2"/>
+        <!--Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="260,28,20,284" Height="22" Width="70"/>-->
 
         <Image Margin="12,14,292,256" Source="/Pictures/icon.png" Stretch="Fill" RenderTransformOrigin="0.284,0.487"/>
 

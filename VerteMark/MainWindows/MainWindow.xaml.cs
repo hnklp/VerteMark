@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +11,7 @@ using System.Windows.Shapes;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 using VerteMark.SubWindows;
+using static VerteMark.ObjectClasses.Anotace;
 
 namespace VerteMark
 {
@@ -45,7 +45,6 @@ namespace VerteMark
         private StylusPoint? firstPoint = null;
         private StylusPoint? lastPoint = null;
 
-        private List<Image> previewImageList;
         private int savingParam;
 
         // Dotyková gesta
@@ -58,7 +57,6 @@ namespace VerteMark
         {
             InitializeComponent();
             project = Project.GetInstance();
-            previewImageList = new List<Image>();
 
             CommandBinding openCommandBinding = new CommandBinding(
                     ApplicationCommands.Open,
@@ -89,7 +87,7 @@ namespace VerteMark
             {
                 SetCanvasComponentsSize();
                 AddPreviewImages();
-                SwitchActiveAnot(0);
+                SwitchActiveAnot("V0");
                 LoadPointMarkers();
 
                 // start at 25% zoom
@@ -172,7 +170,6 @@ namespace VerteMark
         {
             InitializeComponent();
             project = new Project();
-            previewImageList = new List<Image>();
             project.LoginNewUser("debug_user", true);
 
             CommandBinding openCommandBinding = new CommandBinding(
@@ -199,7 +196,7 @@ namespace VerteMark
             Loaded += delegate
             {
                 SetCanvasComponentsSize();
-                SwitchActiveAnot(0);
+                SwitchActiveAnot("V0");
 
                 // start at 25% zoom
                 double zoomFactor = 0.25;
@@ -237,13 +234,13 @@ namespace VerteMark
         {
             List<Anotace> Annotations = project.GetAnotaces();
 
-            for (int i = 0; i < Annotations.Count; i++)
+            foreach (Anotace anot in Annotations)
             {
-                AddPreviewImage();
+                AddPreviewImage(anot);
             }
         }
 
-        private void AddPreviewImage()
+        private void AddPreviewImage(Anotace anotace)
         {
             Image newImage = new Image();
 
@@ -262,32 +259,44 @@ namespace VerteMark
             Grid.SetColumn(newImage, Grid.GetColumn(InkCanvas));
             Grid.SetRow(newImage, Grid.GetRow(InkCanvas));
             newImage.Stretch = Stretch.Fill;
-            previewImageList.Add(newImage);
+            anotace.PreviewImage = newImage;
             PreviewGrid.Children.Add(newImage);
         }
 
-        private void DeletePreviewImage(int anotaceId)
+        private void DeletePreviewImage(string anotaceId)
         {
-            PreviewGrid.Children.Remove(previewImageList[anotaceId]);
-            previewImageList.RemoveAt(anotaceId);
-
-            if (int.TryParse(project.ActiveAnotaceId(), out int activeAnotaceId))
+            var anot = project.FindAnotaceById(anotaceId);
+            if (anot?.PreviewImage != null)
             {
-                if (activeAnotaceId == anotaceId)
+                PreviewGrid.Children.Remove(anot.PreviewImage);
+                anot.PreviewImage = null;
+            }
+
+            string activeAnotaceId = project.ActiveAnotaceId();
+            if (activeAnotaceId == anotaceId)
+            {
+                string prefix = anotaceId.Substring(0, 1); // "V", "I", "F"
+                if (int.TryParse(anotaceId.Substring(1), out int index) && index > 0)
                 {
-                    SwitchActiveAnot(anotaceId - 1);
+                    string previousId = prefix + (index - 1);
+                    SwitchActiveAnot(previousId);
 
                     foreach (var child in ButtonGrid.Children)
                     {
-                        if (child is ToggleButton toggleButton && toggleButton.Tag is int tag && tag == anotaceId - 1)
+                        if (child is ToggleButton toggleButton && toggleButton.Tag is string tag && tag == previousId)
                         {
                             SwitchActiveAnotButton(toggleButton);
                             break;
                         }
                     }
                 }
+                else
+                {
+                    SwitchActiveAnotButton(null);
+                }
             }
         }
+
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
@@ -407,7 +416,6 @@ namespace VerteMark
             }
             activeToolbarButton = pressedButton;
         }
-
 
         private void CanvasGrid_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -534,7 +542,6 @@ namespace VerteMark
             InkCanvas.Strokes.Clear();
 
             WriteableBitmap activeAnotaceImage = project.ActiveAnotaceImage();
-
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
@@ -591,28 +598,12 @@ namespace VerteMark
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                UpdateElementsWithAnotace();
                 project.ClearAllAnotace(PointCanvas);
                 UpdateElementsWithAnotace();
                 ToggleCropButton(true);
-                PreviewAllAnotaces();
+                project.PreviewAllAnotaces();
             }
         }
-
-        /* Ukázka všech anotací */
-        private void PreviewAllAnotaces()
-        {
-            if (ImageHolder.Source != null)
-            {
-                List<WriteableBitmap> bitmaps = project.AllInactiveAnotaceImages();
-                for (int i = 0; i < bitmaps.Count; i++)
-                {
-                    previewImageList[i].Source = bitmaps[i];
-                    previewImageList[i].Opacity = 0.5;
-                }
-            }
-        }
-
 
         /*
          * =========
@@ -620,54 +611,31 @@ namespace VerteMark
          * =========
          */
 
-        //private void SwitchActiveAnot(int id)
-        //{
-        //    //    ConnectStrokeAnotace();
-        //    SaveCanvasIntoAnot();
-        //    project.SelectActiveAnotace(id);
-        //    InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
-        //    //  InkCanvas.Strokes.Clear();
-        //    UpdateElementsWithAnotace();
-
-        //    PreviewAllAnotaces();
-        //}
-
-        // tady zacina hynek kod pripravte se na bolest
-
-        private void SwitchActiveAnot(int id)
+        private void SwitchActiveAnot(string id)
         {
-
             SaveCanvasIntoAnot();
+            var anotace = project.SelectActiveAnotace(id);
 
-            project.SelectActiveAnotace(id);
-
-            // check jestli je nazev "Implantát"
-            var anotace = project.GetAnotaces()[id];
-            bool isImplant = anotace.Name.StartsWith("Implantát", StringComparison.OrdinalIgnoreCase);
-
-            if (isImplant)
+            if (anotace.Type == AnotaceType.Implant)
             {
-                // pokud chci kreslit => InkCanvas
+                // pokud chci kreslit => InkCanvas 
                 PointCanvas.IsHitTestVisible = false;
             }
-            else
+            else 
             {
                 // pokud chci bodovat => PointCanvas
                 PointCanvas.IsHitTestVisible = true;
             }
 
             InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
-            //InkCanvas.Strokes.Clear();
             UpdateElementsWithAnotace();
-            PreviewAllAnotaces();
+            project.PreviewAllAnotaces();
         }
 
         private void SwitchActiveAnotButton(ToggleButton pressedButton)
         {
-
             if (activeAnotButton != null)
             {
-
                 activeAnotButton.IsChecked = false;
             }
             pressedButton.IsChecked = true;
@@ -676,37 +644,67 @@ namespace VerteMark
 
         private void CreateButtons()
         {
-            List<Anotace> Annotations = project.GetAnotaces();
+            List<Anotace> annotations = project.GetAnotaces();
             bool isValidator = project.GetLoggedInUser().Validator;
 
-            int i = 0;
-            foreach (Anotace anotace in Annotations)
+            // Rozdělení podle typu
+            var vertebrae = annotations.Where(a => a.Type == Anotace.AnotaceType.Vertebra).ToList();
+            var fusions = annotations.Where(a => a.Type == Anotace.AnotaceType.Fusion).ToList();
+            var implants = annotations.Where(a => a.Type == Anotace.AnotaceType.Implant).ToList();
+
+            int rowIndex = 0;
+
+            // Vertebra tlačítka
+            foreach (var anotace in vertebrae)
             {
-                AddNewRow(anotace, isValidator, i);
-                i++;
+                AddNewRow(anotace, isValidator, rowIndex++);
             }
 
+            // Fúze (jeden button pro všechny fúze)
+            foreach (var fusion in fusions)
+            {
+                AddNewRow(fusion, isValidator, rowIndex++);
+            }
+
+            // Plus pro fúzi
+            AddPlusButton(rowIndex++, Anotace.AnotaceType.Fusion);
+
+            // Implantáty
+            foreach (var implant in implants)
+            {
+                AddNewRow(implant, isValidator, rowIndex++);
+            }
+
+            // Plus pro implantát
+            AddPlusButton(rowIndex++, Anotace.AnotaceType.Implant);
+        }
+
+        private void AddPlusButton(int rowIndex, Anotace.AnotaceType type)
+        {
             Button plusButton = new Button
             {
                 Content = "+",
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
                 Width = 20,
                 Height = 20,
-                Margin = new Thickness(109, 5 + 30 * i, 0, 0),
+                Margin = new Thickness(109, 5 + 30 * rowIndex, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Tag = type // zapamatujeme si, jaký typ má přidávat
             };
-            plusButton.Click += (sender, e) => PlusButton_Click(sender, e);
-            this.plusButton = plusButton;
+
+            plusButton.Click += PlusButton_Click;
 
             ButtonGrid.Children.Add(plusButton);
-
         }
+        
+        // Toto funguje a nikdo na to prosim uz nesahejte nevim proc to funguje dik -hp
 
-        private void AddNewRow(Anotace anotace, bool isValidator, int i)
+        private void AddNewRow(Anotace anotace, bool isValidator, int rowIndex)
         {
             Brush color = new SolidColorBrush(Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B));
+            int numId = project.ExtractNumericId(anotace.Id);
 
-            if (i > 7)
+            if (numId !=0 && anotace.Type != AnotaceType.Vertebra)
             {
                 Button minusButton = new Button
                 {
@@ -714,8 +712,8 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
-                    Tag = i
+                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
+                    Tag = anotace.Id
                 };
                 Image binIcon = new Image
                 {
@@ -726,7 +724,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 minusButton.Content = binIcon;
-                minusButton.Click += (sender, e) => MinusButton_Click(sender, e);
+                minusButton.Click += MinusButton_Click;
 
                 ButtonGrid.Children.Add(minusButton);
             }
@@ -742,8 +740,8 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 19,
                     Height = 19,
-                    Margin = new Thickness(20, 5 + 30 * i, 0, 0),
-                    Tag = i
+                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
+                    Tag = anotace.Id,
                 };
                 ButtonGrid.Children.Add(rect);
             }
@@ -755,12 +753,12 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 125,
                 Height = 20,
-                Margin = new Thickness(60, 5 + 30 * i, 0, 0),
-                Tag = i
+                Margin = new Thickness(60, 4 + 30 * rowIndex, 0, 0),
+                Tag = anotace.Id,
             };
-            toggleButton.Click += (sender, e) => Button_Click(sender, e);
+            toggleButton.Click += Button_Click;
 
-            if (i == 0)
+            if (rowIndex == 0)
                 SwitchActiveAnotButton(toggleButton);
 
             CheckBox checkBox = new CheckBox
@@ -769,8 +767,8 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 20,
                 Height = 20,
-                Margin = new Thickness(205, 6 + 30 * i, 0, 0),
-                Tag = i,
+                Margin = new Thickness(205, 4 + 30 * rowIndex, 0, 0),
+                Tag = anotace.Id,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated
             };
@@ -783,98 +781,131 @@ namespace VerteMark
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ToggleButton toggleButton = sender as ToggleButton;
-            if (toggleButton != null && toggleButton.Tag != null)
+            if (sender is ToggleButton toggleButton && toggleButton.Tag is string id)
             {
-                int index;
-                if (int.TryParse(toggleButton.Tag.ToString(), out index))
-                {
-                    SwitchActiveAnot(index);
-                    SwitchActiveAnotButton(sender as ToggleButton);
-                    e.Handled = true;
-                }
+                SwitchActiveAnot(id); // předáváme string id
+                SwitchActiveAnotButton(toggleButton);
+                e.Handled = true;
             }
         }
 
         private void SwitchValidation_Check(object sender, RoutedEventArgs e)
         {
-            CheckBox checkBox = sender as CheckBox;
-            if (checkBox != null && checkBox.Tag != null)
+            if (sender is CheckBox checkbox && checkbox.Tag is string id)
             {
-                int index;
-                if (int.TryParse(checkBox.Tag.ToString(), out index))
-                {
-                    project.ValidateAnnotationByID(index);
-                }
+                project.ValidateAnnotationByID(id);
             }
         }
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
-            bool isValidator = project.GetLoggedInUser().Validator;
-            Anotace implant = project.CreateImplantAnnotation();
-            AddPreviewImage();
-
-            List<Anotace> Annotations = project.GetAnotaces();
-            AddNewRow(implant, isValidator, Annotations.Count - 1);
-            MovePlusButton();
-        }
-
-        private void MovePlusButton(bool down = true)
-        {
-            if (down)
+            if (sender is Button plusButton && plusButton.Tag is AnotaceType type)
             {
-                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top + 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
-            }
-            else
-            {
-                plusButton.Margin = new Thickness(plusButton.Margin.Left, plusButton.Margin.Top - 30, plusButton.Margin.Right, plusButton.Margin.Bottom);
+                bool isValidator = project.GetLoggedInUser().Validator;
+                Anotace anot = project.CreateNewAnnotation(type);
+                AddPreviewImage(anot);
+
+                int rowIndex = (int)(plusButton.Margin.Top / 30);
+                AddNewRow(anot, isValidator, rowIndex);
+                MoveElementsBelow(plusButton.Margin.Top);
             }
         }
 
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
-            if (button != null && button.Tag != null)
+            if (sender is Button button && button.Tag is string id)
             {
-                int index;
-                if (int.TryParse(button.Tag.ToString(), out index))
+                Anotace anot = project.FindAnotaceById(id);
+                project.RemovePointsAndConnections(PointCanvas, anot);
+                UpdateElementsWithAnotace();
+
+                DeletePreviewImage(id);
+                project.DeleteAnnotation(id);
+                DeleteRow(id);
+
+                // najdi odpovídající plusButton podle typu anotace (např. prefix "V", "I", "F")
+                string prefix = id.Substring(0, 1);
+                AnotaceType type = GetAnotaceTypeFromPrefix(prefix);
+                MoveElementsBelow(button.Margin.Top - 1, false);
+            }
+        }
+
+        private void MoveElementsBelow(double topThreshold, bool down = true)
+        {
+            foreach (var element in ButtonGrid.Children.OfType<FrameworkElement>())
+            {
+                if (element.Margin.Top >= topThreshold)
                 {
-                    project.DeleteAnnotation(index);
-                    DeletePreviewImage(index);
-                    DeleteRow(index);
-                    MovePlusButton(false);
+                    element.Margin = new Thickness(
+                        element.Margin.Left,
+                        element.Margin.Top + (down ? 30 : -30),
+                        element.Margin.Right,
+                        element.Margin.Bottom
+                    );
                 }
             }
         }
 
-        private void DeleteRow(int i)
+        private AnotaceType GetAnotaceTypeFromPrefix(string prefix)
         {
-            // Najdeme všechny prvky s tagem `i` a odstraníme je z `ButtonGrid`
-            var elementsToRemove = ButtonGrid.Children.OfType<UIElement>().Where(e => e is FrameworkElement fe && fe.Tag is int tag && tag == i).ToList();
+            return prefix switch
+            {
+                "V" => AnotaceType.Vertebra,
+                "I" => AnotaceType.Implant,
+                "F" => AnotaceType.Fusion,
+                _ => AnotaceType.Vertebra
+            };
+        }
+
+        private void DeleteRow(string id)
+        {
+            string prefix = id.Substring(0, 1);         // např. "I", "F"
+            int numId = project.ExtractNumericId(id);   // např. "3" z "V3"
+
+            // Odstraníme prvky s odpovídajícím ID
+            var elementsToRemove = ButtonGrid.Children.OfType<UIElement>()
+                .Where(e => e is FrameworkElement fe && fe.Tag is string tag && tag == id)
+                .ToList();
 
             foreach (var element in elementsToRemove)
             {
                 ButtonGrid.Children.Remove(element);
             }
 
-            // Aktualizujeme pozice, tagy a obsah všech prvků po odstranění řádku
+            // Aktualizujeme pozice, tagy a obsah všech následujících prvků po odstranění řádku
             foreach (var element in ButtonGrid.Children)
             {
-                if (element is FrameworkElement fe && fe.Tag is int tag && tag > i)
+                if (element is FrameworkElement fe && fe.Tag is string tag &&
+                   tag.StartsWith(prefix) && int.TryParse(tag.Substring(1), out int tagIndex) &&
+                   tagIndex > numId)
                 {
-                    fe.Tag = tag - 1;
+                    int newIndex = tagIndex - 1;
+                    string newId = prefix + newIndex;
+
+                    fe.Tag = newId;
 
                     // Upravíme margin pro zachování správného rozložení
-                    fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
+                    //fe.Margin = new Thickness(fe.Margin.Left, fe.Margin.Top - 30, fe.Margin.Right, fe.Margin.Bottom);
 
-                    // Aktualizujeme obsah ToggleButton, pokud je to ToggleButton
+                    // Aktualizujeme obsah ToggleButton
                     if (element is ToggleButton toggleButton)
                     {
-                        toggleButton.Content = $"Implantát {tag - 7}";
+                        switch (prefix)
+                        {
+                            case "I":
+                                toggleButton.Content = $"Implantát {tagIndex}";
+                                break;
+                            case "F":
+                                toggleButton.Content = $"Fúze {tagIndex}";
+                                break;
+                            default:
+                                toggleButton.Content = tagIndex;
+                                MessageBox.Show("Toto nemělo nastat. Restartujte aplikaci.");
+                                break;
+                        }
                     }
 
-                    project.ChangeAnnotationId(tag);
+                    project.ChangeAnnotationId(tag, newId);
                 }
             }
         }
@@ -1053,11 +1084,7 @@ namespace VerteMark
             CropCanvas.Height = CropRectangle.Height;
             PreviewGrid.HorizontalAlignment = HorizontalAlignment.Left;
             PreviewGrid.VerticalAlignment = VerticalAlignment.Top;
-            foreach (Image img in previewImageList)
-            {
-                img.Width = CropRectangle.Width;
-                img.Height = CropRectangle.Height;
-            }
+            project.CropPreviewImages(CropRectangle.Width, CropRectangle.Height);
 
             project.CropOriginalPicture(croppedImage);
         }
@@ -1234,7 +1261,7 @@ namespace VerteMark
                     var anot = allAnnots[activeIndex];
                     // 3) Je-li aktivní anotace „Implantát“, body nevytváříme 
                     //    (kreslí se tahy na InkCanvas)
-                    if (anot.Name.StartsWith("Implantát", StringComparison.OrdinalIgnoreCase))
+                    if (anot.Type == AnotaceType.Implant)
                     {
                         return;
                     }
@@ -1264,7 +1291,8 @@ namespace VerteMark
             );
             project.AddPointActiveAnot(point);
 
-            ToggleCropButton(pointsCount == 0);
+            project.SetActiveAnotaceIsAnotated(true);
+            ToggleCropButton(!project.GetIsAnotated());
 
 
             // e) Vykreslení, měřítko, spojnice mezi body...

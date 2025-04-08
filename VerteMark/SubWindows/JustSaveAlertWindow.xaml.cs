@@ -5,7 +5,7 @@ using VerteMark.ObjectClasses;
 namespace VerteMark.SubWindows
 {
     /// <summary>
-    /// Interakční logika pro Window1.xaml
+    /// Interakční logika pro JustSaveAlertWindow.xaml
     /// </summary>
     public partial class JustSaveAlertWindow : Window
     {
