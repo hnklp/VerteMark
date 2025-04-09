@@ -13,7 +13,7 @@ using System.Drawing;
 namespace VerteMark.ObjectClasses.FolderClasses {
     internal class FolderUtilityManager {
         ZipManager zipManager;
-        FileManager fileManager;
+        public FileManager fileManager;
         FolderManager folderManager;
         public string tempPath;
 
