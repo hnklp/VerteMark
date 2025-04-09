@@ -13,6 +13,7 @@ namespace VerteMark
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
             //kontrola verze win. pouzivame fonty, ktere nejsou (dle dokumentace) dostupne na win starsich nez 8.1. appka by fungovat mela, ale nejspise budou chybet nejake napisy :P
             if (!IsWindows81OrNewer())
