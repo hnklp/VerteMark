@@ -23,7 +23,7 @@ namespace VerteMark.ObjectClasses
     internal class Project {
 
         private static Project instance;
-        FolderUtilityManager folderUtilityManager;
+        public FolderUtilityManager folderUtilityManager;
         User loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
