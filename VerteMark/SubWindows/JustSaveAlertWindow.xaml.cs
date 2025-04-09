@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
+using VerteMark.ObjectClasses.FolderClasses;
 
 namespace VerteMark.SubWindows
 {
@@ -21,6 +22,20 @@ namespace VerteMark.SubWindows
             this.validator = validator;
 
             mainWindow.IsEnabled = false;
+
+            if (validator)
+            {
+                SaveAndContinueButton.IsEnabled = false;
+                ValidateButton.IsEnabled = true;
+                ReturnToPresaveButton.IsEnabled = true;
+            }
+
+            else
+            {
+                SaveAndContinueButton.IsEnabled = true;
+                ValidateButton.IsEnabled = false;
+                ReturnToPresaveButton.IsEnabled = false;
+            }
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
@@ -31,6 +46,9 @@ namespace VerteMark.SubWindows
 
         private void SaveAndContinue_Click(object sender, RoutedEventArgs e)
         {
+            if (validator) { SaveAndContinueButton.IsEnabled = false; }
+            else { SaveAndContinueButton.IsEnabled = true; }
+            
             if (!validator) { project.SaveProject(1); }
             else { project.SaveProject(2); }
             project.saved = true;
@@ -44,6 +62,33 @@ namespace VerteMark.SubWindows
             }
         }
 
+        private void ValidateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (validator) { ValidateButton.IsEnabled = true; }
+            else { ValidateButton.IsEnabled = false; }
+            if (!validator) { project.SaveProject(1); }
+            else { project.SaveProject(2); }
+            project.saved = true;
+            Browse(false);
+            mainWindow.IsEnabled = true;
+            this.Close();
+
+            if (!project.isAnyProjectAvailable())
+            {
+                App.RestartApplication();
+            }
+        }
+
+        private void ReturnToPresaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (validator) { ReturnToPresaveButton.IsEnabled = true; }
+            else { ReturnToPresaveButton.IsEnabled = false; }
+            project.folderUtilityManager.Discard();
+            Browse(true);
+            mainWindow.IsEnabled = true;
+            this.Close();
+        }
+
         private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e)
         {
             if (!validator) { project.SaveProject(0); }
@@ -55,6 +100,7 @@ namespace VerteMark.SubWindows
         }
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
+            project.folderUtilityManager.Discard();
             Browse(true);
             mainWindow.IsEnabled = true;
             this.Close();

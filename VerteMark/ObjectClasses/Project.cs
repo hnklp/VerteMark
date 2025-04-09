@@ -23,7 +23,7 @@ namespace VerteMark.ObjectClasses
     internal class Project {
 
         private static Project instance;
-        FolderUtilityManager folderUtilityManager;
+        public FolderUtilityManager folderUtilityManager;
         User loggedInUser; // Info o uživateli
         List<Anotace> anotaces; // Objekty anotace
         Anotace? activeAnotace;
@@ -116,6 +116,7 @@ namespace VerteMark.ObjectClasses
             anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
+        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
         public void SaveProject(int savingParameter) {
 
             // pred ulozenim - pokud je uzivatel anotator:

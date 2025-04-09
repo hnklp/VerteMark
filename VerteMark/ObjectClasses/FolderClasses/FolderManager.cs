@@ -107,11 +107,16 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
             catch (Exception ex)
             {
-                // Přidání chybového hlášení pro debugging
-                Console.WriteLine($"Error processing folders: {ex.Message}");
             }
         }
 
+        public void DeleteCurrentEdits(string name)
+        {
+            string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
+            var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, name);
+            Directory.Delete(matchingDirInToAnnotate, true);
+
+        }
 
         // vrati list dicomu, pro ktere jeste neni vytvoren projekt
         public List<string> ChooseNewProject() {
