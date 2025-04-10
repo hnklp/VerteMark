@@ -20,11 +20,13 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
   
 ### Autoři
 
-Alex Schönfelder -  GUI, Backend\
 Sabina Ajksnerová - GUI, Backend\
 Hynek Půta - GUI, Backend, macOS Port\
-Josef Bér - Backend\
-Jakub Kepič - Backend
+Jakub Kepič - GUI, Backend
+
+**Bývalí členové**\
+Alex Schönfelder -  GUI, Backend\
+Josef Bér - Backend
 
 ##
 
