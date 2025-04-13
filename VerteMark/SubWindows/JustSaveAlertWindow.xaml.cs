@@ -13,41 +13,42 @@ namespace VerteMark.SubWindows
         Project project;
         MainWindow mainWindow;
         bool validator;
+        bool saveButton; // true = save button v mainwindow, false = open button v mainwindow
 
-        public JustSaveAlertWindow(MainWindow mainWindow, bool validator)
+        public JustSaveAlertWindow(MainWindow mainWindow, bool validator, bool saveButton)
         {
             InitializeComponent();
             project = Project.GetInstance();
             this.mainWindow = mainWindow;
             this.validator = validator;
-
+            this.saveButton = saveButton;
             mainWindow.IsEnabled = false;
 
             if (validator)
             {
-                SaveAndContinueButton.IsEnabled = false;
+                SendForValidationButton.IsEnabled = false;
                 ValidateButton.IsEnabled = true;
-                ReturnToPresaveButton.IsEnabled = true;
             }
 
             else
             {
-                SaveAndContinueButton.IsEnabled = true;
+                SendForValidationButton.IsEnabled = true;
                 ValidateButton.IsEnabled = false;
-                ReturnToPresaveButton.IsEnabled = false;
             }
         }
 
+        // Zpět do hlavního okna
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.IsEnabled = true;
             this.Close();
         }
 
-        private void SaveAndContinue_Click(object sender, RoutedEventArgs e)
+        // Uložit do k validaci
+        private void SendForValidation_Click(object sender, RoutedEventArgs e)
         {
-            if (validator) { SaveAndContinueButton.IsEnabled = false; }
-            else { SaveAndContinueButton.IsEnabled = true; }
+            if (validator) { SendForValidationButton.IsEnabled = false; }
+            else { SendForValidationButton.IsEnabled = true; }
             
             if (!validator) { project.SaveProject(1); }
             else { project.SaveProject(2); }
@@ -62,6 +63,7 @@ namespace VerteMark.SubWindows
             }
         }
 
+        // Uložit do validované
         private void ValidateButton_Click(object sender, RoutedEventArgs e)
         {
             if (validator) { ValidateButton.IsEnabled = true; }
@@ -79,17 +81,25 @@ namespace VerteMark.SubWindows
             }
         }
 
-        private void ReturnToPresaveButton_Click(object sender, RoutedEventArgs e)
+        // Uložit do DICOMs
+        private void SaveToDICOMButton_Click(object sender, RoutedEventArgs e)
         {
-            if (validator) { ReturnToPresaveButton.IsEnabled = true; }
-            else { ReturnToPresaveButton.IsEnabled = false; }
-            project.folderUtilityManager.Discard();
-            Browse(true);
-            mainWindow.IsEnabled = true;
-            this.Close();
+            if (MessageBox.Show("Tato operace nenávratně smaže VEŠKERÉ ÚPRAVY provedené na souboru. Opravdu přesunout?",
+                    "Varování",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+
+                project.folderUtilityManager.Discard();
+
+                Browse(true);
+                mainWindow.IsEnabled = true;
+                this.Close();
+            }
         }
 
-        private void PreSaveAndContinue_Click(object sender, RoutedEventArgs e)
+        // Uložit do rozpracované
+        private void SaveWIPButton_Click(object sender, RoutedEventArgs e)
         {
             if (!validator) { project.SaveProject(0); }
             else { project.SaveProject(0); }
@@ -98,12 +108,33 @@ namespace VerteMark.SubWindows
             this.Close();
 
         }
+
+        // Zahodit změny
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
-            project.folderUtilityManager.Discard();
-            Browse(true);
-            mainWindow.IsEnabled = true;
-            this.Close();
+            if (MessageBox.Show("Tato operace smaže veškeré neuložené změny. Opravdu pokračovat?",
+                    "Varování",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                project.Choose(project.fileName, project.projectType);
+                //mainWindow.IsEnabled = false;
+
+                this.mainWindow.Close();
+                MainWindow mainWindow = new MainWindow();
+
+                // Získání středu původního okna
+                double originalCenterX = Left + Width / 2;
+                double originalCenterY = Top + Height / 2;
+
+                // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+                mainWindow.Left = originalCenterX - mainWindow.Width / 2;
+                mainWindow.Top = originalCenterY - mainWindow.Height / 2;
+
+                mainWindow.Show();
+
+                this.Close();
+            }
         }
 
         public void Browse(bool select)

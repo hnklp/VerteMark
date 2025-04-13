@@ -300,7 +300,7 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false);
 
             if (project.saved)
             {
@@ -459,7 +459,7 @@ namespace VerteMark
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true);
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
@@ -476,15 +476,21 @@ namespace VerteMark
         {
             project.SaveProject(3);
             project.saved = true;
-            JustSaveAlertWindow justSaveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(true);
 
+            folderbrowserWindow.oldMainWindow = this;
+
+            // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
 
-            justSaveAlertWindow.Left = originalCenterX - justSaveAlertWindow.Width / 2;
-            justSaveAlertWindow.Top = originalCenterY - justSaveAlertWindow.Height / 2;
+            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+            folderbrowserWindow.Left = originalCenterX - folderbrowserWindow.Width / 2;
+            folderbrowserWindow.Top = originalCenterY - folderbrowserWindow.Height / 2;
 
-            justSaveAlertWindow.Browse(true);
+            this.Visibility = Visibility.Hidden;
+            folderbrowserWindow.Show();
+
             this.Close();
 
         }

@@ -33,6 +33,8 @@ namespace VerteMark.ObjectClasses
         bool newProject;
         public bool saved;
         public bool anyProjectAvailable;
+        public string fileName;
+        public string projectType;
 
         public Project() {
             anotaces = new List<Anotace>();
@@ -600,6 +602,8 @@ namespace VerteMark.ObjectClasses
                 LoadProject(newPath);
             }
             originalPicture = folderUtilityManager.GetImage();
+            this.fileName = path;
+            this.projectType = projectType;
         }
 
         public bool GetIsAnotated()
