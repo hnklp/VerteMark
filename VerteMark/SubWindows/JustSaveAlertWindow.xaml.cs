@@ -14,8 +14,9 @@ namespace VerteMark.SubWindows
         MainWindow mainWindow;
         bool validator;
         bool saveButton; // true = save button v mainwindow, false = open button v mainwindow
+        private string _sourceButtonName;
 
-        public JustSaveAlertWindow(MainWindow mainWindow, bool validator, bool saveButton)
+        public JustSaveAlertWindow(MainWindow mainWindow, bool validator, bool saveButton, string sourceButtonName)
         {
             InitializeComponent();
             project = Project.GetInstance();
@@ -23,6 +24,7 @@ namespace VerteMark.SubWindows
             this.validator = validator;
             this.saveButton = saveButton;
             mainWindow.IsEnabled = false;
+            this._sourceButtonName = sourceButtonName;
 
             if (validator)
             {
@@ -35,6 +37,7 @@ namespace VerteMark.SubWindows
                 SendForValidationButton.IsEnabled = true;
                 ValidateButton.IsEnabled = false;
             }
+            
         }
 
         // Zpět do hlavního okna
@@ -91,6 +94,7 @@ namespace VerteMark.SubWindows
             {
 
                 project.folderUtilityManager.Discard();
+                //project.SaveProject(4);
 
                 Browse(true);
                 mainWindow.IsEnabled = true;
@@ -106,7 +110,10 @@ namespace VerteMark.SubWindows
             project.saved = true;
             mainWindow.IsEnabled = true;
             this.Close();
-
+            if (_sourceButtonName == "OpenProject")
+            {
+                this.Browse(false);
+            }
         }
 
         // Zahodit změny
@@ -117,26 +124,39 @@ namespace VerteMark.SubWindows
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                project.Choose(project.fileName, project.projectType);
-                //mainWindow.IsEnabled = false;
+                if (_sourceButtonName == "SaveButtonUI")
+                {
+                    project.Choose(project.fileName, project.projectType);
+                    //mainWindow.IsEnabled = false;
 
-                this.mainWindow.Close();
-                MainWindow mainWindow = new MainWindow();
+                    this.mainWindow.Close();
+                    MainWindow mainWindow = new MainWindow();
 
-                // Získání středu původního okna
-                double originalCenterX = Left + Width / 2;
-                double originalCenterY = Top + Height / 2;
+                    // Získání středu původního okna
+                    double originalCenterX = Left + Width / 2;
+                    double originalCenterY = Top + Height / 2;
 
-                // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
-                mainWindow.Left = originalCenterX - mainWindow.Width / 2;
-                mainWindow.Top = originalCenterY - mainWindow.Height / 2;
+                    // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+                    mainWindow.Left = originalCenterX - mainWindow.Width / 2;
+                    mainWindow.Top = originalCenterY - mainWindow.Height / 2;
 
-                mainWindow.Show();
+                    mainWindow.Show();
 
-                this.Close();
+                    this.Close();
+
+                }
+
+                else
+                {
+                    this.Browse(false);
+                }
             }
         }
 
+        /// <summary>
+        /// Slouží k výběru .vmk a k výběru jednotlivých snímků v již otevřeném souboru.
+        /// true otevře výběr VMK, false vrátí na seznam DICOMů v již otevřeném souboru.
+        /// </summary>
         public void Browse(bool select)
         {
             FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(select);

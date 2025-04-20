@@ -118,7 +118,7 @@ namespace VerteMark.ObjectClasses
             anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
-        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
+        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid, 4: neukladat
         public void SaveProject(int savingParameter) {
 
             // pred ulozenim - pokud je uzivatel anotator:

@@ -300,7 +300,8 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false);
+            var button = sender as Button;
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false, button.Name);
 
             if (project.saved)
             {
@@ -459,7 +460,9 @@ namespace VerteMark
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true);
+            var button = sender as Button;
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true, button.Name);
+            
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;

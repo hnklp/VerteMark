@@ -104,6 +104,17 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                         Directory.Delete(matchingDirInToAnnotate, true);
                     }
                 }
+
+                foreach (var validatedDir in validatedDirectories)
+                {
+                    var directoryName = Path.GetFileName(validatedDir);
+                    var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
+
+                    if (Directory.Exists(matchingDirInToAnnotate))
+                    {
+                        Directory.Delete(matchingDirInToAnnotate, true);
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -28,7 +28,9 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         //discards changes, removes extracted files
         public void Discard()
         {
+            folderManager.ProcessFolders();
             Directory.Delete(fileManager.outputPath, true);
+            SaveZip();
         }
 
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
@@ -57,14 +59,14 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 string oldMetaPath = fileManager.metaPath;
                 fileManager.metaPath = Path.Combine(fileManager.outputPath, Path.GetFileName(fileManager.metaPath));
                 if (oldMetaPath != fileManager.metaPath) {
-                    fileManager.CopyMetaFile(oldMetaPath);
-                }
+                        fileManager.CopyMetaFile(oldMetaPath);
+                    }
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
                 fileManager.ExtractAndSaveMetadata(user);
             }
-            fileManager.SaveJson(jsonString);
+                fileManager.SaveJson(jsonString);
             fileManager.SaveCroppedImage(image);
             folderManager.ProcessFolders(); // deletes duplicit folders
             SaveZip();
