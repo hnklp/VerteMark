@@ -72,6 +72,7 @@ namespace VerteMark
             User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
+            FileName.Text = project.folderUtilityManager.fileManager.fileName;
             ImageHolder.Source = project.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
