@@ -119,7 +119,7 @@ namespace VerteMark.ObjectClasses
         }
 
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid, 4: neukladat
-        public void SaveProject(int savingParameter) {
+        public void SaveProject(int savingParameter, string button) {
 
             // pred ulozenim - pokud je uzivatel anotator:
                     // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
@@ -136,7 +136,7 @@ namespace VerteMark.ObjectClasses
             }
             folderUtilityManager.Save(loggedInUser, newProject, 
                 originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
-                savingParameter); // bere tyto parametry pro ulozeni metadat
+                savingParameter, button); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
         }

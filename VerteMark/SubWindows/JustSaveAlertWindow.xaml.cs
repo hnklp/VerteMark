@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 using VerteMark.ObjectClasses.FolderClasses;
@@ -50,11 +51,13 @@ namespace VerteMark.SubWindows
         // Uložit do k validaci
         private void SendForValidation_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+
             if (validator) { SendForValidationButton.IsEnabled = false; }
             else { SendForValidationButton.IsEnabled = true; }
             
-            if (!validator) { project.SaveProject(1); }
-            else { project.SaveProject(2); }
+            if (!validator) { project.SaveProject(1, button.Name); }
+            else { project.SaveProject(2, button.Name); }
             project.saved = true;
             Browse(false);
             mainWindow.IsEnabled = true;
@@ -69,10 +72,12 @@ namespace VerteMark.SubWindows
         // Uložit do validované
         private void ValidateButton_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+
             if (validator) { ValidateButton.IsEnabled = true; }
             else { ValidateButton.IsEnabled = false; }
-            if (!validator) { project.SaveProject(1); }
-            else { project.SaveProject(2); }
+            if (!validator) { project.SaveProject(1, button.Name); }
+            else { project.SaveProject(2, button.Name); }
             project.saved = true;
             Browse(false);
             mainWindow.IsEnabled = true;
@@ -87,13 +92,15 @@ namespace VerteMark.SubWindows
         // Uložit do DICOMs
         private void SaveToDICOMButton_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+
             if (MessageBox.Show("Tato operace nenávratně smaže VEŠKERÉ ÚPRAVY provedené na souboru. Opravdu přesunout?",
                     "Varování",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
 
-                project.folderUtilityManager.Discard();
+                project.folderUtilityManager.Discard(button.Name);
                 //project.SaveProject(4);
 
                 Browse(true);
@@ -105,8 +112,8 @@ namespace VerteMark.SubWindows
         // Uložit do rozpracované
         private void SaveWIPButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!validator) { project.SaveProject(0); }
-            else { project.SaveProject(0); }
+            var button = sender as Button;
+            project.SaveProject(0, button.Name);
             project.saved = true;
             mainWindow.IsEnabled = true;
             this.Close();
@@ -155,7 +162,7 @@ namespace VerteMark.SubWindows
 
         /// <summary>
         /// Slouží k výběru .vmk a k výběru jednotlivých snímků v již otevřeném souboru.
-        /// true otevře výběr VMK, false vrátí na seznam DICOMů v již otevřeném souboru.
+        /// true otevře výběr VMK, false vrátí do okna se seznamem DICOMů v již otevřeném souboru.
         /// </summary>
         public void Browse(bool select)
         {

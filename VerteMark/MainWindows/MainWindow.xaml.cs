@@ -478,7 +478,8 @@ namespace VerteMark
 
         private void Invalid_Click(object sender, RoutedEventArgs e)
         {
-            project.SaveProject(3);
+            var button = sender as Button;
+            project.SaveProject(3, button.Name);
             project.saved = true;
             FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(true);
 

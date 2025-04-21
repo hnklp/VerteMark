@@ -26,15 +26,15 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
         //discards changes, removes extracted files
-        public void Discard()
+        public void Discard(string button)
         {
-            folderManager.ProcessFolders();
+            folderManager.ProcessFolders(button);
             Directory.Delete(fileManager.outputPath, true);
             SaveZip();
         }
 
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
-        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter) {
+        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter, string button) {
             switch (savingParameter) {
                 //Ulokladani do jednotlivych slozek
                 case 0:
@@ -68,7 +68,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
                 fileManager.SaveJson(jsonString);
             fileManager.SaveCroppedImage(image);
-            folderManager.ProcessFolders(); // deletes duplicit folders
+            folderManager.ProcessFolders(button); // deletes duplicit folders
             SaveZip();
         }
 
