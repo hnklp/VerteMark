@@ -48,6 +48,8 @@
             </MenuItem>
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
+            <MenuItem Header="Nahlásit problém" Click="ReportItem_Click">
+            </MenuItem>
         </Menu>
 
         <DockPanel Height="35" DockPanel.Dock="Bottom">
