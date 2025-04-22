@@ -14,7 +14,7 @@
     <Grid>
         <Rectangle HorizontalAlignment="Left" Height="19" Margin="462,176,0,0" Fill="White" VerticalAlignment="Top" Width="190"/>
 
-        <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,196,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
+        <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,194,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
         <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="455,140,0,0" VerticalAlignment="Top" Height="36" Width="101" FontSize="18"/>
         <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
 
@@ -34,18 +34,19 @@
             </GridSplitter.Background>
         </GridSplitter>
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
-        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="40,331,0,0" VerticalAlignment="Top" Height="27" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
-        <Button x:Name="GuideButton" Content="Návod" Margin="143,331,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="80" Click="OpenGuide"/>
-        <Button x:Name="About" Content="About" Margin="287,303,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="80" Click="AboutItem_Click" RenderTransformOrigin="0.5,0.5">
+        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="572,331,0,0" VerticalAlignment="Top" Height="27" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
+        <Button x:Name="GuideButton" Content="Příručka" Margin="20,331,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="80" Click="OpenGuide"/>
+        <Button x:Name="ReportButton" Content="Nahlásit problém" Margin="120,331,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="108" Click="ReportItem_Click" RenderTransformOrigin="-0.262,0.486"/>
+        <!--<Button x:Name="About" Content="About" Margin="534,22,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="80" Click="AboutItem_Click" RenderTransformOrigin="0.5,0.5">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="-1"/>
-                    <SkewTransform AngleX="4.298"/>
+                    <SkewTransform AngleX="52.356"/>
                     <RotateTransform Angle="21.176"/>
-                    <TranslateTransform X="12.167"/>
+                    <TranslateTransform X="37.222" Y="9.706"/>
                 </TransformGroup>
             </Button.RenderTransform>
-        </Button>
+        </Button>-->
     </Grid>
 
 </Window>
