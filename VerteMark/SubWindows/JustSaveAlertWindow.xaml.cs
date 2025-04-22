@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
@@ -155,6 +156,12 @@ namespace VerteMark.SubWindows
 
                 else
                 {
+                    if (project.projectType == "dicoms" &&
+                        project.folderUtilityManager?.fileManager?.jsonPath != null)
+                    {
+                        Directory.Delete(project.folderUtilityManager.fileManager.outputPath, true);
+                    }
+
                     this.Browse(false);
                 }
             }
