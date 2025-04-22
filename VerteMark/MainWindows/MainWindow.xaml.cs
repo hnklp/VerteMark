@@ -301,7 +301,8 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            var button = sender as Button;
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false, button.Name);
 
             if (project.saved)
             {
@@ -460,7 +461,9 @@ namespace VerteMark
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            var button = sender as Button;
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true, button.Name);
+            
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
@@ -475,17 +478,24 @@ namespace VerteMark
 
         private void Invalid_Click(object sender, RoutedEventArgs e)
         {
-            project.SaveProject(3);
+            var button = sender as Button;
+            project.SaveProject(3, button.Name);
             project.saved = true;
-            JustSaveAlertWindow justSaveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator);
+            FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(true);
 
+            folderbrowserWindow.oldMainWindow = this;
+
+            // Získání středu původního okna
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
 
-            justSaveAlertWindow.Left = originalCenterX - justSaveAlertWindow.Width / 2;
-            justSaveAlertWindow.Top = originalCenterY - justSaveAlertWindow.Height / 2;
+            // Nastavení nové pozice nového okna tak, aby jeho střed byl totožný se středem původního okna
+            folderbrowserWindow.Left = originalCenterX - folderbrowserWindow.Width / 2;
+            folderbrowserWindow.Top = originalCenterY - folderbrowserWindow.Height / 2;
 
-            justSaveAlertWindow.Browse(true);
+            this.Visibility = Visibility.Hidden;
+            folderbrowserWindow.Show();
+
             this.Close();
 
         }

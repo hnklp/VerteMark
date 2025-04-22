@@ -51,7 +51,17 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
-        public void ProcessFolders()
+        /// <summary>
+        ///* ====================================================================
+        ///* = Mazani duplicitnich slozek / presouvani mezi slozkama             =
+        ///* ====================================================================
+        ///* ! TOHLE BY CHTELO CELE PREDELAT ABY TO BYLO UNIVERZALNI.           !
+        ///* ! OMLOUVAM SE ZA TUHLE PRASARNU S IFAMA ALE PROSTE TO MUSIME VYDAT.!
+        ///* ! TODO: TOTO UDELAT JINAK                                          !
+        ///* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// </summary>
+
+        public void ProcessFolders(string button)
         {
             string validatedPath = Path.Combine(tempFolderPath, "validated");
             string toValidatePath = Path.Combine(tempFolderPath, "to_validate");
@@ -82,36 +92,129 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 var toAnnotateDirectories = Directory.GetDirectories(toAnnotatePath);
 
                 // Vymazání shodujících se složek mezi to_validate a to_anotate
-                foreach (var toValidateDir in toValidateDirectories)
+                if (button == "SendForValidationButton")
                 {
-                    var directoryName = Path.GetFileName(toValidateDir);
-                    var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
-
-                    if (Directory.Exists(matchingDirInToAnnotate))
+                    foreach (var toValidateDir in toValidateDirectories)
                     {
-                        Directory.Delete(matchingDirInToAnnotate, true);
+                        var directoryName = Path.GetFileName(toValidateDir);
+                        var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
+
+                        if (Directory.Exists(matchingDirInToAnnotate))
+                        {
+                            Directory.Delete(matchingDirInToAnnotate, true);
+                        }
                     }
                 }
 
-                // Nové zpracování složek invalid - odstranění shodujících se složek z to_anotate
-                foreach (var invalidDir in invalidDirectories)
+                else
                 {
-                    var directoryName = Path.GetFileName(invalidDir);
-                    var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
-
-                    if (Directory.Exists(matchingDirInToAnnotate))
+                    foreach (var toAnotateDir in toAnnotateDirectories)
                     {
-                        Directory.Delete(matchingDirInToAnnotate, true);
+                        var directoryName = Path.GetFileName(toAnotateDir);
+                        var matchingDirInToValidate = Path.Combine(toValidatePath, directoryName);
+
+                        if (Directory.Exists(matchingDirInToValidate))
+                        {
+                            Directory.Delete(matchingDirInToValidate, true);
+                        }
                     }
                 }
+                
+                if (button == "SaveWIPButton")
+                {
+                    foreach (var toAnnotateDir in toAnnotateDirectories)
+                    {
+                        var directoryName = Path.GetFileName(toAnnotateDir);
+                        var matchingDirInInvalid = Path.Combine(invalidPath, directoryName);
+
+                        if (Directory.Exists(matchingDirInInvalid))
+                        {
+                            Directory.Delete(matchingDirInInvalid, true);
+                        }
+                    }
+                }
+                
+                else if (button == "SendForValidationButton")
+                {
+                    foreach (var toValidateDir in toValidateDirectories)
+                    {
+                        var directoryName = Path.GetFileName(toValidateDir);
+                        var matchingDirInInvalid = Path.Combine(invalidPath, directoryName);
+                        if (Directory.Exists(matchingDirInInvalid))
+                        {
+                            Directory.Delete(matchingDirInInvalid, true);
+                        }
+                    }
+                }
+
+                else if (button == "ValidateButton")
+                {
+                    foreach (var validatedDir in validatedDirectories)
+                    {
+                        var directoryName = Path.GetFileName(validatedDir);
+                        var matchingDirInInvalid = Path.Combine(invalidPath, directoryName);
+                        if (Directory.Exists(matchingDirInInvalid))
+                        {
+                            Directory.Delete(matchingDirInInvalid, true);
+                        }
+                    }
+                }
+
+                else
+                {
+                    foreach (var invalidDir in invalidDirectories)
+                    {
+                        var directoryName = Path.GetFileName(invalidDir);
+                        var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
+
+                        if (Directory.Exists(matchingDirInToAnnotate))
+                        {
+                            Directory.Delete(matchingDirInToAnnotate, true);
+                        }
+                    }
+                }
+               
+                if (button == "SaveWIPButton")
+                {
+                    foreach (var toAnnotateDir in toAnnotateDirectories)
+                    {
+                        var directoryName = Path.GetFileName(toAnnotateDir);
+                        var matchingDirInValidated = Path.Combine(validatedPath, directoryName);
+                        if (Directory.Exists(matchingDirInValidated))
+                        {
+                            Directory.Delete(matchingDirInValidated, true);
+                        }
+                    }
+                }
+
+                else
+                {
+                    foreach (var validatedDir in validatedDirectories)
+                    {
+                        var directoryName = Path.GetFileName(validatedDir);
+                        var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, directoryName);
+
+                        if (Directory.Exists(matchingDirInToAnnotate))
+                        {
+                            Directory.Delete(matchingDirInToAnnotate, true);
+                        }
+                    }
+                }
+
+                
             }
             catch (Exception ex)
             {
-                // Přidání chybového hlášení pro debugging
-                Console.WriteLine($"Error processing folders: {ex.Message}");
             }
         }
 
+        public void DeleteCurrentEdits(string name)
+        {
+            string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
+            var matchingDirInToAnnotate = Path.Combine(toAnnotatePath, name);
+            Directory.Delete(matchingDirInToAnnotate, true);
+
+        }
 
         // vrati list dicomu, pro ktere jeste neni vytvoren projekt
         public List<string> ChooseNewProject() {

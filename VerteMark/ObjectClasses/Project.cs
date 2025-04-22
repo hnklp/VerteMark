@@ -33,6 +33,8 @@ namespace VerteMark.ObjectClasses
         bool newProject;
         public bool saved;
         public bool anyProjectAvailable;
+        public string fileName;
+        public string projectType;
 
         public Project() {
             anotaces = new List<Anotace>();
@@ -116,7 +118,8 @@ namespace VerteMark.ObjectClasses
             anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
-        public void SaveProject(int savingParameter) {
+        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid, 4: neukladat
+        public void SaveProject(int savingParameter, string button) {
 
             // pred ulozenim - pokud je uzivatel anotator:
                     // zeptat se, zda je anotace zcela dokoncena a projekt je pripraven k validaci
@@ -133,7 +136,7 @@ namespace VerteMark.ObjectClasses
             }
             folderUtilityManager.Save(loggedInUser, newProject, 
                 originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
-                savingParameter); // bere tyto parametry pro ulozeni metadat
+                savingParameter, button); // bere tyto parametry pro ulozeni metadat
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
         }
@@ -599,6 +602,8 @@ namespace VerteMark.ObjectClasses
                 LoadProject(newPath);
             }
             originalPicture = folderUtilityManager.GetImage();
+            this.fileName = path;
+            this.projectType = projectType;
         }
 
         public bool GetIsAnotated()

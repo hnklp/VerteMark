@@ -8,9 +8,11 @@
         Title="Varování" ResizeMode="NoResize" ShowInTaskbar="False" Height="196" Width="571" Icon="../Pictures/icon.png" Closing="Window_Closing">
     <Grid HorizontalAlignment="Center" Width="571" Height="270" VerticalAlignment="Top">
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="446" Margin="0,23,0,0" TextAlignment="Center" FontSize="25"><Run Text="Chcete uložit "/><Run Language="en-gb" Text="rozpracovanou anotaci?"/></TextBlock>
-        <Button Content="Uložit a nezavírat" Click="PreSaveAndContinue_Click" Width="148" Height="22" FontSize="13" Margin="43,81,380,167"/>
-        <Button Content="Předat k validaci" Width="148" Height="22" Margin="212,81,211,167" Click="SaveAndContinue_Click" FontSize="13"/>
-        <Button Content="Zahodit změny" Width="148" Height="22" Click="Discard_Click" Margin="382,81,41,167" FontSize="13"/>
-        <Button Content="Zpět" Width="148" Height="22" Click="Back_Click" Margin="212,119,211,129" FontSize="13"/>
+        <Button Name ="SaveWIPButton" Content="Uložit do rozpracované" Click="SaveWIPButton_Click" Width="148" Height="22" FontSize="13" Margin="201,81,222,167"/>
+        <Button Name="SendForValidationButton" Content="Uložit do k validaci" Width="148" Height="22" Margin="43,119,380,129" Click="SendForValidation_Click" FontSize="13" IsEnabled="False"/>
+        <Button Content="Zahodit změny" Width="148" Height="22" Click="Discard_Click" Margin="360,81,63,167" FontSize="13"/>
+        <Button Content="Zpět" Width="148" Height="22" Click="Back_Click" Margin="360,119,63,129" FontSize="13"/>
+        <Button Name ="ValidateButton" Content="Uložit do validované" Width="148" Height="22" Margin="201,119,222,129" Click="ValidateButton_Click" FontSize="13" IsEnabled="False"/>
+        <Button Name="SaveToDICOMButton" Content="Uložit do DICOMs" Width="148" Height="22" Click="SaveToDICOMButton_Click" Margin="43,81,380,167" FontSize="13"/>
     </Grid>
 </Window>

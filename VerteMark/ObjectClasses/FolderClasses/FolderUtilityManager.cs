@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace VerteMark.ObjectClasses.FolderClasses {
     internal class FolderUtilityManager {
@@ -24,9 +25,16 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
+        //discards changes, removes extracted files
+        public void Discard(string button)
+        {
+            folderManager.ProcessFolders(button);
+            Directory.Delete(fileManager.outputPath, true);
+            SaveZip();
+        }
 
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
-        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter) {
+        public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter, string button) {
             switch (savingParameter) {
                 //Ulokladani do jednotlivych slozek
                 case 0:
@@ -51,16 +59,16 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 string oldMetaPath = fileManager.metaPath;
                 fileManager.metaPath = Path.Combine(fileManager.outputPath, Path.GetFileName(fileManager.metaPath));
                 if (oldMetaPath != fileManager.metaPath) {
-                    fileManager.CopyMetaFile(oldMetaPath);
-                }
+                        fileManager.CopyMetaFile(oldMetaPath);
+                    }
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
                 fileManager.ExtractAndSaveMetadata(user);
             }
-            fileManager.SaveJson(jsonString);
+                fileManager.SaveJson(jsonString);
             fileManager.SaveCroppedImage(image);
-            folderManager.ProcessFolders(); // deletes duplicit folders
+            folderManager.ProcessFolders(button); // deletes duplicit folders
             SaveZip();
         }
 

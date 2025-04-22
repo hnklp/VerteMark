@@ -69,43 +69,79 @@ namespace VerteMark.ObjectClasses.FolderClasses{
                     UpdateZipFromTempFolderRecursive(archive, "", tempFolderPath);
                 }
             }
-            catch (Exception ex){ Console.WriteLine(); }
+            catch (Exception ex){}
         }
 
-        private void UpdateZipFromTempFolderRecursive(ZipArchive archive, string currentPath, string currentFolderPath){
-            foreach (var directory in Directory.GetDirectories(currentFolderPath)){
-                var directoryName = Path.GetFileName(directory);
-                var zipEntry = archive.GetEntry(Path.Combine(currentPath, directoryName));
+        private void UpdateZipFromTempFolderRecursive(ZipArchive archive, string currentPath, string currentFolderPath)
+        {
+            // Získání aktuální cesty jako prefix pro ZIP entry
+            string pathPrefix = string.IsNullOrEmpty(currentPath) ? "" : currentPath.Replace("\\", "/").TrimEnd('/') + "/";
 
-                if (zipEntry == null){
-                    // Složka ve zip neexistuje, vytvoř ji
-                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, directoryName) + "/");
+            // Všechny soubory a složky ve zdrojové složce
+            var diskDirectories = new HashSet<string>(Directory.GetDirectories(currentFolderPath)
+                .Select(Path.GetFileName), StringComparer.OrdinalIgnoreCase);
+
+            var diskFiles = new HashSet<string>(Directory.GetFiles(currentFolderPath)
+                .Select(Path.GetFileName), StringComparer.OrdinalIgnoreCase);
+
+            // Smaž ze ZIPu složky/soubory, které už na disku nejsou
+            var entriesToDelete = archive.Entries
+                .Where(e => e.FullName.StartsWith(pathPrefix, StringComparison.OrdinalIgnoreCase))
+                .Where(e =>
+                {
+                    var relativePath = e.FullName.Substring(pathPrefix.Length).TrimEnd('/');
+                    if (string.IsNullOrEmpty(relativePath)) return false;
+                    if (relativePath.Contains("/"))
+                    {
+                        var topDir = relativePath.Substring(0, relativePath.IndexOf("/"));
+                        return !diskDirectories.Contains(topDir);
+                    }
+                    else
+                    {
+                        return !diskFiles.Contains(relativePath);
+                    }
+                }).ToList();
+
+            foreach (var entry in entriesToDelete)
+            {
+                entry.Delete();
+            }
+
+            // Rekurzivně zpracuj složky
+            foreach (var directory in Directory.GetDirectories(currentFolderPath))
+            {
+                var directoryName = Path.GetFileName(directory);
+                var zipEntryPath = Path.Combine(currentPath, directoryName).Replace("\\", "/") + "/";
+
+                // Pokud složka neexistuje ve ZIPu, vytvoř ji (prázdný entry pro složku)
+                if (!archive.Entries.Any(e => e.FullName.Equals(zipEntryPath, StringComparison.OrdinalIgnoreCase)))
+                {
+                    archive.CreateEntry(zipEntryPath);
                 }
 
-                // Projdi rekurzivně do podsložky
-                if (directoryName != "dicoms"){
+                if (directoryName != "dicoms")
+                {
                     UpdateZipFromTempFolderRecursive(archive, Path.Combine(currentPath, directoryName), directory);
                 }
             }
 
-            foreach (var file in Directory.GetFiles(currentFolderPath)){
+            // Zpracuj soubory
+            foreach (var file in Directory.GetFiles(currentFolderPath))
+            {
                 var fileName = Path.GetFileName(file);
-                var zipEntry = archive.GetEntry(Path.Combine(currentPath, fileName));
+                var zipEntryPath = Path.Combine(currentPath, fileName).Replace("\\", "/");
 
-                if (zipEntry == null){
-                    // Soubor ve zip neexistuje, přidej ho
-                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, fileName));
-                }
-                else{
-                    // Soubor ve zip existuje, smaž ho
-                    zipEntry.Delete();
-                    // Přidej nový soubor z temp
-                    zipEntry = archive.CreateEntry(Path.Combine(currentPath, fileName));
+                var existingEntry = archive.GetEntry(zipEntryPath);
+                if (existingEntry != null)
+                {
+                    existingEntry.Delete();
                 }
 
-                // Přidej obsah souboru
-                using (var entryStream = zipEntry.Open())
-                using (var fileStream = File.OpenRead(file)){
+                var newEntry = archive.CreateEntry(zipEntryPath);
+
+                using (var entryStream = newEntry.Open())
+                using (var fileStream = File.OpenRead(file))
+                {
                     fileStream.CopyTo(entryStream);
                 }
             }
