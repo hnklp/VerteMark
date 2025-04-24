@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="O Aplikaci" Height="350" Width="360" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png" Background="#FFF0F0F0">
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="65,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"><Run Text="VerteMark "/><Run Language="en-gb" Text="2.0 RC2"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="65,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"><Run Text="VerteMark "/><Run Language="en-gb" Text="2.0.1"/></TextBlock>
 
         <!--Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="260,28,20,284" Height="22" Width="70"/>-->
 
