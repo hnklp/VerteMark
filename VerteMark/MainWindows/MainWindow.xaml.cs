@@ -58,16 +58,16 @@ namespace VerteMark
             InitializeComponent();
             project = Project.GetInstance();
 
-            CommandBinding openCommandBinding = new CommandBinding(
-                    ApplicationCommands.Open,
-                    OpenProject_Click);
-            this.CommandBindings.Add(openCommandBinding);
+            //CommandBinding openCommandBinding = new CommandBinding(
+            //        ApplicationCommands.Open,
+            //        OpenProject_Click);
+            //this.CommandBindings.Add(openCommandBinding);
 
-            // Přidání CommandBinding pro Save
-            CommandBinding saveCommandBinding = new CommandBinding(
-                ApplicationCommands.Save,
-                Save_Click);
-            this.CommandBindings.Add(saveCommandBinding);
+            //// Přidání CommandBinding pro Save
+            //CommandBinding saveCommandBinding = new CommandBinding(
+            //    ApplicationCommands.Save,
+            //    Save_Click);
+            //this.CommandBindings.Add(saveCommandBinding);
 
             User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
@@ -328,7 +328,7 @@ namespace VerteMark
 
         private void ReportItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Nalezli jste chybu v aplikaci?" + "\n" + "Napište nám prosím mail na vertemark@prf.ujep.cz" + "\n" + "\n" + "Jako předmět uveďte BUG - Krátký popis chyby" + "\n" + "Do zprávy napište podrobný popis chyby a pokud víte, tak postup jak ji můžeme zreplikovat." + "\n" + "\n" + "Děkujeme za spolupráci!", "Nahlásit chybu");
+            MessageBox.Show("Nalezli jste chybu v aplikaci?" + "\n" + "Napište nám prosím mail na software@digitech.ujep.cz" + "\n" + "\n" + "Jako předmět uveďte BUG - VerteMark - Krátký popis chyby" + "\n" + "Do zprávy napište podrobný popis chyby a pokud víte, tak postup jak ji můžeme zreplikovat." + "\n" + "\n" + "Děkujeme za spolupráci!", "Nahlásit chybu");
         }
 
         /*

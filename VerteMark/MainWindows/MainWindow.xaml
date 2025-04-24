@@ -8,15 +8,15 @@
         Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
         PreviewMouseWheel="Window_PreviewMouseWheel">
 
-    <Window.InputBindings>
+    <!--<Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
         <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
-    </Window.InputBindings>
+    </Window.InputBindings>-->
 
-    <Window.CommandBindings>
+    <!--<Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenProject_Click"/>
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseItem_Click"/>
-    </Window.CommandBindings>
+    </Window.CommandBindings>-->
 
     <Window.Resources>
         <local:PercentageConverter x:Key="PercentageConverter"/>
@@ -36,16 +36,16 @@
 
     <DockPanel>
         <Menu Background="#FFF0F0F0" DockPanel.Dock="Top">
-            <MenuItem Header="Soubor">
+            <!--<MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>
                         <ToolTip Content="Otevře soubor" />
                     </MenuItem.ToolTip>
                 </MenuItem>
-                <MenuItem Command="Save" />
+                <MenuItem Name="SaveMenuButton" Command="Save" />
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close" />
-            </MenuItem>
+            </MenuItem>-->
             <MenuItem Header="O aplikaci" Click="AboutItem_Click">
             </MenuItem>
             <MenuItem Header="Nahlásit problém" Click="ReportItem_Click">

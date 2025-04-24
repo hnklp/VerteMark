@@ -91,7 +91,7 @@ namespace VerteMark
 
         private void ReportItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Nalezli jste chybu v aplikaci?" + "\n" + "Napište nám prosím mail na vertemark@prf.ujep.cz" + "\n" + "\n" + "Jako předmět uveďte BUG - Krátký popis chyby" + "\n" + "Do zprávy napište podrobný popis chyby a pokud víte, tak postup jak ji můžeme zreplikovat." + "\n" + "\n" + "Děkujeme za spolupráci!", "Nahlásit chybu");
+            MessageBox.Show("Nalezli jste chybu v aplikaci?" + "\n" + "Napište nám prosím mail na software@digitech.ujep.cz" + "\n" + "\n" + "Jako předmět uveďte BUG - VerteMark - Krátký popis chyby" + "\n" + "Do zprávy napište podrobný popis chyby a pokud víte, tak postup jak ji můžeme zreplikovat." + "\n" + "\n" + "Děkujeme za spolupráci!", "Nahlásit chybu");
         }
 
         private void SettingsButtonUI_Kopírovat_Click(object sender, RoutedEventArgs e) {
