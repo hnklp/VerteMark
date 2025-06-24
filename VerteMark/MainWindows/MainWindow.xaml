@@ -255,6 +255,9 @@
                             <TextBlock x:Name="KvpText" Text="KVP: -" />
                             <TextBlock x:Name="ExposureTimeText" Text="Čas expozice: -" />
                             <TextBlock x:Name="CurrentUaText" Text="Proud: -" />
+                            <TextBlock x:Name="PixelSpacingText" Text="ImagerPixelSpacing R/C: -" />
+                            <TextBlock x:Name="Rows" Text="Rows: - "/>
+                            <TextBlock x:Name="Columns" Text="Columns: - "/>
                         </StackPanel>
                     </GroupBox>
                 </Grid>

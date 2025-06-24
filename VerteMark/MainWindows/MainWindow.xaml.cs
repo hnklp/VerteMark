@@ -90,6 +90,9 @@ namespace VerteMark
                 KvpText.Text = $"KVP: {metadata.Kvp} kV";
                 ExposureTimeText.Text = $"Čas expozice: {metadata.ExposureTime} ms";
                 CurrentUaText.Text = $"X-Ray Tube Current: {metadata.XRayTubeCurrent} mA";
+                PixelSpacingText.Text = $"ImagerPixelSpacing R/C: {metadata.ImagerPixelSpacingValue} mm";
+                Rows.Text = $"Rows: {metadata.Rows}";
+                Columns.Text = $"Columns: {metadata.Columns}";
             }
             catch (Exception ex)
             {

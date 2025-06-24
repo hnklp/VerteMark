@@ -226,6 +226,9 @@ namespace VerteMark.ObjectClasses.FolderClasses
             public double ExposureTime { get; set; }
             public double XRayCurrentUa { get; set; }
             public double Kvp { get; set; }
+            public string ImagerPixelSpacingValue { get; set; }
+            public int Rows { get; set; }
+            public int Columns { get; set; }
         }
 
         public DicomMetadata GetSelectedMetadata()
@@ -245,7 +248,10 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 BodyPart = dataset.GetSingleValueOrDefault(DicomTag.BodyPartExamined, "Neznámá oblast"),
                 XRayTubeCurrent = dataset.GetSingleValueOrDefault(DicomTag.XRayTubeCurrent, 0),
                 ExposureTime = dataset.GetSingleValueOrDefault(DicomTag.ExposureTime, 0.0),
-                Kvp = dataset.GetSingleValueOrDefault(DicomTag.KVP, 0.0)
+                Kvp = dataset.GetSingleValueOrDefault(DicomTag.KVP, 0.0),
+                ImagerPixelSpacingValue = dataset.GetString(DicomTag.ImagerPixelSpacing),
+                Rows = dataset.GetSingleValueOrDefault(DicomTag.Rows, 0),
+                Columns = dataset.GetSingleValueOrDefault(DicomTag.Columns, 0)
             };
         }
 
