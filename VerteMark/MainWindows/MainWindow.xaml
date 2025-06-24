@@ -62,11 +62,13 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                         </Grid>
                     </ItemsPanelTemplate>
@@ -101,10 +103,24 @@
                 </Separator>
 
                 <StatusBarItem Grid.Column="4">
-                    <TextBlock x:Name="FileName" Text="FileName"/>
+                    <TextBlock x:Name="PatientIdText" Text="Patient ID: -" />
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="5">
+                <Separator Grid.Column="5">
+                <Separator.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                        <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                        <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    </LinearGradientBrush>
+                </Separator.Background>
+                </Separator>
+
+                <StatusBarItem Grid.Column="6">
+                   <TextBlock x:Name="FileName" Text="FileName"/>
+                </StatusBarItem>
+
+                <StatusBarItem Grid.Column="7">
                     <Button Width="25" Height="25" Click="ZoomOut" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/unzoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -112,12 +128,12 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="6">
+                <StatusBarItem Grid.Column="8">
                     <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="450" TickPlacement="BottomRight" 
                         Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="7">
+                <StatusBarItem Grid.Column="9">
                     <Button Width="25" Height="25" Click="ZoomIn" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/zoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -125,7 +141,7 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="8">
+                <StatusBarItem Grid.Column="10">
                     <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}"/>
                 </StatusBarItem>
             </StatusBar>
@@ -219,8 +235,31 @@
             <Rectangle Grid.Column="2" Fill="#FFF0F0F0" HorizontalAlignment="Left" Width="3"/>
 
             <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Margin="0,55,0,0">
-                <Grid x:Name="ButtonGrid" Grid.Column="2"/>
+                <Grid x:Name="ButtonGrid" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- pro tlačítka -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- pro metadata -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Tlačítka (anotace, implantáty...) -->
+                    <StackPanel Grid.Row="0" x:Name="AnnotationButtonPanel"/>
+
+                    <!-- Metadata -->
+                    <GroupBox Grid.Row="1" Header="DICOM Metadata" Margin="5" Padding="5">
+                        <StackPanel>
+                            <TextBlock x:Name="ManufacturerText" Text="Výrobce: -" />
+                            <TextBlock x:Name="ModelText" Text="Model: -" />
+                            <TextBlock x:Name="BodyPartText" Text="Oblast: -" />
+                            <TextBlock x:Name="KvpText" Text="KVP: -" />
+                            <TextBlock x:Name="ExposureTimeText" Text="Čas expozice: -" />
+                            <TextBlock x:Name="CurrentUaText" Text="Proud: -" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
             </ScrollViewer>
+
 
 
             <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">

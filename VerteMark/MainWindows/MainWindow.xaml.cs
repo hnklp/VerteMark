@@ -72,12 +72,30 @@ namespace VerteMark
             User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
-            FileName.Text = project.folderUtilityManager.fileManager.fileName;
+            FileName.Text = "Soubor: " + project.folderUtilityManager.fileManager.fileName;
             ImageHolder.Source = project.GetOriginalPicture() ?? ImageHolder.Source; // Pokud og picture není null tak ho tam dosad
             stateManager = new StateManager();
             stateManager.StateChanged += HandleStateChanged;
             activeToolbarButton = DrawTButton;
             savingParam = 0;
+
+            try
+            {
+                var metadata = project.folderUtilityManager.fileManager.GetSelectedMetadata();
+
+                ManufacturerText.Text = $"Výrobce: {metadata.Manufacturer}";
+                ModelText.Text = $"Model: {metadata.ModelName}";
+                PatientIdText.Text = $"ID Pacienta: {metadata.PatientId}";
+                BodyPartText.Text = $"Oblast: {metadata.BodyPart}";
+                KvpText.Text = $"KVP: {metadata.Kvp} kV";
+                ExposureTimeText.Text = $"Čas expozice: {metadata.ExposureTime} ms";
+                CurrentUaText.Text = $"X-Ray Tube Current: {metadata.XRayTubeCurrent} mA";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Nepodařilo se načíst metadata z DICOM souboru:\n" + ex.Message);
+            }
+
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;

@@ -8,7 +8,8 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace VerteMark.ObjectClasses.FolderClasses {
+namespace VerteMark.ObjectClasses.FolderClasses
+{
     /// <summary>
     /// Správa a manipulace se soubory pro projekt.
     /// 
@@ -18,7 +19,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
     /// * Ukládání projektu a souvisejících souborů.
     /// </summary>
     /// 
-    internal class FileManager {
+    internal class FileManager
+    {
         public string outputPath;
         public string? dicomPath;
         public string? pngPath;
@@ -28,43 +30,53 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         public string? fileName;
 
 
-        public FileManager() {
+        public FileManager()
+        {
             outputPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
-        public void TransformPaths() {
+        public void TransformPaths()
+        {
             pngPath = Path.Combine(outputPath, Path.GetFileName(pngPath));
             jsonPath = Path.Combine(outputPath, Path.GetFileName(jsonPath));
         }
 
-        public void CopyMetaFile(string sourcePath) {
-            if (!File.Exists(sourcePath)) {
+        public void CopyMetaFile(string sourcePath)
+        {
+            if (!File.Exists(sourcePath))
+            {
                 throw new FileNotFoundException($"The source file does not exist: {sourcePath}");
             }
 
             // Ensure the destination directory exists
             string destinationDirectory = Path.GetDirectoryName(metaPath);
-            if (!Directory.Exists(destinationDirectory)) {
+            if (!Directory.Exists(destinationDirectory))
+            {
                 Directory.CreateDirectory(destinationDirectory);
             }
 
             File.Copy(sourcePath, metaPath, overwrite: true);
         }
 
-        public void SaveCroppedImage(BitmapImage image) {
+        public void SaveCroppedImage(BitmapImage image)
+        {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));
-            using (FileStream stream = new FileStream(pngPath, FileMode.Create)) {
+            using (FileStream stream = new FileStream(pngPath, FileMode.Create))
+            {
                 // Uložení bitmapy do souboru pomocí encoderu
                 encoder.Save(stream);
             }
         }
 
-        public void SaveJson(string jsonString) {
+        public void SaveJson(string jsonString)
+        {
             string? path = jsonPath;
-            if (path != null) {
-                using (StreamWriter sw = new StreamWriter(path)) {
+            if (path != null)
+            {
+                using (StreamWriter sw = new StreamWriter(path))
+                {
                     sw.Write(jsonString);
                 }
             }
@@ -72,8 +84,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         // nacte obrazek pomoci cesty pngPath
-        public BitmapImage LoadBitmapImage() {
-            try {
+        public BitmapImage LoadBitmapImage()
+        {
+            try
+            {
                 BitmapImage bitmapImage = new BitmapImage();
 
                 // Set BitmapImage properties
@@ -89,7 +103,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 return bitmapImage;
             }
 
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 // Handle any exceptions, e.g., file not found or invalid image format
                 return null;
             }
@@ -102,18 +117,22 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * ============================================
         */
 
-        public void AddUserActionToMetadata(User user) {
-            if (!File.Exists(metaPath)) {
+        public void AddUserActionToMetadata(User user)
+        {
+            if (!File.Exists(metaPath))
+            {
                 return;
             }
             DateTime currentTime = DateTime.Now;
             string jsonMetadata = File.ReadAllText(metaPath);
             JObject allMetadata = JObject.Parse(jsonMetadata);
-            if (allMetadata["History"] == null) {
+            if (allMetadata["History"] == null)
+            {
                 allMetadata["History"] = new JObject();
             }
             string historyEntryKey = currentTime.ToString("dd. MM. yyyy HH:mm:ss");
-            if (((JObject)allMetadata["History"]).ContainsKey(historyEntryKey)) {
+            if (((JObject)allMetadata["History"]).ContainsKey(historyEntryKey))
+            {
                 historyEntryKey += "." + currentTime.Millisecond.ToString();
             }
             JObject newEntry = new JObject(
@@ -132,8 +151,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         */
 
         // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
-        public void CreateOutputFile(string outputDirectoryName) {
-            if (outputPath != null) {
+        public void CreateOutputFile(string outputDirectoryName)
+        {
+            if (outputPath != null)
+            {
                 string fullPath = Path.Combine(outputPath, outputDirectoryName);
                 Directory.CreateDirectory(fullPath);
                 outputPath = fullPath;
@@ -143,7 +164,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
         // nastavi instanci pngPath
-        public void ExtractImageFromDicom() {
+        public void ExtractImageFromDicom()
+        {
             DicomFile dicomFile = DicomFile.Open(dicomPath);
             DicomImage image = new DicomImage(dicomFile.Dataset);
             Bitmap bmp = image.RenderImage().As<Bitmap>();
@@ -156,8 +178,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
-        public void ExtractAndSaveMetadata(User user) {
-            if (!File.Exists(dicomPath)) {
+        public void ExtractAndSaveMetadata(User user)
+        {
+            if (!File.Exists(dicomPath))
+            {
                 return;
             }
             string csvFileName = key + "-" + Path.GetFileName(dicomPath) + ".meta";
@@ -167,7 +191,8 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
             var allMetadata = new Dictionary<string, object>();
             var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
-            foreach (DicomItem item in dicomFile.Dataset) {
+            foreach (DicomItem item in dicomFile.Dataset)
+            {
                 var metadataItem = new Dictionary<string, string>();
                 metadataItem["Tag"] = item.Tag.ToString();
                 metadataItem["Value"] = item.ToString();
@@ -180,7 +205,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             DateTime theTime = DateTime.Now;
 
             var history = new Dictionary<string, Dictionary<string, string>>();
-            history[theTime.ToString("dd. MM. yyyy HH:mm:ss")] = new Dictionary<string, string>{ 
+            history[theTime.ToString("dd. MM. yyyy HH:mm:ss")] = new Dictionary<string, string>{
                 { "id", user.UserID }, { "action", user.Validator ? "VALIDATION" : "ANNOTATION" } };
             allMetadata["History"] = history;
 
@@ -188,5 +213,41 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
             File.WriteAllText(metaPath, jsonAllMetadata);
         }
+
+
+        public class DicomMetadata
+        {
+            public string Manufacturer { get; set; }
+            public string ModelName { get; set; }
+            public string PatientId { get; set; }
+            public string IdentityRemoved { get; set; }
+            public string BodyPart { get; set; }
+            public int XRayTubeCurrent { get; set; }
+            public double ExposureTime { get; set; }
+            public double XRayCurrentUa { get; set; }
+            public double Kvp { get; set; }
+        }
+
+        public DicomMetadata GetSelectedMetadata()
+        {
+            if (string.IsNullOrEmpty(dicomPath))
+                throw new InvalidOperationException("Cesta k DICOM souboru není nastavena.");
+
+            var dicomFile = DicomFile.Open(dicomPath);
+            var dataset = dicomFile.Dataset;
+
+            return new DicomMetadata
+            {
+                Manufacturer = dataset.GetSingleValueOrDefault(DicomTag.Manufacturer, "Neznámý"),
+                ModelName = dataset.GetSingleValueOrDefault(DicomTag.ManufacturerModelName, "Neznámý"),
+                PatientId = dataset.GetSingleValueOrDefault(DicomTag.PatientID, "Neznámé"),
+                IdentityRemoved = dataset.GetSingleValueOrDefault(DicomTag.PatientIdentityRemoved, "Neznámé"),
+                BodyPart = dataset.GetSingleValueOrDefault(DicomTag.BodyPartExamined, "Neznámá oblast"),
+                XRayTubeCurrent = dataset.GetSingleValueOrDefault(DicomTag.XRayTubeCurrent, 0),
+                ExposureTime = dataset.GetSingleValueOrDefault(DicomTag.ExposureTime, 0.0),
+                Kvp = dataset.GetSingleValueOrDefault(DicomTag.KVP, 0.0)
+            };
+        }
+
     }
 }
