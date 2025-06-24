@@ -229,6 +229,7 @@ namespace VerteMark.ObjectClasses.FolderClasses
             public string ImagerPixelSpacingValue { get; set; }
             public int Rows { get; set; }
             public int Columns { get; set; }
+            public int IdentityRemovedInt { get; set; } = 0;
         }
 
         public DicomMetadata GetSelectedMetadata()
@@ -251,7 +252,8 @@ namespace VerteMark.ObjectClasses.FolderClasses
                 Kvp = dataset.GetSingleValueOrDefault(DicomTag.KVP, 0.0),
                 ImagerPixelSpacingValue = dataset.GetString(DicomTag.ImagerPixelSpacing),
                 Rows = dataset.GetSingleValueOrDefault(DicomTag.Rows, 0),
-                Columns = dataset.GetSingleValueOrDefault(DicomTag.Columns, 0)
+                Columns = dataset.GetSingleValueOrDefault(DicomTag.Columns, 0),
+                IdentityRemovedInt = dataset.GetSingleValueOrDefault(DicomTag.PatientIdentityRemoved, "Ne").Equals("Ano") ? 1 : 0
             };
         }
 

@@ -64,6 +64,8 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -103,7 +105,7 @@
                 </Separator>
 
                 <StatusBarItem Grid.Column="4">
-                    <TextBlock x:Name="PatientIdText" Text="Patient ID: -" />
+                    <TextBlock x:Name="IdentityRemovedText" Text="Anonymizováno: -" />
                 </StatusBarItem>
 
                 <Separator Grid.Column="5">
@@ -117,10 +119,24 @@
                 </Separator>
 
                 <StatusBarItem Grid.Column="6">
+                    <TextBlock x:Name="PatientIdText" Text="Patient ID: -" />
+                </StatusBarItem>
+
+                <Separator Grid.Column="7">
+                    <Separator.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Separator.Background>
+                </Separator>
+
+                <StatusBarItem Grid.Column="8">
                    <TextBlock x:Name="FileName" Text="FileName"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="7">
+                <StatusBarItem Grid.Column="9">
                     <Button Width="25" Height="25" Click="ZoomOut" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/unzoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -128,12 +144,12 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="8">
+                <StatusBarItem Grid.Column="10">
                     <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="450" TickPlacement="BottomRight" 
                         Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="9">
+                <StatusBarItem Grid.Column="11">
                     <Button Width="25" Height="25" Click="ZoomIn" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/zoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -141,7 +157,7 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="10">
+                <StatusBarItem Grid.Column="12">
                     <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}"/>
                 </StatusBarItem>
             </StatusBar>

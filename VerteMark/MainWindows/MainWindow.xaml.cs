@@ -85,6 +85,7 @@ namespace VerteMark
 
                 ManufacturerText.Text = $"Výrobce: {metadata.Manufacturer}";
                 ModelText.Text = $"Model: {metadata.ModelName}";
+                IdentityRemovedText.Text = $"Anonymizováno: {metadata.IdentityRemoved}";
                 PatientIdText.Text = $"ID Pacienta: {metadata.PatientId}";
                 BodyPartText.Text = $"Oblast: {metadata.BodyPart}";
                 KvpText.Text = $"KVP: {metadata.Kvp} kV";
