@@ -58,16 +58,23 @@ namespace VerteMark
             InitializeComponent();
             project = Project.GetInstance();
 
-            //CommandBinding openCommandBinding = new CommandBinding(
-            //        ApplicationCommands.Open,
-            //        OpenProject_Click);
-            //this.CommandBindings.Add(openCommandBinding);
+            // Přidání CommandBinding pro Open (Ctrl+O)
+            CommandBinding openCommandBinding = new CommandBinding(
+                ApplicationCommands.Open,
+                OpenProject_Click);
+            this.CommandBindings.Add(openCommandBinding);
 
-            //// Přidání CommandBinding pro Save
-            //CommandBinding saveCommandBinding = new CommandBinding(
-            //    ApplicationCommands.Save,
-            //    Save_Click);
-            //this.CommandBindings.Add(saveCommandBinding);
+            // Přidání CommandBinding pro Save (Ctrl+S)
+            CommandBinding saveCommandBinding = new CommandBinding(
+                ApplicationCommands.Save,
+                Save_Click);
+            this.CommandBindings.Add(saveCommandBinding);
+
+            // Přidání CommandBinding pro Close (Ctrl+Q)
+            CommandBinding closeCommandBinding = new CommandBinding(
+                ApplicationCommands.Close,
+                CloseItem_Click);
+            this.CommandBindings.Add(closeCommandBinding);
 
             User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
@@ -301,8 +308,9 @@ namespace VerteMark
 
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false, button.Name);
+            string buttonName = sender is Button button ? button.Name : "Unknown";
+
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, false, buttonName);
 
             if (project.saved)
             {
@@ -466,16 +474,15 @@ namespace VerteMark
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true, button.Name);
-            
+            string buttonName = sender is Button button ? button.Name : "Unknown";
+
+            JustSaveAlertWindow saveAlertWindow = new JustSaveAlertWindow(this, project.GetLoggedInUser().Validator, true, buttonName);
 
             double originalCenterX = Left + Width / 2;
             double originalCenterY = Top + Height / 2;
 
             saveAlertWindow.Left = originalCenterX - saveAlertWindow.Width / 2;
             saveAlertWindow.Top = originalCenterY - saveAlertWindow.Height / 2;
-
 
             saveAlertWindow.Show();
         }
