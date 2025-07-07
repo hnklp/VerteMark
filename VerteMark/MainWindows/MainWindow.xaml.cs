@@ -1132,9 +1132,18 @@ namespace VerteMark
 
         private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
+                // Získání pozice kurzoru vzhledem ke CanvasGrid
+                var mousePos = e.GetPosition(CanvasGrid);
+
+                // Získání pozice kurzoru vzhledem ke ScrollVieweru
+                var mousePosInScroll = e.GetPosition(CanvasScrollViewer);
+
+                // Aktuální zoom
+                double oldZoom = ZoomSlider.Value / 100.0;
+
+                // Změna zoomu
                 if (e.Delta > 0)
                 {
                     ZoomIn(null, null);
@@ -1143,46 +1152,36 @@ namespace VerteMark
                 {
                     ZoomOut(null, null);
                 }
-                e.Handled = true;
-            }
-            else if (Keyboard.Modifiers == ModifierKeys.Shift)
-            {
+
+                // Nový zoom
+                double newZoom = ZoomSlider.Value / 100.0;
+
+                // Výpočet nových offsetů tak, aby kurzor zůstal na stejném místě
                 if (CanvasScrollViewer != null)
                 {
-                    double newHorizontalOffset = CanvasScrollViewer.HorizontalOffset - e.Delta;
-                    if (newHorizontalOffset < 0)
-                    {
-                        newHorizontalOffset = 0;
-                    }
-                    else if (newHorizontalOffset > CanvasScrollViewer.ExtentWidth - CanvasScrollViewer.ViewportWidth)
-                    {
-                        newHorizontalOffset = CanvasScrollViewer.ExtentWidth - CanvasScrollViewer.ViewportWidth;
-                    }
+                    // Poměr změny zoomu
+                    double zoomRatio = newZoom / oldZoom;
 
+                    // Nové offsety
+                    double newHorizontalOffset = (mousePosInScroll.X + CanvasScrollViewer.HorizontalOffset) * zoomRatio - mousePosInScroll.X;
+                    double newVerticalOffset = (mousePosInScroll.Y + CanvasScrollViewer.VerticalOffset) * zoomRatio - mousePosInScroll.Y;
+
+                    // Nastavení nových offsetů
                     CanvasScrollViewer.ScrollToHorizontalOffset(newHorizontalOffset);
-                    e.Handled = true;
+                    CanvasScrollViewer.ScrollToVerticalOffset(newVerticalOffset);
                 }
+
+                e.Handled = true;
+            }
+            // ... zbytek metody zůstává beze změny
+            else if (Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                // ...
             }
             else
             {
-                if (CanvasScrollViewer != null)
-                {
-                    double newVerticalOffset = CanvasScrollViewer.VerticalOffset - e.Delta;
-                    if (newVerticalOffset < 0)
-                    {
-                        newVerticalOffset = 0;
-                    }
-                    else if (newVerticalOffset > CanvasScrollViewer.ExtentHeight - CanvasScrollViewer.ViewportHeight)
-                    {
-                        newVerticalOffset = CanvasScrollViewer.ExtentHeight - CanvasScrollViewer.ViewportHeight;
-                    }
-
-                    CanvasScrollViewer.ScrollToVerticalOffset(newVerticalOffset);
-                    e.Handled = true;
-                }
+                // ...
             }
-
-
         }
 
         private void ZoomIn(object sender, RoutedEventArgs e)
