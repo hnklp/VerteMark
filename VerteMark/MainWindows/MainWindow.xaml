@@ -8,15 +8,11 @@
         Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
         PreviewMouseWheel="Window_PreviewMouseWheel">
 
-    <!--<Window.InputBindings>
-        <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
-        <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
-    </Window.InputBindings>-->
-
-    <!--<Window.CommandBindings>
-        <CommandBinding Command="Open" Executed="OpenProject_Click"/>
-        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseItem_Click"/>
-    </Window.CommandBindings>-->
+	<Window.InputBindings>
+		<KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
+		<KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
+		<KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
+	</Window.InputBindings>
 
     <Window.Resources>
         <local:PercentageConverter x:Key="PercentageConverter"/>
