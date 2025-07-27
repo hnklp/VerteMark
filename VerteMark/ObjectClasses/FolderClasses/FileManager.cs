@@ -188,5 +188,93 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
             File.WriteAllText(metaPath, jsonAllMetadata);
         }
+
+        public JObject ExtractPatientMetadata()
+        {
+            if (!File.Exists(dicomPath))
+            {
+                return null;
+            }
+
+            try
+            {
+                DicomFile dicomFile = DicomFile.Open(dicomPath);
+                var patientMetadata = new JObject();
+
+                // Common information <- pravděpodobně cílovka pro UJEP
+                TryAddDicomValue(patientMetadata, "PatientName", dicomFile.Dataset, DicomTag.PatientName);
+                TryAddDicomValue(patientMetadata, "PatientID", dicomFile.Dataset, DicomTag.PatientID);
+                TryAddDicomValue(patientMetadata, "PatientBirthDate", dicomFile.Dataset, DicomTag.PatientBirthDate);
+                TryAddDicomValue(patientMetadata, "PatientSex", dicomFile.Dataset, DicomTag.PatientSex);
+                TryAddDicomValue(patientMetadata, "PatientAge", dicomFile.Dataset, DicomTag.PatientAge);
+                TryAddDicomValue(patientMetadata, "PatientWeight", dicomFile.Dataset, DicomTag.PatientWeight);
+                TryAddDicomValue(patientMetadata, "PatientSize", dicomFile.Dataset, DicomTag.PatientSize);
+
+                // Study information
+                TryAddDicomValue(patientMetadata, "StudyDate", dicomFile.Dataset, DicomTag.StudyDate);
+                TryAddDicomValue(patientMetadata, "StudyTime", dicomFile.Dataset, DicomTag.StudyTime);
+                TryAddDicomValue(patientMetadata, "StudyDescription", dicomFile.Dataset, DicomTag.StudyDescription);
+                TryAddDicomValue(patientMetadata, "StudyInstanceUID", dicomFile.Dataset, DicomTag.StudyInstanceUID);
+
+                // Series information
+                TryAddDicomValue(patientMetadata, "SeriesDate", dicomFile.Dataset, DicomTag.SeriesDate);
+                TryAddDicomValue(patientMetadata, "SeriesTime", dicomFile.Dataset, DicomTag.SeriesTime);
+                TryAddDicomValue(patientMetadata, "SeriesDescription", dicomFile.Dataset, DicomTag.SeriesDescription);
+                TryAddDicomValue(patientMetadata, "SeriesInstanceUID", dicomFile.Dataset, DicomTag.SeriesInstanceUID);
+
+                // Modality and body part
+                TryAddDicomValue(patientMetadata, "Modality", dicomFile.Dataset, DicomTag.Modality);
+                TryAddDicomValue(patientMetadata, "BodyPartExamined", dicomFile.Dataset, DicomTag.BodyPartExamined);
+
+                // Institution information
+                TryAddDicomValue(patientMetadata, "InstitutionName", dicomFile.Dataset, DicomTag.InstitutionName);
+                TryAddDicomValue(patientMetadata, "InstitutionAddress", dicomFile.Dataset, DicomTag.InstitutionAddress);
+
+                // Equipment information
+                TryAddDicomValue(patientMetadata, "Manufacturer", dicomFile.Dataset, DicomTag.Manufacturer);
+                TryAddDicomValue(patientMetadata, "ManufacturerModelName", dicomFile.Dataset, DicomTag.ManufacturerModelName);
+
+                // Další lze přidat podobným způsobem
+
+                return patientMetadata;
+            }
+
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error extracting patient metadata: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void TryAddDicomValue(JObject metadata, string key, DicomDataset dataset, DicomTag tag)
+        {
+            if (dataset.Contains(tag))
+            {
+                try
+                {
+                    var value = dataset.GetString(tag);
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        metadata[key] = value;
+                    }
+                }
+                catch
+                {
+                    // pokud nelze získat jako string, zkusit získat jako hodnotu objektu
+                    try
+                    {
+                        var values = dataset.GetValues<object>(tag);
+                        if (values != null && values.Length > 0)
+                        {
+                            metadata[key] = string.Join(", ", values);
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore
+                    }
+                }
+            }
+        }
     }
 }
