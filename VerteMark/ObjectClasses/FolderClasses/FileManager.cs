@@ -61,10 +61,27 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
-        public void SaveJson(string jsonString) {
+        public void SaveJson(string jsonString, User user)
+        {
             string? path = jsonPath;
-            if (path != null) {
-                using (StreamWriter sw = new StreamWriter(path)) {
+
+            if (path != null)
+            {
+                string directory = Path.GetDirectoryName(path)!;
+                string fileName = Path.GetFileName(path);
+
+                // Odeber případný stávající prefix
+                if (fileName.StartsWith("v_") || fileName.StartsWith("a_"))
+                {
+                    fileName = fileName.Substring(2);
+                }
+
+                // Přidej nový prefix podle role
+                string prefix = user.Validator ? "v_" : "a_";
+                path = Path.Combine(directory, prefix + fileName);
+
+                using (StreamWriter sw = new StreamWriter(path))
+                {
                     sw.Write(jsonString);
                 }
             }
