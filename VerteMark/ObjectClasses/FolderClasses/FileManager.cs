@@ -52,6 +52,18 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             File.Copy(sourcePath, metaPath, overwrite: true);
         }
 
+        public void CopyAllJsonFiles(string sourcePath) {
+
+            string[] jsonFiles = Directory.GetFiles(sourcePath, "*.json");
+
+            foreach (string file in jsonFiles) {
+                string fileName = Path.GetFileName(file);
+                string destPath = Path.Combine(outputPath, fileName);
+
+                File.Copy(file, destPath, overwrite: true);
+            }
+        }
+
         public void SaveCroppedImage(BitmapImage image) {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));
@@ -63,27 +75,28 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         public void SaveJson(string jsonString, User user)
         {
-            string? path = jsonPath;
-
-            if (path != null)
+            if (jsonPath != null)
             {
-                string directory = Path.GetDirectoryName(path)!;
-                string fileName = Path.GetFileName(path);
+                string directory = Path.GetDirectoryName(jsonPath)!;
+                string fileName = Path.GetFileName(jsonPath);
 
-                // Odeber případný stávající prefix
+                // Odstraň prefix, pokud existuje
                 if (fileName.StartsWith("v_") || fileName.StartsWith("a_"))
                 {
                     fileName = fileName.Substring(2);
                 }
 
-                // Přidej nový prefix podle role
+                // Vytvoř cestu se správným prefixem
                 string prefix = user.Validator ? "v_" : "a_";
-                path = Path.Combine(directory, prefix + fileName);
+                string path = Path.Combine(directory, prefix + fileName);
 
                 using (StreamWriter sw = new StreamWriter(path))
                 {
                     sw.Write(jsonString);
                 }
+
+                // Aktualizuj jsonPath podle role
+                jsonPath = path;
             }
         }
 
