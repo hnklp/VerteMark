@@ -3,7 +3,8 @@
     public enum AppState
     {
         Drawing,
-        Cropping
+        Cropping,
+        ReadOnly
     }
 
     public class StateManager

@@ -91,18 +91,6 @@ namespace VerteMark
             //this.Closing += DeleteTempFolder_Closing; 
             // !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
 
-            Loaded += delegate
-            {
-                SetCanvasComponentsSize();
-                AddPreviewImages();
-                SwitchActiveAnot("V0");
-                LoadPointMarkers();
-
-                // start at 25% zoom
-                double zoomFactor = 0.25;
-                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
-            };
-
             // zvalidneni vsech anotaci, pokud je user validator:
             if (loggedInUser != null && loggedInUser.Validator)
             {
@@ -118,6 +106,30 @@ namespace VerteMark
 
             CanvasScrollViewer.ManipulationDelta += CustomScrollViewer_ManipulationDelta; // Upravený řádek
             CanvasScrollViewer.ManipulationInertiaStarting += CustomScrollViewer_ManipulationInertiaStarting; // Upravený řádek
+
+            Loaded += delegate
+            {
+                SetCanvasComponentsSize();
+                AddPreviewImages();
+                SwitchActiveAnot("V0");
+                LoadPointMarkers();
+
+                // start at 25% zoom
+                double zoomFactor = 0.25;
+                CanvasGrid.LayoutTransform = new ScaleTransform(zoomFactor, zoomFactor);
+
+                if (project.IsReadOnly())
+                {
+                    stateManager.CurrentState = AppState.ReadOnly;
+
+                    MessageBox.Show(
+                        "Tento DICOM již byl validován. Je možné pouze prohlížení.",
+                        "Režim prohlížení",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            };
         }
 
         private void CanvasGrid_TouchDown(object sender, TouchEventArgs e)
@@ -350,6 +362,18 @@ namespace VerteMark
 
             switch (newState)
             {
+                case AppState.ReadOnly:
+
+                    CropTButton.IsEnabled = false;
+                    DrawTButton.IsEnabled = false;
+                    delete.IsEnabled = false;
+                    ButtonGrid.IsEnabled = false;
+                    InvalidButtonUI.IsEnabled = false;
+                    DiscardButtonUI.IsEnabled = false;
+                    PointCanvas.IsEnabled = false;
+
+                    goto case AppState.Drawing;
+
                 case AppState.Drawing:
 
                     SetInkCanvasMode(newState);
