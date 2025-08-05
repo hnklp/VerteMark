@@ -512,6 +512,30 @@ namespace VerteMark
 
         }
 
+        private void Mirror_Click(object sender, RoutedEventArgs e)
+        {
+
+            //Zešednutí tlačítka po anotaci se provádí společně s cropem v ToggleCropButton
+
+            if (project.GetOriginalPicture() != null)
+            {
+                project.MirrorOriginalPicture();
+
+                ImageHolder.Source = project.GetOriginalPicture();
+                CroppedImage.Source = null;
+                PreviewImage.Source = null;
+
+                // Update sizes
+                SetCanvasComponentsSize();
+                UpdateElementsWithAnotace();
+                LoadPointMarkers();
+            }
+            else
+            {
+                MessageBox.Show("Obrázek není načtený.", "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             project.DeleteTempFolder();
@@ -601,6 +625,8 @@ namespace VerteMark
         {
             CropTButton.IsEnabled = isEnabled;
             CropTButton.Opacity = isEnabled ? 1 : 0.5;
+            mirror.IsEnabled = isEnabled;
+            mirror.Opacity = isEnabled ? 1 : 0.5;
         }
 
         //Smaže obsah vybrané anotace
