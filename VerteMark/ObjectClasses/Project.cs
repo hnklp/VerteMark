@@ -35,6 +35,7 @@ namespace VerteMark.ObjectClasses
         public bool anyProjectAvailable;
         public string fileName;
         public string projectType;
+        JObject? patientMetadata; // Metadata pacienta, pokud jsou k dispozici
 
         public Project() {
             anotaces = new List<Anotace>();
@@ -44,6 +45,7 @@ namespace VerteMark.ObjectClasses
             newProject = false;
             saved = false;
             anyProjectAvailable = true;
+            patientMetadata = null;
         }
 
         public void CropOriginalPicture(BitmapSource image)
@@ -78,7 +80,21 @@ namespace VerteMark.ObjectClasses
             CreateNewAnotaces();
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
+
+            // Extrahoat metadata pacienta z DICOM souboru při vytvoření projektu (to naše klíčové)
+            patientMetadata = folderUtilityManager.fileManager.ExtractPatientMetadata();
+
+            // Debug !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (patientMetadata != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Patient metadata extracted: {patientMetadata.ToString()}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Failed to extract patient metadata");
+            }
         }
+
         public void CreateNewProjectDEBUG() {
             newProject = true;
             CreateNewAnotaces();
@@ -98,6 +114,17 @@ namespace VerteMark.ObjectClasses
             anotaces = new List<Anotace>();
             activeAnotace = null;
             string jsonString = folderUtilityManager.LoadProject(path);
+
+            if (string.IsNullOrWhiteSpace(jsonString))
+            {
+                // Pokud neexistuje pole s metadaty, nevadí!
+                CreateNewAnotaces();
+                originalPicture = folderUtilityManager.GetImage();
+                return;
+            }
+
+            // Extrahovat metadata pacienta z JSONu, protože existují!
+            patientMetadata = jsonManip.GetPatientMetadataFromJson(jsonString);
 
             List<JArray> annotations = jsonManip.UnpackJson(jsonString);
             if (annotations != null || annotations.Count > 0) {
@@ -134,9 +161,27 @@ namespace VerteMark.ObjectClasses
                     valids.Add(anot.Id);
                 }
             }
-            folderUtilityManager.Save(loggedInUser, newProject, 
-                originalPicture, jsonManip.ExportJson(loggedInUser, dicts, valids), 
-                savingParameter, button); // bere tyto parametry pro ulozeni metadat
+
+            // Debug !!!!!!!!!!!!!!!!!!!!!!
+            if (patientMetadata != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Saving with patient metadata: {patientMetadata.ToString()}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("No patient metadata to save");
+            }
+
+            // předat metadata do exportu
+            string jsonToSave = jsonManip.ExportJson(loggedInUser, dicts, valids, patientMetadata);
+
+            // Debug !!!!!!!!!!!!!!!!!!!!!!!!!!!
+            System.Diagnostics.Debug.WriteLine($"Final JSON to save: {jsonToSave}");
+
+            folderUtilityManager.Save(loggedInUser, newProject,
+                originalPicture, jsonToSave,
+                savingParameter, button);
+
             this.saved = true;
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
         }
@@ -655,6 +700,11 @@ namespace VerteMark.ObjectClasses
         public List<string> ValidatedDicoms()
         {
             return folderUtilityManager.ValidatedDicoms();
+        }
+
+        public JObject? GetPatientMetadata()
+        {
+            return patientMetadata;
         }
     }
 }
