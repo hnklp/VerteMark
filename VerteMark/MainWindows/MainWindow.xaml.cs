@@ -639,15 +639,15 @@ namespace VerteMark
             SaveCanvasIntoAnot();
             var anotace = project.SelectActiveAnotace(id);
 
-            if (anotace.Type == AnotaceType.Implant)
-            {
-                // pokud chci kreslit => InkCanvas 
-                PointCanvas.IsHitTestVisible = false;
-            }
-            else 
+            if (anotace.Type == AnotaceType.Vertebra)
             {
                 // pokud chci bodovat => PointCanvas
                 PointCanvas.IsHitTestVisible = true;
+            }
+            else
+            {
+                // pokud chci kreslit => InkCanvas 
+                PointCanvas.IsHitTestVisible = false;
             }
 
             InkCanvas.DefaultDrawingAttributes.Color = project.ActiveAnotaceColor();
@@ -1284,7 +1284,7 @@ namespace VerteMark
                     var anot = allAnnots[activeIndex];
                     // 3) Je-li aktivní anotace „Implantát“, body nevytváříme 
                     //    (kreslí se tahy na InkCanvas)
-                    if (anot.Type == AnotaceType.Implant)
+                    if (anot.Type == AnotaceType.Implant || anot.Type == AnotaceType.Fusion)
                     {
                         return;
                     }

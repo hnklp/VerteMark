@@ -183,12 +183,12 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    if (createdAnnotation.Type == AnotaceType.Implant)
+                    if (createdAnnotation.Type == AnotaceType.Implant || createdAnnotation.Type == AnotaceType.Fusion)
                     {
                         createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                     }
 
-                    if (createdAnnotation.Type == AnotaceType.Vertebra || createdAnnotation.Type == AnotaceType.Fusion)
+                    if (createdAnnotation.Type == AnotaceType.Vertebra)
                     {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
