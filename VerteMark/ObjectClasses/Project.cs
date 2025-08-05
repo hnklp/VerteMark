@@ -469,6 +469,34 @@ namespace VerteMark.ObjectClasses
                 }
         }
 
+        public void MirrorOriginalPicture()
+        {
+            if (originalPicture == null)
+                return;
+
+            TransformedBitmap transformedBitmap = new TransformedBitmap(
+                originalPicture,
+                new ScaleTransform(-1, 1, 0.5, 0.5)
+            );
+
+            BitmapImage mirroredImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(transformedBitmap));
+                encoder.Save(stream);
+                stream.Position = 0;
+
+                mirroredImage.BeginInit();
+                mirroredImage.CacheOption = BitmapCacheOption.OnLoad;
+                mirroredImage.StreamSource = stream;
+                mirroredImage.EndInit();
+                mirroredImage.Freeze();
+            }
+
+            originalPicture = mirroredImage;
+        }
+
         public void RemoveActivePointsAndConnections(Canvas canvas)
         {
             if (activeAnotace != null)
