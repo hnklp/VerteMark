@@ -532,7 +532,7 @@ namespace VerteMark
             }
             else
             {
-                MessageBox.Show("Obrázek není načtený.", "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Obrázek není načtený. Pokud vidíte tento dialog, napište nám prosím na software@digitech.ujep.cz a do předmětu napiště MIRROR - NOT LOADED a do zprávy postup, jak chybu reprodukovat. Děkujeme.", "Chyba - MIRROR - NOT LOADED", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
