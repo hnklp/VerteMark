@@ -31,7 +31,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top" Height="40">
+        <Menu DockPanel.Dock="Top" Height="42">
             <!--<MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>

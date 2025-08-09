@@ -5,26 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="O Aplikaci" Height="350" Width="360" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png">
+        Title="O Aplikaci" Height="350" Width="412" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png">
     <Canvas>
-        <Image Margin="10,4,292,256" Source="/Pictures/icon.png" Stretch="Uniform" Width="64" Height="64" HorizontalAlignment="Center"/>
-        <TextBlock HorizontalAlignment="Center" Margin="86,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"><Run Text="VerteMark "/><Run Language="en-gb" Text="3.0.0"/></TextBlock>
-        <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="86,32,0,0" VerticalAlignment="Top" FontSize="10"/>
-        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="238,16,20,284" Height="32" Width="91"/>
+        <Image Margin="10,4,292,256" Source="/Pictures/icon.png" Stretch="Uniform" Width="68" Height="68" HorizontalAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Center" Margin="90,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="22"><Run Text="VerteMark "/><Run Language="en-gb" Text="3.0.0"/></TextBlock>
+        <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="92,34,0,0" VerticalAlignment="Top" FontSize="12"/>
+        <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="284,10,28,284" Height="32" Width="91"/>
 
         
 
-        <GroupBox Header="Autoři" FontSize="14" Margin="10,76,0,0" Width="238" Height="174">
+        <GroupBox Header="Autoři" FontSize="14" Margin="10,76,0,0" Width="238" Height="154">
             <StackPanel>
-                <Label Content="Sabina Ajksnerová" FontSize="18"/>
-                <Label Content="Hynek Půta" FontSize="18"/>
-                <Label Content="Jakub Kepič" FontSize="18"/>
-                <Label Content="Alex Schönfelder" FontSize="18"/>
-                <Label Content="Josef Bér" FontSize="18"/>
+                <Label Content="Sabina Ajksnerová" FontSize="16"/>
+                <Label Content="Hynek Půta" FontSize="16"/>
+                <Label Content="Jakub Kepič" FontSize="16"/>
+                <Label Content="Alex Schönfelder" FontSize="16"/>
+                <Label Content="Josef Bér" FontSize="16"/>
             </StackPanel>
         </GroupBox>
-        <Label Content="Oddělení pro datovou analýzu a simulace UJEP&#10;2024 - 2025" HorizontalAlignment="Left" Margin="82,265,0,0" VerticalAlignment="Top" Width="217" FontSize="10" Height="44"/>
+        <Label Content="Oddělení pro datovou analýzu a simulace UJEP&#10;2024 - 2025" HorizontalAlignment="Left" Margin="82,255,0,0" VerticalAlignment="Top" Width="217" FontSize="10" Height="44"/>
         
-        <Image Margin="10,260,273,12" Source="/Resources/Icons/ODAS.ico" Stretch="Fill" Width="64"/>
+        <Image Margin="10,252,273,12" Source="/Resources/Icons/ODAS.ico" Stretch="Fill" Width="64"/>
     </Canvas>
 </Window>
