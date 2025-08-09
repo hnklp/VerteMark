@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VerteMark.MainWindows"
         mc:Ignorable="d" 
         d:DesignHeight="415" d:DesignWidth="800"
-        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" Background="#FFF0F0F0">
+        Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,25 +16,25 @@
         </Grid.ColumnDefinitions>
 
         <!-- Levý sloupec pro přehled -->
-        <Grid Grid.Column="0" Margin="10,10,32,10">
-            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="30,35,0,0"/>
-            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=15}" FontSize="16" Margin="30,85,20,33" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
+        <Grid Grid.ColumnSpan="2" Margin="10,10,32,10">
+            <TextBlock x:Name="SelectedRadioButtonTextBlock" Text="{Binding ElementName=DicomRadioButton, Path=Content}" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="30" Margin="30,12,0,0"/>
+            <ListBox x:Name="FileListBox" d:ItemsSource="{d:SampleData ItemCount=15}" FontSize="14" Margin="30,76,270,60" Cursor="Hand" MouseDoubleClick="ContentDoubleClick"/>
         </Grid>
 
         <!-- Pravý sloupec pro RadioButtony a tlačítka -->
 
 
-        <Grid Grid.ColumnSpan="2" Margin="10,5,0,5">
-            <StackPanel Margin="539,89,19,0" VerticalAlignment="Top">
-                <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" Width="448" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="InvalidRadioButton" Content="Nevalidní snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                <RadioButton x:Name="ValidatedRadioButton" Content="Validované snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+        <Grid Grid.ColumnSpan="2" Margin="10,26,0,0">
+            <StackPanel Margin="539,0,0,0" VerticalAlignment="Center">
+                <RadioButton x:Name="DicomRadioButton" Content="DICOM Soubory" Checked="RadioButton_Checked" FontSize="14" Margin="0,0,0,10" Width="448" VerticalContentAlignment="Center" Padding="10,0,0,0"/>
+                <RadioButton x:Name="InProgressRadioButton" Content="Rozpracované anotace" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center" Padding="10,0,0,0"/>
+                <RadioButton x:Name="ValidationRadioButton" Content="K validaci" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center" Padding="10,0,0,0"/>
+                <RadioButton x:Name="InvalidRadioButton" Content="Nevalidní snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center" Padding="10,0,0,0"/>
+                <RadioButton x:Name="ValidatedRadioButton" Content="Validované snímky" Checked="RadioButton_Checked" FontSize="16" Margin="0,0,0,10" VerticalContentAlignment="Center" Padding="10,0,0,0"/>
             </StackPanel>
 
-            <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" Width="90" Cursor="Hand" Margin="539,0,0,39" Height="27" VerticalAlignment="Bottom"/>
-            <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" Cursor="Hand" HorizontalAlignment="Left" Margin="663,0,0,39" VerticalAlignment="Bottom" Height="27" Width="90"/>
+            <Button x:Name="BackButton" Content="Zpět"  Click="BackButton_Click" IsEnabled="True" HorizontalAlignment="Left" Width="91" Margin="549,301,0,0" Height="32" VerticalAlignment="Top"/>
+            <Button x:Name="ContinueButton" Content="Pokračovat" Click="ContinueButton_Click" IsEnabled="False" IsDefault="True" HorizontalAlignment="Left" Margin="660,301,0,0" VerticalAlignment="Top" Height="32" Width="91"/>
         </Grid>
 
 

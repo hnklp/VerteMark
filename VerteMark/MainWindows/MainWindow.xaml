@@ -8,11 +8,11 @@
         Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
         PreviewMouseWheel="Window_PreviewMouseWheel">
 
-	<Window.InputBindings>
-		<KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
-		<KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
-		<KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
-	</Window.InputBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
+        <KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
+    </Window.InputBindings>
 
     <Window.Resources>
         <local:PercentageConverter x:Key="PercentageConverter"/>
@@ -31,7 +31,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu Background="#FFF0F0F0" DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Height="40">
             <!--<MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>
@@ -42,14 +42,14 @@
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close" />
             </MenuItem>-->
-            <MenuItem Header="O aplikaci" Click="AboutItem_Click">
+            <MenuItem Header="O aplikaci" Click="AboutItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2">
             </MenuItem>
-            <MenuItem Header="Nahlásit problém" Click="ReportItem_Click">
+            <MenuItem Header="Nahlásit problém" Click="ReportItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2">
             </MenuItem>
         </Menu>
 
-        <DockPanel Height="35" DockPanel.Dock="Bottom">
-            <StatusBar DockPanel.Dock="Bottom" Background="#FFF0F0F0" >
+        <DockPanel Height="52" DockPanel.Dock="Bottom">
+            <StatusBar DockPanel.Dock="Bottom">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -69,7 +69,7 @@
                 </StatusBar.ItemsPanel>
 
                 <StatusBarItem Grid.Column="0">
-                    <TextBlock x:Name="UserIDStatus" Text="User ID"/>
+                    <TextBlock x:Name="UserIDStatus" Text="User ID" FontSize="12"/>
                 </StatusBarItem>
 
                 <Separator Grid.Column="1">
@@ -83,7 +83,7 @@
                 </Separator>
 
                 <StatusBarItem Grid.Column="2">
-                    <TextBlock x:Name="RoleStatus" Text="Role"/>
+                    <TextBlock x:Name="RoleStatus" Text="Role" FontSize="12"/>
                 </StatusBarItem>
 
                 <Separator Grid.Column="3">
@@ -96,33 +96,33 @@
                     </Separator.Background>
                 </Separator>
 
-                <StatusBarItem Grid.Column="4">
-                    <TextBlock x:Name="FileName" Text="FileName"/>
+                <StatusBarItem Grid.Column="4" HorizontalAlignment="Left">
+                    <TextBlock x:Name="FileName" Text="FileName" FontSize="12"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="5">
-                    <Button Width="25" Height="25" Click="ZoomOut" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
+                <StatusBarItem Grid.Column="5" HorizontalAlignment="Left">
+                    <Button Width="42" Height="32" Click="ZoomOut" BorderThickness="0,0,0,0">
                         <Button.Content>
-                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button.Content>
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="6">
-                    <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="450" TickPlacement="BottomRight" 
-                        Orientation="Horizontal" Width="172" HorizontalAlignment="Center" Height="18" ValueChanged="zoomSlider_ValueChanged"/>
+                <StatusBarItem Grid.Column="6" HorizontalAlignment="Left" Margin="8,-34,8,-34">
+                    <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="450" TickPlacement="None" 
+                        Orientation="Horizontal" Width="180" HorizontalAlignment="Center" VerticalAlignment="Center" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="7">
-                    <Button Width="25" Height="25" Click="ZoomIn" BorderThickness="0,0,0,0" Background="#FFF0F0F0">
+                    <Button Width="42" Height="32" Click="ZoomIn" BorderThickness="0,0,0,0">
                         <Button.Content>
-                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button.Content>
                     </Button>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="8">
-                    <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}"/>
+                    <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}" FontSize="12" Margin="10,0,0,0" FontFamily="Segoe UI"/>
                 </StatusBarItem>
             </StatusBar>
         </DockPanel>
@@ -175,41 +175,41 @@
             </ScrollViewer>
 
 
-            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="auto" Width="35" Orientation="Vertical"  PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
-                         PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp" Grid.ColumnSpan="2">
-                <ToolBar Band="1" BandIndex="1" Background="{Binding Background, ElementName=StatusBar}" VerticalAlignment="Top"
+            <ToolBarTray x:Name="ToolBarTray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="auto" Width="54" Orientation="Vertical" PreviewMouseLeftButtonDown="Grip_PreviewMouseLeftButtonDown"
+                         PreviewMouseMove="Grip_PreviewMouseMove" PreviewMouseLeftButtonUp="Grip_PreviewMouseLeftButtonUp" Grid.ColumnSpan="2" Background="#98494947">
+                <ToolBar Band="1" BandIndex="1" VerticalAlignment="Top"
                          HorizontalAlignment="Right" AllowDrop="False" OverflowMode="Never" Loaded="ToolBar_Loaded">
 
-                    <ToggleButton x:Name="CropTButton" HorizontalAlignment="Right" Width="30" Height="30"
+                    <ToggleButton x:Name="CropTButton" HorizontalAlignment="Right" Width="42" Height="42"
                                   Click="CropTButton_Click">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="Oříznout..."/>
                         </ToggleButton.ToolTip>
                         <ToggleButton.Content>
-                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/crop_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Right" Width="30" Height="30"
+                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Right" Width="42" Height="42"
                                   IsChecked="True" Click="DrawTButton_Click">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="Tužka"/>
                         </ToggleButton.ToolTip>
                         <ToggleButton.Content>
-                            <Image Source="/Resources/Icons/draw_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/Icons/draw_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <Button x:Name="delete" HorizontalAlignment="Right" Height="30" Width="30" Click="Delete_button">
+                    <Button x:Name="delete" HorizontalAlignment="Right" Height="42" Width="42" Click="Delete_button">
                         <Button.Content>
-                            <Image Source="../Resources/Icons/bin_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="../Resources/Icons/bin_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
                         <Button.ToolTip>
                             <ToolTip Content="Smazat anotaci pro vybraný obratel..."/>
                         </Button.ToolTip>
                     </Button>
 
-                    <Button x:Name="mirror" HorizontalAlignment="Right" Height="30" Width="30" Click="Mirror_Click">
+                    <Button x:Name="mirror" HorizontalAlignment="Right" Height="42" Width="42" Click="Mirror_Click">
                         <Button.Content>
                             <Image Source="../Resources/Icons/mirror_icon.ico" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
@@ -228,16 +228,16 @@
             </ScrollViewer>
 
 
-            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Save_Click" Grid.Column="2">
+            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Save_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Uložit..."/>
                 </Button.ToolTip>
             </Button>
 
-            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="204,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Invalid_Click" Grid.Column="2">
+            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="204,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Invalid_Click" Grid.Column="2">
                 <Button.Content>
                     <Image Source="../Resources/Icons/invalid_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
@@ -247,18 +247,18 @@
             </Button>
 
 
-            <Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="143,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="Discard_Click" Grid.Column="2">
+            <Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="143,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Discard_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/bomb_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/bomb_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Zahodit všechny změny..."/>
                 </Button.ToolTip>
             </Button>
 
-            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="23,12,0,0" VerticalAlignment="Top" Height="24" Width="24" Click="OpenProject_Click" Grid.Column="2">
+            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="23,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="OpenProject_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/folder_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/folder_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Otevřít soubor..."/>
