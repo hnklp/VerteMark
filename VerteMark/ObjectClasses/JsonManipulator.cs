@@ -47,7 +47,7 @@ namespace VerteMark.ObjectClasses
             }
 
 
-        // UnpackJson - lepsi funkce pro rozbaleni json stringu
+            // UnpackJson - lepsi funkce pro rozbaleni json stringu
             public List<JArray>? UnpackJson(string createdJson) {
             JObject jsonObject = JObject.Parse(createdJson);
             // Získání seznamu anotací ze zpracovaného JObject
