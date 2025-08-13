@@ -12,11 +12,9 @@ VerteMark je nástroj pro anotaci rentgenových snímků za účelem strojového
 ### Vytváření .vmk souborů
 * [VerteMarkPackager](https://github.com/hnklp/VerteMarkPackager)
 
-### Oficálně podporované OS
-* Windows 10/11
-
-### Neoficiálně podporované OS
-* Windows 8.1
+### Podporované OS
+* Windows 11
+* Windows 10 22H2
   
 ### Autoři
 
