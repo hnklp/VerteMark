@@ -97,6 +97,7 @@ namespace VerteMark
                 AddPreviewImages();
                 SwitchActiveAnot("V0");
                 LoadPointMarkers();
+                ToggleCropButton(!project.GetIsAnotated());
 
                 // start at 25% zoom
                 double zoomFactor = 0.25;
@@ -332,6 +333,8 @@ namespace VerteMark
 
                 saveAlertWindow.Show();
             }
+
+            ToggleCropButton(!project.GetIsAnotated());
         }
 
         private void ReportItem_Click(object sender, RoutedEventArgs e)
@@ -512,6 +515,30 @@ namespace VerteMark
 
         }
 
+        private void Mirror_Click(object sender, RoutedEventArgs e)
+        {
+
+            //Zešednutí tlačítka po anotaci se provádí společně s cropem v ToggleCropButton
+
+            if (project.GetOriginalPicture() != null)
+            {
+                project.MirrorOriginalPicture();
+
+                ImageHolder.Source = project.GetOriginalPicture();
+                CroppedImage.Source = null;
+                PreviewImage.Source = null;
+
+                // Update sizes
+                SetCanvasComponentsSize();
+                UpdateElementsWithAnotace();
+                LoadPointMarkers();
+            }
+            else
+            {
+                MessageBox.Show("Obrázek není načtený. Pokud vidíte tento dialog, napište nám prosím na software@digitech.ujep.cz a do předmětu napiště MIRROR - NOT LOADED a do zprávy postup, jak chybu reprodukovat. Děkujeme.", "Chyba - MIRROR - NOT LOADED", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             project.DeleteTempFolder();
@@ -601,6 +628,8 @@ namespace VerteMark
         {
             CropTButton.IsEnabled = isEnabled;
             CropTButton.Opacity = isEnabled ? 1 : 0.5;
+            mirror.IsEnabled = isEnabled;
+            mirror.Opacity = isEnabled ? 1 : 0.5;
         }
 
         //Smaže obsah vybrané anotace
@@ -707,11 +736,12 @@ namespace VerteMark
             Button plusButton = new Button
             {
                 Content = "+",
-                Width = 20,
-                Height = 20,
-                Margin = new Thickness(109, 5 + 30 * rowIndex, 0, 0),
+                Width = 24,
+                Height = 24,
+                Margin = new Thickness(109, 20 + 30 * rowIndex, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
+                FontSize = 6,
                 Tag = type // zapamatujeme si, jaký typ má přidávat
             };
 
@@ -733,16 +763,16 @@ namespace VerteMark
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Width = 19,
-                    Height = 19,
-                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
+                    Width = 24,
+                    Height = 24,
+                    Margin = new Thickness(20, 16 + 30 * rowIndex, 0, 0),
                     Tag = anotace.Id
                 };
                 Image binIcon = new Image
                 {
                     Source = new BitmapImage(new Uri("../Resources/Icons/bin_icon.ico", UriKind.Relative)),
-                    Width = 20,
-                    Height = 20,
+                    Width = 24,
+                    Height = 24,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -761,9 +791,9 @@ namespace VerteMark
                     Fill = color,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
-                    Width = 19,
-                    Height = 19,
-                    Margin = new Thickness(20, 4 + 30 * rowIndex, 0, 0),
+                    Width = 26,
+                    Height = 26,
+                    Margin = new Thickness(20, 16 + 30 * rowIndex, 0, 0),
                     Tag = anotace.Id,
                 };
                 ButtonGrid.Children.Add(rect);
@@ -775,9 +805,10 @@ namespace VerteMark
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 125,
-                Height = 20,
-                Margin = new Thickness(60, 4 + 30 * rowIndex, 0, 0),
+                Height = 26,
+                Margin = new Thickness(60, 16 + 30 * rowIndex, 0, 0),
                 Tag = anotace.Id,
+                FontSize = 12,
             };
             toggleButton.Click += Button_Click;
 
@@ -788,9 +819,9 @@ namespace VerteMark
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
-                Width = 20,
-                Height = 20,
-                Margin = new Thickness(205, 4 + 30 * rowIndex, 0, 0),
+                Width = 28,
+                Height = 28,
+                Margin = new Thickness(205, 16 + 30 * rowIndex, 0, 0),
                 Tag = anotace.Id,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated

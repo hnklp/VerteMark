@@ -26,12 +26,10 @@ namespace VerteMark
             {
                 if (string.IsNullOrEmpty(box.Text))
                 {
-                    box.Background = (ImageBrush)FindResource("watermark");
                     SignInButton.IsEnabled = false;
                 }
                 else
                 {
-                    box.Background = null;
                     SignInButton.IsEnabled = true;
                 }
                     

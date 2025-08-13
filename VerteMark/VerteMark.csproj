@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -20,6 +20,7 @@
     <None Remove="Resources\Icons\floppy_icon.ico" />
     <None Remove="Resources\Icons\folder_icon.ico" />
     <None Remove="Resources\Icons\unzoom_icon.ico" />
+	<None Remove="Resources\Icons\mirror_icon.ico" />
     <None Remove="Resources\Icons\zoom_icon.ico" />
 	<None Remove="Resources\Icons\bomb_icon.ico" />
 	<None Remove="Resources\Icons\invalid_icon.ico" />
@@ -58,6 +59,9 @@
     <Resource Include="Resources\Icons\unzoom_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+	<Resource Include="Resources\Icons\mirror_icon.ico">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
     <Resource Include="Resources\Icons\zoom_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
