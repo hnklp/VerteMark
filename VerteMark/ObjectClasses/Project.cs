@@ -183,12 +183,12 @@ namespace VerteMark.ObjectClasses
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
 
-                    if (createdAnnotation.Type == AnotaceType.Implant)
+                    if (createdAnnotation.Type == AnotaceType.Implant || createdAnnotation.Type == AnotaceType.Fusion)
                     {
                         createdAnnotation.LoadAnnotationCanvas((JArray)annotation.Value, originalPicture.PixelWidth, originalPicture.PixelHeight);
                     }
 
-                    if (createdAnnotation.Type == AnotaceType.Vertebra || createdAnnotation.Type == AnotaceType.Fusion)
+                    if (createdAnnotation.Type == AnotaceType.Vertebra)
                     {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
@@ -467,6 +467,34 @@ namespace VerteMark.ObjectClasses
                 {
                     point.UpdateScale(scale);
                 }
+        }
+
+        public void MirrorOriginalPicture()
+        {
+            if (originalPicture == null)
+                return;
+
+            TransformedBitmap transformedBitmap = new TransformedBitmap(
+                originalPicture,
+                new ScaleTransform(-1, 1, 0.5, 0.5)
+            );
+
+            BitmapImage mirroredImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(transformedBitmap));
+                encoder.Save(stream);
+                stream.Position = 0;
+
+                mirroredImage.BeginInit();
+                mirroredImage.CacheOption = BitmapCacheOption.OnLoad;
+                mirroredImage.StreamSource = stream;
+                mirroredImage.EndInit();
+                mirroredImage.Freeze();
+            }
+
+            originalPicture = mirroredImage;
         }
 
         public void RemoveActivePointsAndConnections(Canvas canvas)
