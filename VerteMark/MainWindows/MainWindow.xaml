@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VerteMark"
         mc:Ignorable="d"
-        Title="VerteMark" Height="572" Width="1024" Icon="../Pictures/icon.png"
+        Title="VerteMark" Height="720" Width="1024" Icon="../Pictures/icon.png"
         PreviewMouseWheel="Window_PreviewMouseWheel">
 
     <Window.InputBindings>
@@ -113,7 +113,7 @@
                 </Separator>
 
                 <StatusBarItem x:Name="ReadOnlyText" Grid.Column="6" Visibility="Collapsed">
-                    <TextBlock x:Name="ReadOnly" Text="Režim prohlížení" FontSize="12"/>
+                    <TextBlock x:Name="ReadOnly" Text="Režim prohlížení" FontSize="12" Foreground="#F22B29"/>
                 </StatusBarItem>
 
                 <StatusBarItem Grid.Column="7" HorizontalAlignment="Left">
@@ -197,43 +197,42 @@
                          HorizontalAlignment="Right" AllowDrop="False" OverflowMode="Never" Loaded="ToolBar_Loaded">
 
                     <ToggleButton x:Name="CropTButton" HorizontalAlignment="Right" Width="42" Height="42"
-                                  Click="CropTButton_Click">
+                                  Click="CropTButton_Click" Margin="0">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="Oříznout..."/>
                         </ToggleButton.ToolTip>
                         <ToggleButton.Content>
-                            <Image Source="/Resources/Icons/crop_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Right" Width="42" Height="42"
-                                  IsChecked="True" Click="DrawTButton_Click">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content ="Tužka"/>
-                        </ToggleButton.ToolTip>
-                        <ToggleButton.Content>
-                            <Image Source="/Resources/Icons/draw_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </ToggleButton.Content>
-                    </ToggleButton>
-
-                    <Button x:Name="delete" HorizontalAlignment="Right" Height="42" Width="42" Click="Delete_button">
+                    <Button x:Name="MirrorTButton" HorizontalAlignment="Right" Height="42" Width="42" Margin="0" Click="Mirror_Click">
                         <Button.Content>
-                            <Image Source="../Resources/Icons/bin_icon.ico" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Button.Content>
-                        <Button.ToolTip>
-                            <ToolTip Content="Smazat anotaci pro vybraný obratel..."/>
-                        </Button.ToolTip>
-                    </Button>
-
-                    <Button x:Name="MirrorTButton" HorizontalAlignment="Right" Height="42" Width="42" Click="Mirror_Click">
-                        <Button.Content>
-                            <Image Source="../Resources/Icons/mirror_icon.ico" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Image Source="../Resources/Icons/mirror_icon.ico" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
                         <Button.ToolTip>
                             <ToolTip Content="Zrcadlit..."/>
                         </Button.ToolTip>
                     </Button>
 
+                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Right" Width="42" Height="42"
+                                  IsChecked="True" Click="DrawTButton_Click" Margin="0">
+                        <ToggleButton.ToolTip>
+                            <ToolTip Content ="Tužka"/>
+                        </ToggleButton.ToolTip>
+                        <ToggleButton.Content>
+                            <Image Source="/Resources/Icons/draw_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ToggleButton.Content>
+                    </ToggleButton>
+
+                    <Button x:Name="delete" HorizontalAlignment="Right" Height="42" Width="42" Click="Delete_button" Margin="0">
+                        <Button.Content>
+                            <Image Source="../Resources/Icons/bin_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Button.Content>
+                        <Button.ToolTip>
+                            <ToolTip Content="Smazat anotaci pro vybraný obratel..."/>
+                        </Button.ToolTip>
+                    </Button>
                 </ToolBar>
             </ToolBarTray>
 
@@ -244,18 +243,18 @@
             </ScrollViewer>
 
 
-            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Save_Click" Grid.Column="2">
+            <Button Name="SaveButtonUI" HorizontalAlignment="Left" Margin="84,-4,0,0" VerticalAlignment="Top" Padding="0" Height="32" Width="32" Click="Save_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/floppy_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Uložit..."/>
                 </Button.ToolTip>
             </Button>
 
-            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="204,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Invalid_Click" Grid.Column="2">
+            <Button Name="InvalidButtonUI" HorizontalAlignment="Left" Margin="204,-4,0,0" VerticalAlignment="Top" Padding="0" Height="32" Width="32" Click="Invalid_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/invalid_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/invalid_icon.ico" Width="26" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Označit snímek jako neplatný..."/>
@@ -263,18 +262,18 @@
             </Button>
 
 
-            <Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="143,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="Discard_Click" Grid.Column="2">
+            <Button Name="DiscardButtonUI" HorizontalAlignment="Left" Margin="143,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Padding="0" Click="Discard_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/bomb_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/bomb_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Zahodit všechny změny..."/>
                 </Button.ToolTip>
             </Button>
 
-            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="23,-4,0,0" VerticalAlignment="Top" Height="32" Width="32" Click="OpenProject_Click" Grid.Column="2">
+            <Button x:Name="OpenProject" HorizontalAlignment="Left" Margin="23,-4,0,0" Padding="0" VerticalAlignment="Top" Height="32" Width="32" Click="OpenProject_Click" Grid.Column="2">
                 <Button.Content>
-                    <Image Source="../Resources/Icons/folder_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Source="../Resources/Icons/folder_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button.Content>
                 <Button.ToolTip>
                     <ToolTip Content="Otevřít soubor..."/>
@@ -283,9 +282,9 @@
 
             <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
 
-            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,186,0,0" VerticalAlignment="Top" FontSize="14" Visibility="Collapsed"/>
-            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="126" Visibility="Collapsed"/>
-            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Center" Margin="0,252,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="20" Width="125" Visibility="Collapsed"/>
+            <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Collapsed"/>
+            <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Height="32" Width="126" Visibility="Collapsed"/>
+            <Button x:Name="CropCancelButton" Content="Zrušit" Click="CancelButton_Click"  HorizontalAlignment="Center" Margin="0,262,0,0" VerticalAlignment="Top" Grid.Column="2"  Height="32" Width="125" Visibility="Collapsed"/>
 
         </Grid>
 
