@@ -598,6 +598,22 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        public bool IsReadOnly()
+        {
+            if (loggedInUser.Validator)
+            {
+                return false;
+            }
+
+            string directory = folderUtilityManager.fileManager.outputPath;
+
+            if (!Directory.Exists(directory))
+                return false;
+
+            string[] files = Directory.GetFiles(directory, "v_*.json");
+            return files.Length > 0;
+        }
+
         /*
         * ===========
         * User metody

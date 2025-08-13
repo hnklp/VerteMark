@@ -58,6 +58,8 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -100,7 +102,21 @@
                     <TextBlock x:Name="FileName" Text="FileName" FontSize="12"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="5" HorizontalAlignment="Left">
+                <Separator x:Name="ReadOnlySeparator" Grid.Column="5" Visibility="Collapsed">
+                    <Separator.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFABADB3" Offset="0.5"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="1"/>
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                        </LinearGradientBrush>
+                    </Separator.Background>
+                </Separator>
+
+                <StatusBarItem x:Name="ReadOnlyText" Grid.Column="6" Visibility="Collapsed">
+                    <TextBlock x:Name="ReadOnly" Text="Režim prohlížení" FontSize="12"/>
+                </StatusBarItem>
+
+                <StatusBarItem Grid.Column="7" HorizontalAlignment="Left">
                     <Button Width="42" Height="32" Click="ZoomOut" BorderThickness="0,0,0,0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/unzoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -108,12 +124,12 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="6" HorizontalAlignment="Left" Margin="8,-34,8,-34">
+                <StatusBarItem Grid.Column="8" HorizontalAlignment="Left" Margin="8,-34,8,-34">
                     <Slider x:Name="ZoomSlider" Value="25" Minimum="25" Maximum="450" TickPlacement="None" 
                         Orientation="Horizontal" Width="180" HorizontalAlignment="Center" VerticalAlignment="Center" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="7">
+                <StatusBarItem Grid.Column="9">
                     <Button Width="42" Height="32" Click="ZoomIn" BorderThickness="0,0,0,0">
                         <Button.Content>
                             <Image Source="/Resources/Icons/zoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -121,7 +137,7 @@
                     </Button>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="8">
+                <StatusBarItem Grid.Column="10">
                     <Label Content="{Binding Value, ElementName=ZoomSlider, Converter={StaticResource PercentageConverter}}" FontSize="12" Margin="10,0,0,0" FontFamily="Segoe UI"/>
                 </StatusBarItem>
             </StatusBar>
@@ -209,7 +225,7 @@
                         </Button.ToolTip>
                     </Button>
 
-                    <Button x:Name="mirror" HorizontalAlignment="Right" Height="42" Width="42" Click="Mirror_Click">
+                    <Button x:Name="MirrorTButton" HorizontalAlignment="Right" Height="42" Width="42" Click="Mirror_Click">
                         <Button.Content>
                             <Image Source="../Resources/Icons/mirror_icon.ico" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>

@@ -36,7 +36,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
         public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter, string button) {
             switch (savingParameter) {
-                //Ulokladani do jednotlivych slozek
+                //Ukladani do jednotlivych slozek
                 case 0:
                     fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
                     break;
@@ -51,7 +51,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                     break;
             }
 
-            string oldFolder = fileManager.outputPath;
             fileManager.CreateOutputFile(fileManager.fileName);
             fileManager.TransformPaths();
 
@@ -59,14 +58,17 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 string oldMetaPath = fileManager.metaPath;
                 fileManager.metaPath = Path.Combine(fileManager.outputPath, Path.GetFileName(fileManager.metaPath));
                 if (oldMetaPath != fileManager.metaPath) {
-                        fileManager.CopyMetaFile(oldMetaPath);
-                    }
+                    fileManager.CopyMetaFile(oldMetaPath);
+
+                    string oldJsonDirectory = Path.GetDirectoryName(oldMetaPath); // předpokládáme, že meta byla ve stejné složce
+                    fileManager.CopyAllJsonFiles(oldJsonDirectory);
+                }
                 fileManager.AddUserActionToMetadata(user);
             }
             else {
                 fileManager.ExtractAndSaveMetadata(user);
             }
-                fileManager.SaveJson(jsonString);
+                fileManager.SaveJson(jsonString, user);
             fileManager.SaveCroppedImage(image);
             folderManager.ProcessFolders(button); // deletes duplicit folders
             SaveZip();
@@ -113,13 +115,15 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             try {
                 string[] files = Directory.GetFiles(path);
                 string? pngFile = files.FirstOrDefault(f => f.EndsWith(".png"));
-                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json"));
                 string? metaFile = files.FirstOrDefault(f => f.EndsWith(".meta"));
                 string fileName = Path.GetFileNameWithoutExtension(pngFile);
 
+                // Prioritně validátor, pak anotátor
+                string? jsonFile = files.FirstOrDefault(f => f.EndsWith(".json") && Path.GetFileName(f).StartsWith("v_"))
+                                ?? files.FirstOrDefault(f => f.EndsWith(".json") && Path.GetFileName(f).StartsWith("a_"));
+
                 if (pngFile == null || metaFile == null || jsonFile == null) {
                     return "";
-                    throw new FileNotFoundException("Chybí png nebo json soubor ve složce.");
                 }
                 else {
                     fileManager.metaPath = metaFile;
@@ -129,10 +133,6 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                     fileManager.fileName = fileName;
 
                     string jsonContent = File.ReadAllText(jsonFile);
-                    Debug.WriteLine(fileManager.metaPath);
-                    Debug.WriteLine(fileManager.pngPath);
-                    Debug.WriteLine(fileManager.outputPath);
-                    Debug.WriteLine(fileManager.jsonPath);
                     return jsonContent;
                 }
             }
@@ -141,6 +141,7 @@ namespace VerteMark.ObjectClasses.FolderClasses {
                 return "";
             }
         }
+
 
 
         /*

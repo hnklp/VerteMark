@@ -52,6 +52,18 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             File.Copy(sourcePath, metaPath, overwrite: true);
         }
 
+        public void CopyAllJsonFiles(string sourcePath) {
+
+            string[] jsonFiles = Directory.GetFiles(sourcePath, "*.json");
+
+            foreach (string file in jsonFiles) {
+                string fileName = Path.GetFileName(file);
+                string destPath = Path.Combine(outputPath, fileName);
+
+                File.Copy(file, destPath, overwrite: true);
+            }
+        }
+
         public void SaveCroppedImage(BitmapImage image) {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));
@@ -61,12 +73,30 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
-        public void SaveJson(string jsonString) {
-            string? path = jsonPath;
-            if (path != null) {
-                using (StreamWriter sw = new StreamWriter(path)) {
+        public void SaveJson(string jsonString, User user)
+        {
+            if (jsonPath != null)
+            {
+                string directory = Path.GetDirectoryName(jsonPath)!;
+                string fileName = Path.GetFileName(jsonPath);
+
+                // Odstraň prefix, pokud existuje
+                if (fileName.StartsWith("v_") || fileName.StartsWith("a_"))
+                {
+                    fileName = fileName.Substring(2);
+                }
+
+                // Vytvoř cestu se správným prefixem
+                string prefix = user.Validator ? "v_" : "a_";
+                string path = Path.Combine(directory, prefix + fileName);
+
+                using (StreamWriter sw = new StreamWriter(path))
+                {
                     sw.Write(jsonString);
                 }
+
+                // Aktualizuj jsonPath podle role
+                jsonPath = path;
             }
         }
 
