@@ -381,11 +381,15 @@ namespace VerteMark
 
                     CropTButton.IsEnabled = false;
                     DrawTButton.IsEnabled = false;
+                    MirrorTButton.IsEnabled = false;
                     delete.IsEnabled = false;
                     ButtonGrid.IsEnabled = false;
                     InvalidButtonUI.IsEnabled = false;
                     DiscardButtonUI.IsEnabled = false;
                     PointCanvas.IsEnabled = false;
+
+                    ReadOnlySeparator.Visibility = Visibility.Visible;
+                    ReadOnlyText.Visibility = Visibility.Visible;
 
                     goto case AppState.Drawing;
 
@@ -664,8 +668,8 @@ namespace VerteMark
         {
             CropTButton.IsEnabled = isEnabled;
             CropTButton.Opacity = isEnabled ? 1 : 0.5;
-            mirror.IsEnabled = isEnabled;
-            mirror.Opacity = isEnabled ? 1 : 0.5;
+            MirrorTButton.IsEnabled = isEnabled;
+            MirrorTButton.Opacity = isEnabled ? 1 : 0.5;
         }
 
         //Smaže obsah vybrané anotace
