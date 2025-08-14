@@ -765,7 +765,7 @@ namespace VerteMark
                 Content = "+",
                 Width = 32,
                 Height = 32,
-                Margin = new Thickness(109, 16 + 42 * rowIndex, 0, 0),
+                Margin = new Thickness(109, 10 + 42 * rowIndex, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 FontSize = 12,
@@ -792,7 +792,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 32,
                     Height = 32,
-                    Margin = new Thickness(20, 16 + 42 * rowIndex, 0, 0),
+                    Margin = new Thickness(20, 10 + 42 * rowIndex, 0, 0),
                     Tag = anotace.Id
                 };
                 Image binIcon = new Image
@@ -821,7 +821,7 @@ namespace VerteMark
                     VerticalAlignment = VerticalAlignment.Top,
                     Width = 32,
                     Height = 32,
-                    Margin = new Thickness(20, 16 + 42 * rowIndex, 0, 0),
+                    Margin = new Thickness(20, 10 + 42 * rowIndex, 0, 0),
                     Tag = anotace.Id,
                 };
                 ButtonGrid.Children.Add(rect);
@@ -834,7 +834,7 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 125,
                 Height = 32,
-                Margin = new Thickness(60, 16 + 42 * rowIndex, 0, 0),
+                Margin = new Thickness(60, 10 + 42 * rowIndex, 0, 0),
                 Tag = anotace.Id,
                 FontSize = 12,
             };
@@ -849,7 +849,7 @@ namespace VerteMark
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 42,
                 Height = 42,
-                Margin = new Thickness(195, 21 + 42 * rowIndex, 0, 0),
+                Margin = new Thickness(195, 15 + 42 * rowIndex, 0, 0),
                 Tag = anotace.Id,
                 IsEnabled = isValidator,
                 IsChecked = anotace.IsValidated
@@ -888,8 +888,8 @@ namespace VerteMark
                 AddPreviewImage(anot);
 
                 int rowIndex = (int)(plusButton.Margin.Top / 42);
-                AddNewRow(anot, isValidator, rowIndex);
                 MoveElementsBelow(plusButton.Margin.Top);
+                AddNewRow(anot, isValidator, rowIndex);
             }
         }
 

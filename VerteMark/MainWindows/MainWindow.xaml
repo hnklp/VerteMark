@@ -70,7 +70,7 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
 
-                <StatusBarItem Grid.Column="0">
+                <StatusBarItem Grid.Column="0" Margin="4,0,0,0">
                     <TextBlock x:Name="UserIDStatus" Text="User ID" FontSize="12"/>
                 </StatusBarItem>
 
@@ -280,7 +280,7 @@
                 </Button.ToolTip>
             </Button>
 
-            <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,36,0,0" VerticalAlignment="Top" FontSize="10"/>
+            <Label x:Name="ValidateLabel" Grid.Column="2" Content="Validováno" HorizontalAlignment="Left" Margin="187,42,0,0" VerticalAlignment="Top" FontSize="10"/>
 
             <Label x:Name="CropLabel" Grid.Column="2" Content="Potvrdit ořez?" HorizontalAlignment="Center" Margin="0,178,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Collapsed"/>
             <Button x:Name="CropConfirmButton" Content="Potvrdit" Click="ConfirmButton_Click" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Height="32" Width="126" Visibility="Collapsed"/>
