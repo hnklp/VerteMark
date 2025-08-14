@@ -24,6 +24,7 @@
     <None Remove="Resources\Icons\zoom_icon.ico" />
 	<None Remove="Resources\Icons\bomb_icon.ico" />
 	<None Remove="Resources\Icons\invalid_icon.ico" />
+	<None Remove="Resources\Icons\plus_icon.ico" />
 	<None Remove="Resources\Icons\ODAS.ico" />
   </ItemGroup>
 
@@ -70,6 +71,9 @@
 	</Resource>
 	<Resource Include="Resources\Icons\invalid_icon.ico">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Resource>
+	<Resource Include="Resources\Icons\plus_icon.ico">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Resource>
 	<Resource Include="Resources\Icons\ODAS.ico">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>

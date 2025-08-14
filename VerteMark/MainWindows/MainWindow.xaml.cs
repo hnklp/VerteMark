@@ -762,16 +762,27 @@ namespace VerteMark
         {
             Button plusButton = new Button
             {
-                Content = "+",
                 Width = 32,
                 Height = 32,
                 Margin = new Thickness(109, 10 + 42 * rowIndex, 0, 0),
+                FontFamily = new FontFamily("Segoe UI Regular"),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
-                FontSize = 12,
+                Padding = new Thickness(0),
                 Tag = type // zapamatujeme si, jaký typ má přidávat
             };
 
+            Image plusIcon = new Image
+            {
+                Source = new BitmapImage(new Uri("../Resources/Icons/plus_icon.ico", UriKind.Relative)),
+                Width = 26,
+                Height = 26,
+                Margin = new Thickness(0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            plusButton.Content = plusIcon;
             plusButton.Click += PlusButton_Click;
 
             ButtonGrid.Children.Add(plusButton);
@@ -793,6 +804,7 @@ namespace VerteMark
                     Width = 32,
                     Height = 32,
                     Margin = new Thickness(20, 10 + 42 * rowIndex, 0, 0),
+                    Padding = new Thickness(0),
                     Tag = anotace.Id
                 };
                 Image binIcon = new Image

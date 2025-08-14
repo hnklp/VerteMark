@@ -31,7 +31,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top" Height="42">
+        <Menu DockPanel.Dock="Top" Height="42" Padding="0">
             <!--<MenuItem Header="Soubor">
                 <MenuItem Command="Open">
                     <MenuItem.ToolTip>
@@ -42,14 +42,14 @@
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close" />
             </MenuItem>-->
-            <MenuItem Header="O aplikaci" Click="AboutItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2">
+            <MenuItem Header="O aplikaci" Click="AboutItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2" Padding="0">
             </MenuItem>
-            <MenuItem Header="Nahlásit problém" Click="ReportItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2">
+            <MenuItem Header="Nahlásit problém" Click="ReportItem_Click" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2" Padding="0">
             </MenuItem>
         </Menu>
 
-        <DockPanel Height="52" DockPanel.Dock="Bottom">
-            <StatusBar DockPanel.Dock="Bottom">
+        <DockPanel Height="42" DockPanel.Dock="Bottom">
+            <StatusBar DockPanel.Dock="Bottom" Padding="0">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -116,10 +116,10 @@
                     <TextBlock x:Name="ReadOnly" Text="Režim prohlížení" FontSize="12" Foreground="#F22B29"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="7" HorizontalAlignment="Left">
-                    <Button Width="42" Height="32" Click="ZoomOut" BorderThickness="0,0,0,0">
+                <StatusBarItem Grid.Column="7" HorizontalAlignment="Left" Padding="0">
+                    <Button Width="32" Height="32" Click="ZoomOut" BorderThickness="0,0,0,0" Padding="0">
                         <Button.Content>
-                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/unzoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button.Content>
                     </Button>
                 </StatusBarItem>
@@ -129,10 +129,10 @@
                         Orientation="Horizontal" Width="180" HorizontalAlignment="Center" VerticalAlignment="Center" ValueChanged="zoomSlider_ValueChanged"/>
                 </StatusBarItem>
 
-                <StatusBarItem Grid.Column="9">
-                    <Button Width="42" Height="32" Click="ZoomIn" BorderThickness="0,0,0,0">
+                <StatusBarItem Grid.Column="9" Padding="0">
+                    <Button Width="32" Height="32" Click="ZoomIn" BorderThickness="0,0,0,0" Padding="0">
                         <Button.Content>
-                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/zoom_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button.Content>
                     </Button>
                 </StatusBarItem>
