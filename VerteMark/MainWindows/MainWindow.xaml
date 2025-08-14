@@ -196,17 +196,17 @@
                 <ToolBar Band="1" BandIndex="1" VerticalAlignment="Top"
                          HorizontalAlignment="Right" AllowDrop="False" OverflowMode="Never" Loaded="ToolBar_Loaded">
 
-                    <ToggleButton x:Name="CropTButton" HorizontalAlignment="Right" Width="42" Height="42"
-                                  Click="CropTButton_Click" Margin="0">
+                    <ToggleButton x:Name="CropTButton" HorizontalAlignment="Center" Width="46" Height="46"
+                                  Click="CropTButton_Click" Padding="0">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="Oříznout..."/>
                         </ToggleButton.ToolTip>
                         <ToggleButton.Content>
-                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image Source="/Resources/Icons/crop_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <Button x:Name="MirrorTButton" HorizontalAlignment="Right" Height="42" Width="42" Margin="0" Click="Mirror_Click">
+                    <Button x:Name="MirrorTButton" HorizontalAlignment="Center" Height="46" Width="46" Click="Mirror_Click" Padding="0">
                         <Button.Content>
                             <Image Source="../Resources/Icons/mirror_icon.ico" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
@@ -215,8 +215,8 @@
                         </Button.ToolTip>
                     </Button>
 
-                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Right" Width="42" Height="42"
-                                  IsChecked="True" Click="DrawTButton_Click" Margin="0">
+                    <ToggleButton x:Name="DrawTButton" HorizontalAlignment="Center" Width="46" Height="46"
+                                  IsChecked="True" Click="DrawTButton_Click" Margin="0" Padding="0">
                         <ToggleButton.ToolTip>
                             <ToolTip Content ="Tužka"/>
                         </ToggleButton.ToolTip>
@@ -225,7 +225,7 @@
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <Button x:Name="delete" HorizontalAlignment="Right" Height="42" Width="42" Click="Delete_button" Margin="0">
+                    <Button x:Name="delete" HorizontalAlignment="Center" Height="46" Width="46" Click="Delete_button" Padding="0">
                         <Button.Content>
                             <Image Source="../Resources/Icons/bin_icon.ico" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button.Content>
