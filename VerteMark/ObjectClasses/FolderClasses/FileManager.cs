@@ -7,6 +7,7 @@ using Dicom.Imaging;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace VerteMark.ObjectClasses.FolderClasses {
     /// <summary>
@@ -186,37 +187,155 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
 
         // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
-        public void ExtractAndSaveMetadata(User user) {
-            if (!File.Exists(dicomPath)) {
+        public void ExtractAndSaveMetadata(User user)
+        {
+            if (string.IsNullOrEmpty(dicomPath) || !File.Exists(dicomPath))
                 return;
-            }
-            string csvFileName = key + "-" + Path.GetFileName(dicomPath) + ".meta";
-            metaPath = Path.Combine(outputPath, csvFileName);
 
+            string metaFileName = $"{key}-{Path.GetFileName(dicomPath)}.meta";
+            metaPath = Path.Combine(outputPath, metaFileName);
+
+            // Open the DICOM file
             DicomFile dicomFile = DicomFile.Open(dicomPath);
 
             var allMetadata = new Dictionary<string, object>();
+
+            // ---------------------------
+            // 1) File Meta Information
+            // ---------------------------
+            var fileMeta = new Dictionary<string, Dictionary<string, string>>();
+            foreach (DicomItem item in dicomFile.FileMetaInfo)
+            {
+                var m = new Dictionary<string, string>();
+                m["Name"] = item.Tag.DictionaryEntry?.Name ?? "Unknown";
+                m["Tag"] = item.Tag.ToString();
+                m["VR"] = item.ValueRepresentation.Code;
+                m["Value"] = ValueToString(dicomFile.FileMetaInfo, item);
+
+                // key by tag string to avoid collisions
+                fileMeta[item.Tag.ToString()] = m;
+            }
+            allMetadata["FileMetaInformation"] = fileMeta;
+
+            // ---------------------------
+            // 2) Main Dataset (top-level)
+            // ---------------------------
             var dicomMetadata = new Dictionary<string, Dictionary<string, string>>();
-            foreach (DicomItem item in dicomFile.Dataset) {
-                var metadataItem = new Dictionary<string, string>();
-                metadataItem["Tag"] = item.Tag.ToString();
-                metadataItem["Value"] = item.ToString();
-                metadataItem["VR"] = item.ValueRepresentation.Code;
-                string description = DicomDictionary.Default[item.Tag].Name;
-                dicomMetadata[description] = metadataItem;
+            foreach (DicomItem item in dicomFile.Dataset)
+            {
+                var m = new Dictionary<string, string>();
+                m["Name"] = item.Tag.DictionaryEntry?.Name ?? "Unknown";
+                m["Tag"] = item.Tag.ToString();
+                m["VR"] = item.ValueRepresentation.Code;
+                m["Value"] = ValueToString(dicomFile.Dataset, item); // your helper
+
+                // key by tag string to avoid collisions
+                dicomMetadata[item.Tag.ToString()] = m;
             }
             allMetadata["DicomMetadata"] = dicomMetadata;
 
-            DateTime theTime = DateTime.Now;
-
+            // ---------------------------
+            // 3) History
+            // ---------------------------
+            DateTime now = DateTime.Now;
             var history = new Dictionary<string, Dictionary<string, string>>();
-            history[theTime.ToString("dd. MM. yyyy HH:mm:ss")] = new Dictionary<string, string>{ 
-                { "id", user.UserID }, { "action", user.Validator ? "VALIDATION" : "ANNOTATION" } };
+            history[now.ToString("dd. MM. yyyy HH:mm:ss")] = new Dictionary<string, string>
+            {
+                { "id", user.UserID },
+                { "action", user.Validator ? "VALIDATION" : "ANNOTATION" }
+            };
             allMetadata["History"] = history;
 
-            string jsonAllMetadata = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
-
-            File.WriteAllText(metaPath, jsonAllMetadata);
+            // ---------------------------
+            // 4) Save
+            // ---------------------------
+            string json = JsonConvert.SerializeObject(allMetadata, Formatting.Indented);
+            File.WriteAllText(metaPath, json);
         }
+
+
+        private static string ValueToString(DicomDataset ds, DicomItem item)
+        {
+            if (item is DicomElement element)
+            {
+                var vr = item.ValueRepresentation;
+
+                // Binary-ish VRs -> show byte length instead of junk
+                if (vr == DicomVR.OB || vr == DicomVR.OW || vr == DicomVR.OF ||
+                    vr == DicomVR.OD || vr == DicomVR.OL || vr == DicomVR.UN)
+                {
+                    long size = element.Buffer?.Size ?? 0;
+                    return $"<binary, {size} byte(s)>";
+                }
+
+                // UIDs -> include friendly name if registry knows it
+                if (vr == DicomVR.UI && ds.TryGetString(item.Tag, out var uidStr) && !string.IsNullOrWhiteSpace(uidStr))
+                {
+                    try
+                    {
+                        var uid = DicomUID.Parse(uidStr);
+                        if (uid != null && !string.IsNullOrWhiteSpace(uid.Name) && !string.Equals(uid.Name, "Unknown", StringComparison.OrdinalIgnoreCase))
+                            return $"{uidStr} ({uid.Name})";
+                    }
+                    catch { /* fall through */ }
+                    return uidStr;
+                }
+
+                // Dates (DA) -> YYYY-MM-DD (handles multi-values)
+                if (vr == DicomVR.DA && ds.TryGetString(item.Tag, out var da) && !string.IsNullOrWhiteSpace(da))
+                {
+                    string F(string d)
+                    {
+                        // DICOM DA: YYYYMMDD (or shorter). Format when possible.
+                        if (d.Length >= 8 && d.AsSpan().Slice(0, 8).ToString().All(char.IsDigit))
+                            return $"{d.Substring(0, 4)}-{d.Substring(4, 2)}-{d.Substring(6, 2)}";
+                        return d;
+                    }
+                    return string.Join("\\", da.Split('\\').Select(F));
+                }
+
+                // Times (TM) -> HH:MM:SS(.ffffff) (handles multi-values)
+                if (vr == DicomVR.TM && ds.TryGetString(item.Tag, out var tm) && !string.IsNullOrWhiteSpace(tm))
+                {
+                    string F(string t)
+                    {
+                        // DICOM TM: HHMMSS.frac (components optional)
+                        string hh = t.Length >= 2 ? t.Substring(0, 2) : "";
+                        string mm = t.Length >= 4 ? t.Substring(2, 2) : "";
+                        string ss = t.Length >= 6 ? t.Substring(4, 2) : "";
+                        string frac = "";
+                        int dot = t.IndexOf('.');
+                        if (dot >= 0 && dot < t.Length - 1) frac = t.Substring(dot); // keep .xxxxx
+                        var parts = new List<string>();
+                        if (!string.IsNullOrEmpty(hh)) parts.Add(hh);
+                        if (!string.IsNullOrEmpty(mm)) parts.Add(mm);
+                        if (!string.IsNullOrEmpty(ss)) parts.Add(ss);
+                        return parts.Count > 0 ? string.Join(":", parts) + frac : t;
+                    }
+                    return string.Join("\\", tm.Split('\\').Select(F));
+                }
+
+                // Default: ask the dataset; if empty, join individual values
+                if (ds.TryGetString(item.Tag, out var s) && !string.IsNullOrEmpty(s))
+                    return s;
+
+                var partsJoin = new List<string>(element.Count);
+                for (int i = 0; i < element.Count; i++)
+                {
+                    try { partsJoin.Add(element.Get<string>(i)); }
+                    catch { partsJoin.Add(""); }
+                }
+                return string.Join("\\", partsJoin);
+            }
+
+            if (item is DicomSequence seq)
+                return $"Sequence with {seq.Items.Count} item(s)";
+
+            if (item is DicomFragmentSequence frag)
+                return $"Fragmented binary ({frag.Fragments?.Count ?? 0} fragment(s))";
+
+            return "";
+        }
+
     }
 }
