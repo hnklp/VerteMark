@@ -8,6 +8,11 @@
         Title="VerteMark" Height="415" Width="800" ResizeMode="NoResize" Icon="../Pictures/icon.png" WindowStartupLocation="CenterScreen">
 
     <Grid>
+
+        <!-- Debug věci -->
+        <Label Name="DEMOLABEL" Content="Prerelease build - do not distribute!" HorizontalContentAlignment="Center"  Foreground="Crimson" HorizontalAlignment="Center" VerticalAlignment="Top" Height="36" Width="444" FontSize="14"/>
+    <!--<Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="572,328,0,0" VerticalAlignment="Top" Height="32" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>-->
+    
         <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,194,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
         <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="460,134,0,0" VerticalAlignment="Top" Height="36" Width="112" FontSize="22"/>
         <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
@@ -28,7 +33,7 @@
             </GridSplitter.Background>
         </GridSplitter>
         <Label x:Name ="UdajWarning" Content="" Foreground="Crimson" HorizontalAlignment="Left" Margin="612,0,0,0" VerticalAlignment="Center" FontSize="6"/>
-        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="572,328,0,0" VerticalAlignment="Top" Height="32" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
+        
         <!--<Button x:Name="GuideButton" Content="Příručka" Margin="20,331,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="80" Click="OpenGuide"/>-->
         <Button x:Name="ReportButton" Content="Nahlásit problém" Margin="24,328,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="32" Width="133" Click="ReportItem_Click"/>
         <!--<Button x:Name="About" Content="About" Margin="534,22,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="80" Click="AboutItem_Click" RenderTransformOrigin="0.5,0.5">
