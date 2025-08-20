@@ -1203,6 +1203,7 @@ namespace VerteMark
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             CroppedImage.Source = null;
+            project.SetOriginalPicture(ImageHolder.Source as BitmapImage);
 
             stateManager.CurrentState = AppState.Drawing;
             SwitchActiveToolbarButton(DrawTButton);
