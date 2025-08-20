@@ -1132,7 +1132,7 @@ namespace VerteMark
 
         private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
+            if (Keyboard.Modifiers == ModifierKeys.Control || Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 // Získání pozice kurzoru vzhledem ke CanvasGrid
                 var mousePos = e.GetPosition(CanvasGrid);
@@ -1172,15 +1172,6 @@ namespace VerteMark
                 }
 
                 e.Handled = true;
-            }
-            // ... zbytek metody zůstává beze změny
-            else if (Keyboard.Modifiers == ModifierKeys.Shift)
-            {
-                // ...
-            }
-            else
-            {
-                // ...
             }
         }
 
