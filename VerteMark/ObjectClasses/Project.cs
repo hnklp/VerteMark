@@ -182,6 +182,11 @@ namespace VerteMark.ObjectClasses
                     CreateNewAnnotation(annotationId);
 
                     Anotace createdAnnotation = FindAnotaceById(annotationId);
+                    JArray arr = (JArray)annotation.Value;
+                    if (arr.Count > 0)
+                    {
+                        createdAnnotation.SetIsAnotated(true);
+                    }
 
                     if (createdAnnotation.Type == AnotaceType.Implant || createdAnnotation.Type == AnotaceType.Fusion)
                     {
@@ -192,7 +197,6 @@ namespace VerteMark.ObjectClasses
                     {
                         createdAnnotation.LoadAnnotationPointMarker((JArray)annotation.Value);
                     }
-
 
                     if (validationSet.Contains(annotationId)) {
                         createdAnnotation.Validate(true);

@@ -89,8 +89,6 @@ namespace VerteMark
 
             CanvasGrid.MouseEnter += CanvasGrid_MouseEnter;
             CanvasGrid.MouseLeave += CanvasGrid_MouseLeave;
-            //this.Closing += DeleteTempFolder_Closing; 
-            // !! Dělá bug - smaže se po každém zavřní MainWindow - nutno předělat
 
             // zvalidneni vsech anotaci, pokud je user validator:
             if (loggedInUser != null && loggedInUser.Validator)
@@ -130,6 +128,8 @@ namespace VerteMark
                         MessageBoxImage.Information
                     );
                 }
+
+                ToggleCropButton(!project.GetIsAnotated());
             };
         }
 
