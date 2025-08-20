@@ -476,7 +476,7 @@ namespace VerteMark.ObjectClasses
 
             TransformedBitmap transformedBitmap = new TransformedBitmap(
                 originalPicture,
-                new ScaleTransform(-1, 1, 0.5, 0.5)
+                new ScaleTransform(-1, 1, 0, 0)
             );
 
             BitmapImage mirroredImage = new BitmapImage();

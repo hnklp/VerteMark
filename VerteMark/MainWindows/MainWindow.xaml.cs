@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using VerteMark.MainWindows;
 using VerteMark.ObjectClasses;
 using VerteMark.SubWindows;
+using Windows.System.UserProfile;
 using static VerteMark.ObjectClasses.Anotace;
 
 namespace VerteMark
@@ -551,10 +552,15 @@ namespace VerteMark
             {
                 project.MirrorOriginalPicture();
 
-                ImageHolder.Source = project.GetOriginalPicture();
-                CroppedImage.Source = null;
-                PreviewImage.Source = null;
-
+                if (CroppedImage.Source != null)
+                {
+                    CroppedImage.Source = project.GetOriginalPicture();
+                }
+                else
+                {
+                    ImageHolder.Source = project.GetOriginalPicture();
+                }
+    
                 // Update sizes
                 SetCanvasComponentsSize();
                 UpdateElementsWithAnotace();

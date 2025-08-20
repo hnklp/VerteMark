@@ -11,8 +11,8 @@
 
         <!-- Debug věci -->
         <Label Name="DEMOLABEL" Content="Prerelease build - do not distribute!" HorizontalContentAlignment="Center"  Foreground="Crimson" HorizontalAlignment="Center" VerticalAlignment="Top" Height="36" Width="444" FontSize="14"/>
-    <!--<Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="572,328,0,0" VerticalAlignment="Top" Height="32" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>-->
-    
+        <Button x:Name="SettingsButtonUI_Kopírovat" Content="Debug" HorizontalAlignment="Left" Margin="572,328,0,0" VerticalAlignment="Top" Height="32" Width="80" Click="SettingsButtonUI_Kopírovat_Click"/>
+
         <Label x:Name="HintLabel" Content="hintlabel" HorizontalContentAlignment="Center" Margin="41,194,475,0" VerticalAlignment="Top" Width="284" Height="26"/>
         <Label Name="LoginLabel" Content="Přihlaste se" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="460,134,0,0" VerticalAlignment="Top" Height="36" Width="112" FontSize="22"/>
         <Label Name="WelcomeLabel" Content="Vítejte v aplikaci VerteMark!" HorizontalAlignment="Left" Margin="41,152,0,0" VerticalAlignment="Top" FontSize="24"/>
