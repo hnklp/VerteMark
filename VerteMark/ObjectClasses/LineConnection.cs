@@ -6,7 +6,7 @@ public class LineConnection
 {
     private Line _line;
     private PointMarker _startPoint;
-    private PointMarker _endPoint;
+    public PointMarker _endPoint { get; private set; }
     private ScaleTransform _scaleTransform;
     private Brush _colorBrush;
 

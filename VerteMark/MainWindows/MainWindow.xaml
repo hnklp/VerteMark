@@ -12,6 +12,7 @@
         <KeyBinding Key="O" Modifiers="Control" Command="ApplicationCommands.Open"/>
         <KeyBinding Key="S" Modifiers="Control" Command="ApplicationCommands.Save"/>
         <KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="ApplicationCommands.Undo"/>
     </Window.InputBindings>
 
     <Window.Resources>

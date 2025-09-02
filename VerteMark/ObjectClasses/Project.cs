@@ -518,7 +518,6 @@ namespace VerteMark.ObjectClasses
 
         public void RemovePointsAndConnections(Canvas canvas, Anotace anotace)
         {
-            
             foreach (LineConnection line in anotace.Lines)
             {
                 line.Remove(canvas);
@@ -526,6 +525,28 @@ namespace VerteMark.ObjectClasses
             foreach (PointMarker point in anotace.Points)
             {
                 point.Remove(canvas);
+            }
+        }
+
+        public void RemoveActiveLastPoint(Canvas canvas)
+        {
+            if (activeAnotace != null)
+            {
+                PointMarker lastPoint = activeAnotace.Points[^1];
+                lastPoint.Remove(canvas);
+
+                // delete all lines connected to last point
+                var linesToRemove = activeAnotace.Lines
+                    .Where(l => l != null && l._endPoint == lastPoint)
+                    .ToList();
+
+                foreach (LineConnection line in linesToRemove)
+                {
+                    line.Remove(canvas);
+                    activeAnotace.Lines.Remove(line);
+                }
+
+                activeAnotace.Points.Remove(lastPoint);
             }
         }
 
@@ -539,8 +560,6 @@ namespace VerteMark.ObjectClasses
                     DrawLineConnection(canvas, i + 1, anotace);
                 }
             }
-
-
         }
 
         public void DrawLineConnection(Canvas pointCanvas, int index, Anotace? anotace = null)
