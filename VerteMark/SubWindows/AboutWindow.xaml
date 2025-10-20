@@ -8,7 +8,7 @@
         Title="O Aplikaci" Height="350" Width="412" ShowInTaskbar="False" ResizeMode="NoResize"  Icon="../Pictures/icon.png">
     <Canvas>
         <Image Margin="10,4,292,256" Source="/Pictures/icon.png" Stretch="Uniform" Width="68" Height="68" HorizontalAlignment="Center"/>
-        <TextBlock HorizontalAlignment="Center" Margin="90,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="22"><Run Text="VerteMark "/><Run Language="en-gb" Text="3.0.0"/></TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="90,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="22"><Run Text="VerteMark "/><Run Text="3.0."/><Run Language="en-gb" Text="1"/></TextBlock>
         <Label Content="Obratlům na stopě." HorizontalAlignment="Left" Margin="92,34,0,0" VerticalAlignment="Top" FontSize="12"/>
         <Button x:Name="okButton" Click="okButton_Click" IsDefault="True" Content="OK" Margin="284,10,28,284" Height="32" Width="91"/>
 
