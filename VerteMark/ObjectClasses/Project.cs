@@ -257,11 +257,11 @@ namespace VerteMark.ObjectClasses
                         name = "C5";
                         break;
                     case "V5":
-                        color = System.Drawing.Color.Aqua;
+                        color = System.Drawing.Color.CornflowerBlue;
                         name = "C6";
                         break;
                     case "V6":
-                        color = System.Drawing.Color.BlueViolet;
+                        color = System.Drawing.Color.LightPink;
                         name = "C7";
                         break;
                 }
