@@ -77,6 +77,12 @@ namespace VerteMark
                 CloseItem_Click);
             this.CommandBindings.Add(closeCommandBinding);
 
+            // CommandBinding pro Undo (Ctrl+Z)
+            CommandBinding undoCommandBinding = new CommandBinding(
+                ApplicationCommands.Undo,
+                UndoLastPoint);
+            this.CommandBindings.Add(undoCommandBinding);
+
             User loggedInUser = project.GetLoggedInUser();
             UserIDStatus.Text = "ID: " + loggedInUser.UserID.ToString();
             RoleStatus.Text = loggedInUser.Validator ? "Validátor" : "Anotátor";
@@ -575,6 +581,36 @@ namespace VerteMark
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             project.DeleteTempFolder();
+        }
+
+        private void UndoLastPoint(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (stateManager.CurrentState != AppState.Drawing)
+                return;
+
+            int pointsCount = project.GetPointsCount();
+            if (pointsCount <= 0) return;
+
+            var activeAnotaceIdString = project.ActiveAnotaceId();
+            if (int.TryParse(activeAnotaceIdString, out int activeIndex))
+            {
+                var allAnnots = project.GetAnotaces();
+                if (activeIndex >= 0 && activeIndex < allAnnots.Count)
+                {
+                    var anot = allAnnots[activeIndex];
+                    if (anot.Type == AnotaceType.Implant || anot.Type == AnotaceType.Fusion)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            project.RemoveActiveLastPoint(PointCanvas);
+
+            project.SetActiveAnotaceIsAnotated(pointsCount - 1 > 0);
+            ToggleCropButton(!project.GetIsAnotated());
+
+            project.UpdatePointsScale(ZoomSlider.Value / 100);
         }
 
         /*
@@ -1363,10 +1399,6 @@ namespace VerteMark
             // 4) Jinak vytvořit bod
             // -------------------------
 
-            // Zabraňte třeba překročení max. bodů (pokud máte takový limit)
-            if (project.GetPointsCount() >= 8)
-                return;
-
             // a) Pozice kliku 
             var position = e.GetPosition(PointCanvas);
 
@@ -1384,7 +1416,6 @@ namespace VerteMark
 
             project.SetActiveAnotaceIsAnotated(true);
             ToggleCropButton(!project.GetIsAnotated());
-
 
             // e) Vykreslení, měřítko, spojnice mezi body...
             project.UpdatePointsScale(ZoomSlider.Value / 100);
