@@ -181,7 +181,7 @@ VerteMark/
 
 ## 4. UML diagramy
 
-### Diagram tříd (PlantUML)
+### Diagram tříd
 
 ```mermaid
 classDiagram
@@ -282,7 +282,7 @@ Anotace --> AnotaceType
 
 ```
 
-### Sekvenční diagram - Workflow anotace (Mermaid)
+### Sekvenční diagram - Workflow anotace
 
 ```mermaid
 sequenceDiagram
@@ -318,7 +318,7 @@ sequenceDiagram
     FolderUtilityManager->>ZipManager: UpdateZipFromTempFolder()
 ```
 
-### Diagram komponent (Mermaid)
+### Diagram komponent
 
 ```mermaid
 graph TB
@@ -372,9 +372,9 @@ graph TB
 
 ---
 
-## 5. API dokumentace
+## 5. Dokumentace veřejných tříd a metod
 
-> **Poznámka:** Všechny veřejné třídy a metody jsou dokumentovány pomocí XML dokumentačních komentářů (///) přímo ve zdrojovém kódu. Tato sekce poskytuje přehled hlavních API. Pro detailní dokumentaci včetně parametrů a návratových hodnot viz XML komentáře v kódu.
+> **Poznámka:** Všechny veřejné třídy a metody jsou dokumentovány pomocí XML dokumentačních komentářů (///) přímo ve zdrojovém kódu. Tato sekce poskytuje přehled hlavních veřejných tříd a metod aplikace. Pro detailní dokumentaci včetně parametrů a návratových hodnot viz XML komentáře v kódu.
 
 ### Veřejné třídy a metody
 
