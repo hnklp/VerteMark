@@ -762,6 +762,315 @@ public class Category
 
 ---
 
+#### **User**
+
+Reprezentuje přihlášeného uživatele aplikace.
+
+```csharp
+/// <summary>
+/// Reprezentuje přihlášeného uživatele aplikace.
+/// </summary>
+class User
+{
+    /// <summary>Identifikátor uživatele</summary>
+    public string UserID { get; private set; }
+    /// <summary>True, pokud je uživatel validátor, false pokud anotátor</summary>
+    public bool Validator { get; private set; }
+    
+    /// <summary>
+    /// Vytvoří novou instanci uživatele.
+    /// </summary>
+    /// <param name="id">Identifikátor uživatele</param>
+    /// <param name="valid">True pro validátora, false pro anotátora</param>
+    public User(string id, bool valid)
+}
+```
+
+---
+
+#### **MainWindow**
+
+Hlavní okno aplikace pro anotaci rentgenových snímků. Poskytuje nástroje pro kreslení anotací, práci s obratli, implantáty a fúzemi.
+
+```csharp
+/// <summary>
+/// Hlavní okno aplikace pro anotaci rentgenových snímků.
+/// Poskytuje nástroje pro kreslení anotací, práci s obratli, implantáty a fúzemi.
+/// </summary>
+public partial class MainWindow : Window
+{
+    /// <summary>
+    /// Vytvoří novou instanci MainWindow a inicializuje projekt, uživatele a UI komponenty.
+    /// </summary>
+    public MainWindow()
+    
+    /// <summary>
+    /// Debugovací konstruktor pro testování bez DICOM souboru.
+    /// </summary>
+    /// <param name="debug">True pro aktivaci debug režimu</param>
+    public MainWindow(bool debug)
+    
+    /// <summary>
+    /// Načte všechny bodové markery ze všech anotací na PointCanvas.
+    /// </summary>
+    public void LoadPointMarkers()
+}
+```
+
+**Hlavní metody (všechny jsou private event handlery):**
+- `OpenProject_Click()` - Obsluha otevření projektu (Ctrl+O)
+- `Save_Click()` - Obsluha uložení projektu (Ctrl+S)
+- `CloseItem_Click()` - Obsluha zavření aplikace (Ctrl+Q)
+- `UndoLastPoint()` - Odstraní poslední bod aktivní anotace (Ctrl+Z)
+- `SwitchActiveAnot(string id)` - Přepne aktivní anotaci
+- `LoadPointMarkers()` - Načte všechny bodové markery
+- `CropImage()` - Ořízne obrázek podle vybrané oblasti
+- `ZoomIn()`, `ZoomOut()` - Zvětšení/zmenšení zoomu
+- A další metody pro správu UI a interakci s uživatelem
+
+---
+
+#### **WelcomeWindow**
+
+Úvodní okno aplikace pro přihlášení uživatele a výběr role (anotátor/validátor).
+
+```csharp
+/// <summary>
+/// Úvodní okno aplikace pro přihlášení uživatele a výběr role (anotátor/validátor).
+/// </summary>
+public partial class WelcomeWindow : Window
+{
+    /// <summary>
+    /// Vytvoří novou instanci WelcomeWindow a inicializuje projekt.
+    /// </summary>
+    public WelcomeWindow()
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko přihlášení - přihlásí uživatele a otevře SelectWindow.
+    /// </summary>
+    private void SignInButton_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Změní nápovědu podle vybraného RadioButton (anotátor/validátor).
+    /// </summary>
+    private void RadioButton_Hint(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Otevře okno s uživatelskou příručkou.
+    /// </summary>
+    private void OpenGuide(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Otevře okno s informacemi o aplikaci.
+    /// </summary>
+    private void AboutItem_Click(object sender, RoutedEventArgs e)
+}
+```
+
+---
+
+#### **SelectWindow**
+
+Okno pro výběr akce - vytvoření nového projektu nebo pokračování v práci.
+
+```csharp
+/// <summary>
+/// Okno pro výběr akce - vytvoření nového projektu nebo pokračování v práci.
+/// </summary>
+public partial class SelectWindow : Window
+{
+    /// <summary>
+    /// Vytvoří novou instanci SelectWindow a inicializuje projekt.
+    /// </summary>
+    public SelectWindow()
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko pokračování - otevře FolderbrowserWindow.
+    /// </summary>
+    private void ContinueButton_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko výběru - otevře dialog pro výběr .vmk souboru.
+    /// </summary>
+    private void Select_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko zpět - vrátí se na WelcomeWindow.
+    /// </summary>
+    private void BackButton_Click(object sender, RoutedEventArgs e)
+}
+```
+
+---
+
+#### **FolderbrowserWindow**
+
+Okno pro procházení a výběr projektů podle typu (nový projekt, pokračování, validace).
+
+```csharp
+/// <summary>
+/// Okno pro procházení a výběr projektů podle typu (nový projekt, pokračování, validace).
+/// </summary>
+public partial class FolderbrowserWindow : Window
+{
+    /// <summary>Typ projektu (dicoms, to_anotate, to_validate, validated, invalid)</summary>
+    string projectType;
+    /// <summary>True, pokud bylo okno otevřeno z SelectWindow</summary>
+    bool loadFromSelect;
+    /// <summary>Reference na předchozí MainWindow (pokud existuje)</summary>
+    public MainWindow? oldMainWindow;
+    
+    /// <summary>
+    /// Vytvoří novou instanci FolderbrowserWindow.
+    /// </summary>
+    /// <param name="fromSelect">True, pokud bylo okno otevřeno z SelectWindow, jinak false</param>
+    public FolderbrowserWindow(bool fromSelect)
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko pokračování - načte vybraný projekt a otevře MainWindow.
+    /// </summary>
+    private void ContinueButton_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Aktualizuje seznam souborů podle vybraného typu projektu (RadioButton).
+    /// </summary>
+    private void UpdateFileList()
+    
+    /// <summary>
+    /// Načte seznam souborů podle role uživatele (anotátor/validátor).
+    /// </summary>
+    void LoadforRole()
+}
+```
+
+---
+
+#### **GuideWindow**
+
+Okno s uživatelskou příručkou obsahující hierarchickou strukturu návodů s GIF animacemi.
+
+```csharp
+/// <summary>
+/// Okno s uživatelskou příručkou obsahující hierarchickou strukturu návodů s GIF animacemi.
+/// </summary>
+public partial class GuideWindow : Window
+{
+    /// <summary>Kolekce kategorií návodů</summary>
+    public ObservableCollection<Category> Categories { get; set; }
+    
+    /// <summary>
+    /// Vytvoří novou instanci GuideWindow a načte kategorie návodů.
+    /// </summary>
+    public GuideWindow()
+    
+    /// <summary>
+    /// Načte a inicializuje kategorie návodů s jejich podkategoriemi a tlačítky.
+    /// </summary>
+    private void LoadCategories()
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko návodu - zobrazí GIF animaci.
+    /// </summary>
+    private void Button_Click(object sender, RoutedEventArgs e)
+}
+```
+
+---
+
+#### **JustSaveAlertWindow**
+
+Okno pro uložení projektu s možností výběru cílové složky (to_validate, validated, invalid).
+
+```csharp
+/// <summary>
+/// Okno pro uložení projektu s možností výběru cílové složky (to_validate, validated, invalid).
+/// </summary>
+public partial class JustSaveAlertWindow : Window
+{
+    /// <summary>
+    /// Vytvoří novou instanci JustSaveAlertWindow.
+    /// </summary>
+    /// <param name="mainWindow">Reference na hlavní okno</param>
+    /// <param name="validator">True, pokud je uživatel validátor</param>
+    /// <param name="saveButton">True, pokud bylo okno otevřeno z tlačítka Save</param>
+    /// <param name="sourceButtonName">Název tlačítka, které okno otevřelo</param>
+    public JustSaveAlertWindow(MainWindow mainWindow, bool validator, bool saveButton, string sourceButtonName)
+    
+    /// <summary>
+    /// Uloží projekt do složky to_validate (anotátor) nebo validated (validátor).
+    /// </summary>
+    private void SendForValidation_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Uloží projekt do složky validated.
+    /// </summary>
+    private void ValidateButton_Click(object sender, RoutedEventArgs e)
+    
+    /// <summary>
+    /// Otevře okno FolderbrowserWindow pro výběr projektu.
+    /// </summary>
+    /// <param name="select">True pro výběr nového .vmk souboru, false pro návrat do okna se seznamem DICOMů</param>
+    public void Browse(bool select)
+}
+```
+
+---
+
+#### **AboutWindow**
+
+Okno s informacemi o aplikaci VerteMark.
+
+```csharp
+/// <summary>
+/// Okno s informacemi o aplikaci VerteMark.
+/// </summary>
+public partial class AboutWindow : Window
+{
+    /// <summary>
+    /// Vytvoří novou instanci AboutWindow.
+    /// </summary>
+    public AboutWindow()
+    
+    /// <summary>
+    /// Obsluha kliknutí na tlačítko OK - zavře okno.
+    /// </summary>
+    private void okButton_Click(object sender, RoutedEventArgs e)
+}
+```
+
+---
+
+#### **App**
+
+Hlavní třída aplikace WPF. Spravuje inicializaci a životní cyklus aplikace.
+
+```csharp
+/// <summary>
+/// Hlavní třída aplikace WPF. Spravuje inicializaci a životní cyklus aplikace.
+/// </summary>
+public partial class App : Application
+{
+    /// <summary>
+    /// Obsluha spuštění aplikace - inicializuje kódování a kontroluje verzi Windows.
+    /// </summary>
+    /// <param name="e">Argumenty spuštění</param>
+    protected override void OnStartup(StartupEventArgs e)
+    
+    /// <summary>
+    /// Zjistí, zda je verze Windows 8.1 nebo novější.
+    /// </summary>
+    /// <returns>True, pokud je Windows 8.1 nebo novější, jinak false</returns>
+    private bool IsWindows81OrNewer()
+    
+    /// <summary>
+    /// Restartuje aplikaci a předá parametr "allDone".
+    /// </summary>
+    public static void RestartApplication()
+}
+```
+
+---
+
 ### Příklad použití
 
 ```csharp
@@ -1231,6 +1540,21 @@ Všechny veřejné třídy a metody jsou dokumentovány pomocí XML dokumentačn
 - `StateManager` - Vlastnosti a události
 - `User` - Konstruktor a vlastnosti
 - `FileManager` - Hlavní veřejné metody
+- `FolderUtilityManager` - Všechny veřejné metody
+- `FolderManager` - Všechny metody
+- `ZipManager` - Všechny metody
+- `JsonManipulator` - Všechny metody a vlastnosti
+- `PointMarker` - Všechny metody a vlastnosti
+- `LineConnection` - Konstruktor a metody
+- `TreeStructure` (ButtonInfo, Subcategory, Category) - Všechny vlastnosti
+- `MainWindow` - Hlavní konstruktory a metody
+- `WelcomeWindow` - Všechny metody
+- `SelectWindow` - Všechny metody
+- `FolderbrowserWindow` - Všechny metody a vlastnosti
+- `GuideWindow` - Všechny metody a vlastnosti
+- `JustSaveAlertWindow` - Všechny metody
+- `AboutWindow` - Konstruktor a metody
+- `App` - Všechny metody
 
 ### Jak přidat nové funkce
 
