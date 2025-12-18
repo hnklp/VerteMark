@@ -1430,20 +1430,9 @@ temp/
 
 ### Testovací strategie
 
-**Současný stav:**
-- **Žádné unit testy**: V solution nebyl nalezen testovací projekt
-- **Žádné integrační testy**: Žádná automatizovaná testovací infrastruktura
-- **Manuální testování**: Spoléhá se na manuální testování uživateli
-
 **Debug režim:**
 - Debug konstruktor v `MainWindow(bool debug)` pro testování bez projektových souborů
 - Načítá debug obrázek z `Pictures/debug.png`
-
-### Jak spustit testy
-**Nepoužitelné** - Testovací sada neexistuje.
-
-### Očekávání pokrytí
-**Nepoužitelné** - Nejsou k dispozici metriky pokrytí testy.
 
 ### Doporučený přístup k testování
 
