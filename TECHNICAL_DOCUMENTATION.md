@@ -31,18 +31,18 @@ VerteMark je desktopová aplikace založená na WPF, navržená pro anotaci rent
 ```
 VerteMark/
 ├── VerteMark/
-│   ├── App.xaml / App.xaml.cs          # Vstupní bod aplikace, spouštěcí logika
+│   ├── App.xaml / App.xaml.cs           # Vstupní bod aplikace, spouštěcí logika
 │   ├── AssemblyInfo.cs                  # Metadata assembly
 │   ├── VerteMark.csproj                 # Soubor projektu s závislostmi
 │   │
-│   ├── MainWindows/                    # Hlavní okna aplikace
-│   │   ├── WelcomeWindow.xaml/cs       # Přihlášení uživatele a výběr role
-│   │   ├── SelectWindow.xaml/cs        # Rozhraní pro výběr projektu
-│   │   ├── FolderbrowserWindow.xaml/cs # Prohlížeč souborů/složek
-│   │   ├── MainWindow.xaml/cs          # Hlavní rozhraní pro anotaci
-│   │   └── GuideWindow.xaml/cs         # Uživatelská příručka/nápověda
+│   ├── MainWindows/                     # Hlavní okna aplikace
+│   │   ├── WelcomeWindow.xaml/cs        # Přihlášení uživatele a výběr role
+│   │   ├── SelectWindow.xaml/cs         # Rozhraní pro výběr projektu
+│   │   ├── FolderbrowserWindow.xaml/cs  # Prohlížeč souborů/složek
+│   │   ├── MainWindow.xaml/cs           # Hlavní rozhraní pro anotaci
+│   │   └── GuideWindow.xaml/cs          # Uživatelská příručka/nápověda
 │   │
-│   ├── ObjectClasses/                  # Hlavní obchodní logika
+│   ├── ObjectClasses/                   # Hlavní obchodní logika
 │   │   ├── Project.cs                   # Singleton správce projektu
 │   │   ├── StateManager.cs              # Správa stavu aplikace
 │   │   ├── Anotace.cs                   # Entita anotace
@@ -67,7 +67,7 @@ VerteMark/
 │   │   ├── Gifs/                        # Animované návody
 │   │   └── Icons/                       # Ikony aplikace
 │   │
-│   └── Pictures/                       # Debug/testovací obrázky
+│   └── Pictures/                        # Debug/testovací obrázky
 │
 ├── VerteMark.sln                        # Soubor solution
 └── README.md                            # Přehled projektu
