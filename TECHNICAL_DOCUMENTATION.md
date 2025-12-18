@@ -1476,7 +1476,6 @@ dotnet build VerteMark.sln --configuration Release
 **Operační systém:**
 - Windows 10 22H2 (minimum)
 - Windows 11 (doporučeno)
-- Windows 8.1+ (s omezeními, viz App.xaml.cs)
 
 **Závislosti:**
 - .NET 9.0 Runtime (Windows Desktop)
@@ -1663,4 +1662,4 @@ Všechny veřejné třídy a metody jsou dokumentovány pomocí XML dokumentačn
 
 **Verze dokumentu**: 1.0  
 **Poslední aktualizace**: 2025-12-18  
-**Autor**: Vygenerováno z analýzy zdrojového kódu
+**Autor**: Tým VerteMark
