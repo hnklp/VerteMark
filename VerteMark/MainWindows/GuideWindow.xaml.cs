@@ -18,10 +18,17 @@ using WpfAnimatedGif;
 
 namespace VerteMark.MainWindows
 {
+    /// <summary>
+    /// Okno s uživatelskou příručkou obsahující hierarchickou strukturu návodů s GIF animacemi.
+    /// </summary>
     public partial class GuideWindow : Window
     {
+        /// <summary>Kolekce kategorií návodů</summary>
         public ObservableCollection<Category> Categories { get; set; }
 
+        /// <summary>
+        /// Vytvoří novou instanci GuideWindow a načte kategorie návodů.
+        /// </summary>
         public GuideWindow()
         {
             InitializeComponent();
@@ -30,6 +37,9 @@ namespace VerteMark.MainWindows
             MyTreeView.ItemsSource = Categories;
         }
 
+        /// <summary>
+        /// Načte a inicializuje kategorie návodů s jejich podkategoriemi a tlačítky.
+        /// </summary>
         private void LoadCategories()
         {
             Categories = new ObservableCollection<Category>
@@ -99,6 +109,11 @@ namespace VerteMark.MainWindows
             };
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko návodu - zobrazí GIF animaci.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -120,6 +135,11 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko zpět - zavře okno.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

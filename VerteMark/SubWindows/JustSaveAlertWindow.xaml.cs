@@ -8,16 +8,24 @@ using VerteMark.ObjectClasses.FolderClasses;
 namespace VerteMark.SubWindows
 {
     /// <summary>
-    /// Interakční logika pro JustSaveAlertWindow.xaml
+    /// Okno pro uložení projektu s možností výběru cílové složky (to_validate, validated, invalid).
     /// </summary>
     public partial class JustSaveAlertWindow : Window
     {
         Project project;
         MainWindow mainWindow;
         bool validator;
+        /// <summary>True, pokud bylo okno otevřeno z tlačítka Save, false pokud z Open</summary>
         bool saveButton; // true = save button v mainwindow, false = open button v mainwindow
         private string _sourceButtonName;
 
+        /// <summary>
+        /// Vytvoří novou instanci JustSaveAlertWindow.
+        /// </summary>
+        /// <param name="mainWindow">Reference na hlavní okno</param>
+        /// <param name="validator">True, pokud je uživatel validátor</param>
+        /// <param name="saveButton">True, pokud bylo okno otevřeno z tlačítka Save</param>
+        /// <param name="sourceButtonName">Název tlačítka, které okno otevřelo</param>
         public JustSaveAlertWindow(MainWindow mainWindow, bool validator, bool saveButton, string sourceButtonName)
         {
             InitializeComponent();
@@ -42,14 +50,22 @@ namespace VerteMark.SubWindows
             
         }
 
-        // Zpět do hlavního okna
+        /// <summary>
+        /// Vrátí se zpět do hlavního okna bez uložení.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.IsEnabled = true;
             this.Close();
         }
 
-        // Uložit do k validaci
+        /// <summary>
+        /// Uloží projekt do složky to_validate (anotátor) nebo validated (validátor).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void SendForValidation_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -70,7 +86,11 @@ namespace VerteMark.SubWindows
             }
         }
 
-        // Uložit do validované
+        /// <summary>
+        /// Uloží projekt do složky validated.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ValidateButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -90,7 +110,11 @@ namespace VerteMark.SubWindows
             }
         }
 
-        // Uložit do DICOMs
+        /// <summary>
+        /// Zruší všechny změny a vrátí projekt do složky dicoms (pouze pro anotátory).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void SaveToDICOMButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -110,7 +134,11 @@ namespace VerteMark.SubWindows
             }
         }
 
-        // Uložit do rozpracované
+        /// <summary>
+        /// Uloží projekt do složky to_anotate (rozpracované).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void SaveWIPButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -124,7 +152,11 @@ namespace VerteMark.SubWindows
             }
         }
 
-        // Zahodit změny
+        /// <summary>
+        /// Zahodí všechny neuložené změny po potvrzení uživatele.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Tato operace smaže veškeré neuložené změny. Opravdu pokračovat?",
@@ -168,9 +200,9 @@ namespace VerteMark.SubWindows
         }
 
         /// <summary>
-        /// Slouží k výběru .vmk a k výběru jednotlivých snímků v již otevřeném souboru.
-        /// true otevře výběr VMK, false vrátí do okna se seznamem DICOMů v již otevřeném souboru.
+        /// Otevře okno FolderbrowserWindow pro výběr projektu.
         /// </summary>
+        /// <param name="select">True pro výběr nového .vmk souboru, false pro návrat do okna se seznamem DICOMů</param>
         public void Browse(bool select)
         {
             FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(select);
@@ -191,6 +223,11 @@ namespace VerteMark.SubWindows
             this.Close();
         }
 
+        /// <summary>
+        /// Obsluha zavírání okna - povolí hlavní okno.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             mainWindow.IsEnabled = true;

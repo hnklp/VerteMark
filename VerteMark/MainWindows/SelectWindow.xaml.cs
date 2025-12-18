@@ -8,19 +8,26 @@ using VerteMark.ObjectClasses;
 namespace VerteMark
 {
     /// <summary>
-    /// Interakční logika pro SelectWindow.xaml
+    /// Okno pro výběr akce - vytvoření nového projektu nebo pokračování v práci.
     /// </summary>
     public partial class SelectWindow : Window
     {
         Project project;
         
-
+        /// <summary>
+        /// Vytvoří novou instanci SelectWindow a inicializuje projekt.
+        /// </summary>
         public SelectWindow()
         {
             InitializeComponent();
             project = Project.GetInstance();
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko pokračování - otevře FolderbrowserWindow.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
             FolderbrowserWindow folderbrowserWindow = new FolderbrowserWindow(true);
@@ -39,6 +46,11 @@ namespace VerteMark
             this.Close();
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko výběru - otevře dialog pro výběr .vmk souboru.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Select_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -61,6 +73,11 @@ namespace VerteMark
 
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko zpět - vrátí se na WelcomeWindow.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             WelcomeWindow welcomeWindow = new WelcomeWindow();

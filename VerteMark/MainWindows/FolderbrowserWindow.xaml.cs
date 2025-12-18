@@ -7,13 +7,23 @@ using System.Diagnostics;
 
 namespace VerteMark.MainWindows
 {
+    /// <summary>
+    /// Okno pro procházení a výběr projektů podle typu (nový projekt, pokračování, validace).
+    /// </summary>
     public partial class FolderbrowserWindow : Window
     {
         Project project;
+        /// <summary>Typ projektu (dicoms, to_anotate, to_validate, validated, invalid)</summary>
         string projectType; // create new project or load existing
+        /// <summary>True, pokud bylo okno otevřeno z SelectWindow</summary>
         bool loadFromSelect;
+        /// <summary>Reference na předchozí MainWindow (pokud existuje)</summary>
         public MainWindow? oldMainWindow;
 
+        /// <summary>
+        /// Vytvoří novou instanci FolderbrowserWindow.
+        /// </summary>
+        /// <param name="fromSelect">True, pokud bylo okno otevřeno z SelectWindow, jinak false</param>
         public FolderbrowserWindow(bool fromSelect)
         {
             InitializeComponent();
@@ -30,6 +40,11 @@ namespace VerteMark.MainWindows
             Closing += FolderbrowserWindow_Closing;
         }
 
+        /// <summary>
+        /// Obsluha změny výběru RadioButton - aktualizuje seznam souborů podle typu projektu.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             // Aktualizace ListBoxu na základě vybraného typu projektu
@@ -43,6 +58,11 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko pokračování - načte vybraný projekt a otevře MainWindow.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -67,7 +87,11 @@ namespace VerteMark.MainWindows
             this.Close();
         }
 
-        // Využití ContinueButton_Click pro dvojklik na content
+        /// <summary>
+        /// Obsluha dvojkliku na položku v seznamu - načte projekt a otevře MainWindow.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ContentDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (FileListBox.SelectedItem != null)
@@ -76,6 +100,11 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Obsluha zavírání okna - zavře oldMainWindow, pokud je skryté.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void FolderbrowserWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
 
             // Kontrola, zda oldMainWindow není null a zda je viditelné
@@ -85,6 +114,11 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Obsluha změny výběru v seznamu souborů - povolí/zakáže tlačítko pokračování.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void FileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Zkontrolujte, zda je vybrán nějaký soubor
@@ -99,6 +133,11 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko zpět - vrátí se na předchozí okno.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             if (loadFromSelect) {
@@ -128,6 +167,9 @@ namespace VerteMark.MainWindows
             }
         }
 
+        /// <summary>
+        /// Aktualizuje seznam souborů podle vybraného typu projektu (RadioButton).
+        /// </summary>
         private void UpdateFileList()
         {
             // Získání vybraného RadioButtonu
@@ -166,7 +208,12 @@ namespace VerteMark.MainWindows
         }
 
 
-        // Pomocná metoda pro nalezení potomků daného typu
+        /// <summary>
+        /// Pomocná metoda pro nalezení potomků daného typu ve vizuálním stromu.
+        /// </summary>
+        /// <typeparam name="T">Typ hledaného prvku</typeparam>
+        /// <param name="depObj">Kořenový DependencyObject pro prohledávání</param>
+        /// <returns>Kolekce nalezených prvků daného typu</returns>
         private IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -188,6 +235,9 @@ namespace VerteMark.MainWindows
         }
 
 
+        /// <summary>
+        /// Načte seznam souborů podle role uživatele (anotátor/validátor).
+        /// </summary>
         void LoadforRole()
        {        
             Debug.WriteLine(project.GetLoggedInUser());

@@ -17,7 +17,8 @@ using static VerteMark.ObjectClasses.Anotace;
 namespace VerteMark
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Hlavní okno aplikace pro anotaci rentgenových snímků.
+    /// Poskytuje nástroje pro kreslení anotací, práci s obratli, implantáty a fúzemi.
     /// </summary>
     /// 
     /// TODO: Pridat nazev otevreneho souboru a rezimu anotator/validator do titulku aplikace
@@ -54,6 +55,9 @@ namespace VerteMark
         private double initialDistance;
         private bool isPinching;
 
+        /// <summary>
+        /// Vytvoří novou instanci MainWindow a inicializuje projekt, uživatele a UI komponenty.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -192,7 +196,10 @@ namespace VerteMark
             e.Handled = true;
         }
 
-        // Debugovací konstruktor pro volání z debug tlačítka
+        /// <summary>
+        /// Debugovací konstruktor pro testování bez DICOM souboru.
+        /// </summary>
+        /// <param name="debug">True pro aktivaci debug režimu</param>
         public MainWindow(bool debug)
         {
             InitializeComponent();
@@ -232,7 +239,9 @@ namespace VerteMark
         }
 
 
-        // Podle velikosti ImageHolder nastaví plátno
+        /// <summary>
+        /// Nastaví velikost všech canvas komponent podle velikosti ImageHolder.
+        /// </summary>
         private void SetCanvasComponentsSize()
         {
             InkCanvas.Width = ImageHolder.ActualWidth;
@@ -257,6 +266,9 @@ namespace VerteMark
             Grid.SetRow(PointCanvas, Grid.GetRow(ImageHolder));
         }
 
+        /// <summary>
+        /// Přidá preview obrázky pro všechny anotace.
+        /// </summary>
         private void AddPreviewImages()
         {
             List<Anotace> Annotations = project.GetAnotaces();
@@ -267,6 +279,10 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Přidá preview obrázek pro zadanou anotaci.
+        /// </summary>
+        /// <param name="anotace">Anotace, pro kterou se má vytvořit preview obrázek</param>
         private void AddPreviewImage(Anotace anotace)
         {
             Image newImage = new Image();
@@ -290,6 +306,10 @@ namespace VerteMark
             PreviewGrid.Children.Add(newImage);
         }
 
+        /// <summary>
+        /// Odstraní preview obrázek pro zadanou anotaci.
+        /// </summary>
+        /// <param name="anotaceId">ID anotace, jejíž preview obrázek se má odstranit</param>
         private void DeletePreviewImage(string anotaceId)
         {
             var anot = project.FindAnotaceById(anotaceId);
@@ -325,6 +345,11 @@ namespace VerteMark
         }
 
 
+        /// <summary>
+        /// Obsluha kliknutí na otevření projektu (Ctrl+O nebo menu).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void OpenProject_Click(object sender, RoutedEventArgs e)
         {
             string buttonName = sender is Button button ? button.Name : "Unknown";
@@ -355,6 +380,11 @@ namespace VerteMark
             ToggleCropButton(!project.GetIsAnotated());
         }
 
+        /// <summary>
+        /// Zobrazí dialog s informacemi o nahlášení chyby.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ReportItem_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Nalezli jste chybu v aplikaci?" + "\n" + "Napište nám prosím mail na software@digitech.ujep.cz" + "\n" + "\n" + "Jako předmět uveďte BUG - VerteMark - Krátký popis chyby" + "\n" + "Do zprávy napište podrobný popis chyby a pokud víte, tak postup jak ji můžeme zreplikovat." + "\n" + "\n" + "Děkujeme za spolupráci!", "Nahlásit chybu");
@@ -366,6 +396,11 @@ namespace VerteMark
          * ============
          */
 
+        /// <summary>
+        /// Obsluha změny stavu aplikace - aktualizuje UI podle nového stavu.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="newState">Nový stav aplikace</param>
         private void HandleStateChanged(object sender, AppState newState)
         {
 
@@ -487,7 +522,11 @@ namespace VerteMark
          * ======
          */
 
-        //kliknuti na o aplikaci
+        /// <summary>
+        /// Otevře okno s informacemi o aplikaci.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void AboutItem_Click(object sender, RoutedEventArgs e)
         {
             AboutWindow AboutWindow = new AboutWindow();
@@ -503,12 +542,21 @@ namespace VerteMark
             AboutWindow.Show();
         }
 
-        //soubor - zavrit
+        /// <summary>
+        /// Obsluha zavření aplikace (Ctrl+Q nebo menu).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void CloseItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Obsluha uložení projektu (Ctrl+S nebo menu).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             string buttonName = sender is Button button ? button.Name : "Unknown";
@@ -525,6 +573,11 @@ namespace VerteMark
         }
 
 
+        /// <summary>
+        /// Označí projekt jako neplatný a uloží ho do složky invalid.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Invalid_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -549,6 +602,11 @@ namespace VerteMark
 
         }
 
+        /// <summary>
+        /// Zrcadlí původní obrázek horizontálně.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Mirror_Click(object sender, RoutedEventArgs e)
         {
 
@@ -578,11 +636,21 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Obsluha zavírání okna - smaže dočasnou složku projektu.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void DeleteTempFolder_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             project.DeleteTempFolder();
         }
 
+        /// <summary>
+        /// Odstraní poslední bod aktivní anotace (Ctrl+Z).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void UndoLastPoint(object sender, ExecutedRoutedEventArgs e)
         {
             if (stateManager.CurrentState != AppState.Drawing)
@@ -619,7 +687,11 @@ namespace VerteMark
          * =========
          */
 
-        //Spojování linky
+        /// <summary>
+        /// Obsluha dokončení tahu na InkCanvas - zaznamená první a poslední bod pro případné spojení.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void InkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
             if (firstPoint == null)
@@ -629,6 +701,9 @@ namespace VerteMark
             lastPoint = e.Stroke.StylusPoints.Last();
         }
 
+        /// <summary>
+        /// Spojí první a poslední bod tahu, pokud jsou blízko sebe (méně než 100 pixelů).
+        /// </summary>
         private void ConnectStrokeAnotace()
         {
             if (stateManager != null && stateManager.CurrentState == AppState.Drawing && firstPoint != null && lastPoint != null)
@@ -656,6 +731,9 @@ namespace VerteMark
                 }
             }
         }
+        /// <summary>
+        /// Aktualizuje InkCanvas s obsahem aktivní anotace.
+        /// </summary>
         private void UpdateElementsWithAnotace()
         {
             InkCanvas.Strokes.Clear();
@@ -664,6 +742,9 @@ namespace VerteMark
             InkCanvas.Background = new ImageBrush(activeAnotaceImage);
         }
 
+        /// <summary>
+        /// Uloží obsah InkCanvas do aktivní anotace jako bitmapu.
+        /// </summary>
         private void SaveCanvasIntoAnot()
         {
             var dpi = VisualTreeHelper.GetDpi(InkCanvas);
@@ -679,7 +760,11 @@ namespace VerteMark
             project.UpdateSelectedAnotaceCanvas(new WriteableBitmap(rtb));
         }
 
-        // Když přestaneš držet myš při kreslení tak ulož co jsi nakreslil do anotace
+        /// <summary>
+        /// Obsluha uvolnění myši při kreslení - uloží nakreslený obsah do aktivní anotace.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void InkCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (stateManager.CurrentState == AppState.Drawing)
@@ -693,6 +778,10 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Povolí/zakáže tlačítka pro ořezávání a zrcadlení podle stavu anotace.
+        /// </summary>
+        /// <param name="isEnabled">True pro povolení tlačítek, false pro zakázání</param>
         private void ToggleCropButton(bool isEnabled)
         {
             CropTButton.IsEnabled = isEnabled;
@@ -701,7 +790,11 @@ namespace VerteMark
             MirrorTButton.Opacity = isEnabled ? 1 : 0.5;
         }
 
-        //Smaže obsah vybrané anotace
+        /// <summary>
+        /// Smaže obsah aktivní anotace (body, čáry a canvas).
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Delete_button(object sender, RoutedEventArgs e)
         {
             project.RemoveActivePointsAndConnections(PointCanvas);
@@ -712,6 +805,11 @@ namespace VerteMark
             ToggleCropButton(!project.GetIsAnotated());
         }
 
+        /// <summary>
+        /// Zahodí všechny změny provedené na aktuálním snímku po potvrzení uživatele.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Discard_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Opravdu chcete zahodit veškeré změny provedené na aktuálním snímku?",
@@ -732,6 +830,10 @@ namespace VerteMark
          * =========
          */
 
+        /// <summary>
+        /// Přepne aktivní anotaci podle ID a aktualizuje UI.
+        /// </summary>
+        /// <param name="id">ID anotace k aktivaci</param>
         private void SwitchActiveAnot(string id)
         {
             SaveCanvasIntoAnot();
@@ -753,6 +855,10 @@ namespace VerteMark
             project.PreviewAllAnotaces();
         }
 
+        /// <summary>
+        /// Přepne aktivní tlačítko anotace v UI.
+        /// </summary>
+        /// <param name="pressedButton">Tlačítko, které se má aktivovat</param>
         private void SwitchActiveAnotButton(ToggleButton pressedButton)
         {
             if (activeAnotButton != null)
@@ -763,6 +869,9 @@ namespace VerteMark
             activeAnotButton = pressedButton;
         }
 
+        /// <summary>
+        /// Vytvoří tlačítka pro všechny anotace v projektu podle jejich typu.
+        /// </summary>
         private void CreateButtons()
         {
             List<Anotace> annotations = project.GetAnotaces();
@@ -800,6 +909,11 @@ namespace VerteMark
             AddPlusButton(rowIndex++, Anotace.AnotaceType.Implant);
         }
 
+        /// <summary>
+        /// Přidá tlačítko plus pro vytvoření nové anotace zadaného typu.
+        /// </summary>
+        /// <param name="rowIndex">Index řádku pro umístění tlačítka</param>
+        /// <param name="type">Typ anotace (Fusion nebo Implant)</param>
         private void AddPlusButton(int rowIndex, Anotace.AnotaceType type)
         {
             Button plusButton = new Button
@@ -830,8 +944,12 @@ namespace VerteMark
             ButtonGrid.Children.Add(plusButton);
         }
         
-        // Toto funguje a nikdo na to prosim uz nesahejte nevim proc to funguje dik -hp
-
+        /// <summary>
+        /// Přidá nový řádek s tlačítkem a checkboxem pro zadanou anotaci.
+        /// </summary>
+        /// <param name="anotace">Anotace, pro kterou se má vytvořit řádek</param>
+        /// <param name="isValidator">True, pokud je uživatel validátor</param>
+        /// <param name="rowIndex">Index řádku pro umístění prvků</param>
         private void AddNewRow(Anotace anotace, bool isValidator, int rowIndex)
         {
             Brush color = new SolidColorBrush(Color.FromArgb(anotace.Color.A, anotace.Color.R, anotace.Color.G, anotace.Color.B));
@@ -915,6 +1033,11 @@ namespace VerteMark
             ButtonGrid.Children.Add(checkBox);
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko anotace - přepne aktivní anotaci.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleButton toggleButton && toggleButton.Tag is string id)
@@ -925,6 +1048,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Obsluha změny stavu validace anotace pomocí checkboxu.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void SwitchValidation_Check(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkbox && checkbox.Tag is string id)
@@ -933,6 +1061,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko plus - vytvoří novou anotaci zadaného typu.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button plusButton && plusButton.Tag is AnotaceType type)
@@ -947,6 +1080,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Obsluha kliknutí na tlačítko minus - smaže anotaci.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is string id)
@@ -966,6 +1104,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Posune všechny prvky pod zadanou pozicí nahoru nebo dolů.
+        /// </summary>
+        /// <param name="topThreshold">Prahová hodnota pozice Y</param>
+        /// <param name="down">True pro posun dolů, false pro posun nahoru</param>
         private void MoveElementsBelow(double topThreshold, bool down = true)
         {
             foreach (var element in ButtonGrid.Children.OfType<FrameworkElement>())
@@ -982,6 +1125,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Určí typ anotace podle předpony ID.
+        /// </summary>
+        /// <param name="prefix">Předpona ID (V, I, F)</param>
+        /// <returns>Typ anotace podle předpony</returns>
         private AnotaceType GetAnotaceTypeFromPrefix(string prefix)
         {
             return prefix switch
@@ -993,6 +1141,10 @@ namespace VerteMark
             };
         }
 
+        /// <summary>
+        /// Odstraní řádek s anotací z UI a aktualizuje ID následujících anotací.
+        /// </summary>
+        /// <param name="id">ID anotace, jejíž řádek se má odstranit</param>
         private void DeleteRow(string id)
         {
             string prefix = id.Substring(0, 1);         // např. "I", "F"
@@ -1181,6 +1333,9 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Ořízne obrázek podle vybrané oblasti na CropCanvas.
+        /// </summary>
         private void CropImage()
         {
             PresentationSource source = PresentationSource.FromVisual(this);
@@ -1225,6 +1380,11 @@ namespace VerteMark
             project.CropOriginalPicture(croppedImage);
         }
 
+        /// <summary>
+        /// Potvrdí ořez obrázku a přepne do režimu kreslení.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             if (stateManager.CurrentState == AppState.Cropping)
@@ -1236,6 +1396,11 @@ namespace VerteMark
             SwitchActiveToolbarButton(DrawTButton);
         }
 
+        /// <summary>
+        /// Zruší ořez obrázku a vrátí se do režimu kreslení.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             CroppedImage.Source = null;
@@ -1251,6 +1416,11 @@ namespace VerteMark
          * ======
          */
 
+        /// <summary>
+        /// Obsluha kolečka myši s Ctrl/Shift - přiblížení/oddálení s zachováním pozice kurzoru.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control || Keyboard.Modifiers == ModifierKeys.Shift)
@@ -1296,6 +1466,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Zvětší zoom o 10%.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ZoomIn(object sender, RoutedEventArgs e)
         {
             if (ZoomSlider.Value < ZoomSlider.Maximum)
@@ -1304,6 +1479,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Zmenší zoom o 10%.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ZoomOut(object sender, RoutedEventArgs e)
         {
             if (ZoomSlider.Value > ZoomSlider.Minimum)
@@ -1312,6 +1492,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Obsluha změny hodnoty zoom slideru - aktualizuje měřítko canvasu a bodových markerů.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (ImageHolder != null)
@@ -1331,6 +1516,11 @@ namespace VerteMark
          */
 
 
+        /// <summary>
+        /// Začátek tažení viewportu pomocí pravého tlačítka myši.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ScrollViewer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isDragging = true;
@@ -1339,6 +1529,11 @@ namespace VerteMark
             (sender as ScrollViewer).Cursor = Cursors.Hand;
         }
 
+        /// <summary>
+        /// Tažení viewportu pomocí pravého tlačítka myši.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (_isDragging)
@@ -1351,6 +1546,11 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Konec tažení viewportu pomocí pravého tlačítka myši.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void ScrollViewer_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (_isDragging)
@@ -1367,6 +1567,11 @@ namespace VerteMark
          * ==============
          */
 
+        /// <summary>
+        /// Obsluha kliknutí na PointCanvas - vytvoří nový bodový marker pro aktivní anotaci obratle.
+        /// </summary>
+        /// <param name="sender">Zdroj události</param>
+        /// <param name="e">Argumenty události</param>
         private void PointCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // 1) Pokud není stav kreslení, nic nedělat
@@ -1422,6 +1627,9 @@ namespace VerteMark
             project.DrawLineConnection(PointCanvas, pointsCount + 1);
         }
 
+        /// <summary>
+        /// Načte všechny bodové markery ze všech anotací na PointCanvas.
+        /// </summary>
         public void LoadPointMarkers()
         {
             project.LoadPointMarkers(PointCanvas);
