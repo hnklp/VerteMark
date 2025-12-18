@@ -2,14 +2,26 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+/// <summary>
+/// Reprezentuje čáru spojující dva bodové markery v anotaci.
+/// Automaticky aktualizuje svou pozici při pohybu markerů.
+/// </summary>
 public class LineConnection
 {
     private Line _line;
     private PointMarker _startPoint;
+    /// <summary>Koncový bod čáry</summary>
     public PointMarker _endPoint { get; private set; }
     private ScaleTransform _scaleTransform;
     private Brush _colorBrush;
 
+    /// <summary>
+    /// Vytvoří novou čáru spojující dva bodové markery.
+    /// </summary>
+    /// <param name="startPoint">Počáteční bodový marker</param>
+    /// <param name="endPoint">Koncový bodový marker</param>
+    /// <param name="canvas">Canvas pro vykreslení čáry</param>
+    /// <param name="colorBrush">Barva čáry</param>
     public LineConnection(PointMarker startPoint, PointMarker endPoint,
         Canvas canvas, Brush colorBrush)
     {
@@ -40,6 +52,10 @@ public class LineConnection
         _endPoint.PositionChanged += OnPointMoved;
     }
 
+    /// <summary>
+    /// Odstraní čáru z canvasu a odhlásí se z událostí markerů.
+    /// </summary>
+    /// <param name="canvas">Canvas, ze kterého se má čára odstranit</param>
     public void Remove(Canvas canvas)
     {
         canvas.Children.Remove(_line);

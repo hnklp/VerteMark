@@ -7,13 +7,18 @@ using System.IO;
 using System.Diagnostics;
 
 namespace VerteMark.ObjectClasses.FolderClasses {
-    // Prace s temp slozkou v behovem prostredi
-    // bude nastrojem pro vyber slozek, ze kterych chce uzivatel vybirat
-
+    /// <summary>
+    /// Správce struktury složek v běhovém prostředí.
+    /// Zajišťuje správnost temp složky a poskytuje nástroje pro výběr složek.
+    /// </summary>
     internal class FolderManager {
+        /// <summary>Cesta k dočasné složce projektu</summary>
         public string? tempFolderPath;
 
-        
+        /// <summary>
+        /// Zkontroluje správnost temp složky v běhovém prostředí.
+        /// Pokud nějaká složka chybí, vytvoří ji.
+        /// </summary>
         public void CheckTempFolder() {
         // správnost temp složky v běhovém prostředí, pokud nějaká složka chybí, vrátí hodnotu false
             string[] requiredFolders = { "dicoms", "to_validate", "to_anotate", "validated" };
@@ -26,6 +31,9 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        /// <summary>
+        /// Smaže dočasnou složku projektu a její obsah.
+        /// </summary>
         public void DeleteTempFolder() {
             {
                 try {
@@ -52,15 +60,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
         /// <summary>
-        ///* ====================================================================
-        ///* = Mazani duplicitnich slozek / presouvani mezi slozkama             =
-        ///* ====================================================================
-        ///* ! TOHLE BY CHTELO CELE PREDELAT ABY TO BYLO UNIVERZALNI.           !
-        ///* ! OMLOUVAM SE ZA TUHLE PRASARNU S IFAMA ALE PROSTE TO MUSIME VYDAT.!
-        ///* ! TODO: TOTO UDELAT JINAK                                          !
-        ///* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /// Zpracuje složky a odstraní duplicitní složky mezi různými adresáři.
+        /// Logika závisí na názvu tlačítka, které spustilo akci.
         /// </summary>
-
+        /// <param name="button">Název tlačítka, které spustilo akci (určuje logiku mazání)</param>
         public void ProcessFolders(string button)
         {
             string validatedPath = Path.Combine(tempFolderPath, "validated");
@@ -208,6 +211,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        /// <summary>
+        /// Smaže aktuální úpravy projektu ze složky to_anotate.
+        /// </summary>
+        /// <param name="name">Název projektu ke smazání</param>
         public void DeleteCurrentEdits(string name)
         {
             string toAnnotatePath = Path.Combine(tempFolderPath, "to_anotate");
@@ -216,7 +223,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
 
         }
 
-        // vrati list dicomu, pro ktere jeste neni vytvoren projekt
+        /// <summary>
+        /// Vrátí seznam DICOM souborů, pro které ještě není vytvořen projekt.
+        /// </summary>
+        /// <returns>Seznam názvů DICOM souborů dostupných pro vytvoření nového projektu</returns>
         public List<string> ChooseNewProject() {
             List<string> dicomFiles = GetDicomFiles();
             List<string> anotatedProjects = GetSubfolders("to_anotate");
@@ -233,7 +243,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return dicomFiles;
         }
 
-        // vrati list rozdelanych projektu k anotaci
+        /// <summary>
+        /// Vrátí seznam rozdaných projektů k anotaci (projekty, které ještě nebyly validovány).
+        /// </summary>
+        /// <returns>Seznam názvů projektů dostupných pro pokračování v anotaci</returns>
         public List<string> ChooseContinueAnotation() {
             List<string> toAnotateFiles = GetSubfolders("to_anotate");
             List<string> validatedProjects = GetSubfolders("validated");
@@ -243,14 +256,20 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        // vrati list pro validatora k validaci
+        /// <summary>
+        /// Vrátí seznam projektů pro validátora k validaci.
+        /// </summary>
+        /// <returns>Seznam názvů projektů dostupných pro validaci</returns>
         public List<string> ChooseValidation() {
             List<string> validatedProjects = GetSubfolders("validated");
             List<string> toValidateProjects = GetSubfolders("to_validate");
             List<string> invalidProjects = GetSubfolders("invalid");
             return toValidateProjects.Except(validatedProjects).Except(invalidProjects).ToList();
         }
-        //vrati list nevalidnich snimku
+        /// <summary>
+        /// Vrátí seznam neplatných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů neplatných DICOM souborů</returns>
         public List<string> InvalidDicoms()
         {
             List<string> invalidDicoms = GetSubfolders("invalid");
@@ -258,6 +277,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return invalidDicoms.ToList();
         }
 
+        /// <summary>
+        /// Vrátí seznam validovaných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů validovaných DICOM souborů</returns>
         public List<string> ValidatedDicoms()
         {
             List<string> validatedDicoms = GetSubfolders("validated");
@@ -265,7 +288,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return validatedDicoms.ToList();
         }
 
-
+        /// <summary>
+        /// Získá seznam podsložek v zadané nadřazené složce.
+        /// </summary>
+        /// <param name="parentFolderName">Název nadřazené složky</param>
+        /// <returns>Seznam názvů podsložek</returns>
         private List<string> GetSubfolders(string parentFolderName) {
             string parentFolderPath = Path.Combine(tempFolderPath, parentFolderName);
             if (!Directory.Exists(parentFolderPath)){
@@ -282,6 +309,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             return subfolders;
         }
 
+        /// <summary>
+        /// Získá seznam DICOM souborů ze složky dicoms.
+        /// </summary>
+        /// <returns>Seznam názvů DICOM souborů</returns>
         private List<string> GetDicomFiles() {
             string dicomsFolderPath = Path.Combine(tempFolderPath, "dicoms");
             if (!Directory.Exists(dicomsFolderPath)) {

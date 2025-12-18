@@ -6,14 +6,21 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 
+/// <summary>
+/// Reprezentuje bodový marker pro anotace obratlů.
+/// Umožňuje zobrazení, přesouvání a škálování bodového markeru na canvasu.
+/// </summary>
 public class PointMarker
 {
     private Canvas? _canvas;
+    /// <summary>Pozice markeru na canvasu</summary>
     public System.Windows.Point Position { get; private set; }
     private FrameworkElement? _cross;
+    /// <summary>Transformace pro škálování markeru</summary>
     public ScaleTransform _scaleTransform { get; private set; }
     private const double BaseCrossSize = 10;
     private const double HitBoxSize = 20;
+    /// <summary>Událost vyvolaná při změně pozice markeru</summary>
     public event Action? PositionChanged;
     private Brush _colorBrush;
     private String _label;
@@ -21,6 +28,13 @@ public class PointMarker
     private bool _isDragging = false;
     private Point _dragOffset;
 
+    /// <summary>
+    /// Vytvoří novou instanci bodového markeru a okamžitě ho vykreslí na canvas.
+    /// </summary>
+    /// <param name="canvas">Canvas pro vykreslení markeru</param>
+    /// <param name="position">Počáteční pozice markeru</param>
+    /// <param name="colorBrush">Barva markeru</param>
+    /// <param name="label">Textový popisek markeru</param>
     public PointMarker(Canvas canvas, Point position, Brush colorBrush, string label)
     {
         Position = position;
@@ -32,6 +46,12 @@ public class PointMarker
         DrawPointMarker(canvas);
     }
 
+    /// <summary>
+    /// Vytvoří novou instanci bodového markeru bez okamžitého vykreslení.
+    /// </summary>
+    /// <param name="position">Počáteční pozice markeru</param>
+    /// <param name="colorBrush">Barva markeru</param>
+    /// <param name="label">Textový popisek markeru</param>
     public PointMarker(Point position, Brush colorBrush, string label)
     {
         Position = position;
@@ -41,6 +61,10 @@ public class PointMarker
         _scaleTransform = new ScaleTransform(1, 1);
     }
 
+    /// <summary>
+    /// Vykreslí bodový marker na zadaný canvas.
+    /// </summary>
+    /// <param name="canvas">Canvas pro vykreslení markeru</param>
     public void DrawPointMarker(Canvas canvas)
     {
         _canvas = canvas;
@@ -122,12 +146,20 @@ public class PointMarker
         return group;
     }
 
+    /// <summary>
+    /// Aktualizuje měřítko markeru.
+    /// </summary>
+    /// <param name="scale">Nové měřítko (1.0 = 100%)</param>
     public void UpdateScale(double scale)
     {
         _scaleTransform.ScaleX = scale;
         _scaleTransform.ScaleY = scale;
     }
 
+    /// <summary>
+    /// Aktualizuje pozici markeru na canvasu.
+    /// </summary>
+    /// <param name="newPosition">Nová pozice markeru</param>
     public void UpdatePosition(Point newPosition)
     {
         Position = newPosition;
@@ -164,6 +196,10 @@ public class PointMarker
         }
     }
 
+    /// <summary>
+    /// Odstraní marker z canvasu.
+    /// </summary>
+    /// <param name="canvas">Canvas, ze kterého se má marker odstranit</param>
     public void Remove(Canvas canvas)
     {
         canvas.Children.Remove(_cross);

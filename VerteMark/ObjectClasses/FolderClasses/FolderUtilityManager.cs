@@ -12,12 +12,21 @@ using System.Drawing;
 using System.Xml.Linq;
 
 namespace VerteMark.ObjectClasses.FolderClasses {
+    /// <summary>
+    /// Správce operací se složkami na vysoké úrovni.
+    /// Koordinuje práci mezi ZipManager, FileManager a FolderManager.
+    /// </summary>
     internal class FolderUtilityManager {
         ZipManager zipManager;
+        /// <summary>Správce souborových operací</summary>
         public FileManager fileManager;
         FolderManager folderManager;
+        /// <summary>Cesta k dočasné složce projektu</summary>
         public string tempPath;
 
+        /// <summary>
+        /// Vytvoří novou instanci FolderUtilityManager a inicializuje správce.
+        /// </summary>
         public FolderUtilityManager() {
             zipManager = new ZipManager();
             fileManager = new FileManager();
@@ -25,7 +34,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
         }
 
-        //discards changes, removes extracted files
+        /// <summary>
+        /// Zruší změny a odstraní extrahované soubory.
+        /// </summary>
+        /// <param name="button">Název tlačítka, které spustilo akci (pro metadata)</param>
         public void Discard(string button)
         {
             folderManager.ProcessFolders(button);
@@ -33,7 +45,15 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             SaveZip();
         }
 
-        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid
+        /// <summary>
+        /// Uloží projekt se všemi anotacemi, obrázky a metadaty.
+        /// </summary>
+        /// <param name="user">Uživatel provádějící uložení</param>
+        /// <param name="newProject">True, pokud se jedná o nový projekt, jinak false</param>
+        /// <param name="image">Obrázek k uložení</param>
+        /// <param name="jsonString">JSON řetězec s anotacemi</param>
+        /// <param name="savingParameter">Parametr určující cílovou složku: 0 = to_anotate, 1 = to_validate, 2 = validated, 3 = invalid</param>
+        /// <param name="button">Název tlačítka, které spustilo uložení (pro metadata)</param>
         public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter, string button) {
             switch (savingParameter) {
                 //Ukladani do jednotlivych slozek
@@ -74,11 +94,18 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             SaveZip();
         }
 
+        /// <summary>
+        /// Smaže dočasnou složku projektu.
+        /// </summary>
         public void DeleteTempFolder() {
             folderManager.DeleteTempFolder();
         }
 
-
+        /// <summary>
+        /// Extrahuje ZIP soubor projektu do dočasné složky.
+        /// </summary>
+        /// <param name="path">Cesta k ZIP souboru projektu (.vmk)</param>
+        /// <returns>True, pokud byla extrakce úspěšná, jinak false</returns>
         public bool ExtractZip(string path) {
             try {
                 zipManager.LoadZip(path);
@@ -97,11 +124,18 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
+        /// <summary>
+        /// Získá načtený obrázek z projektu.
+        /// </summary>
+        /// <returns>Bitmapa obrázku nebo null, pokud není načten</returns>
         public BitmapImage GetImage() {
             return fileManager.LoadBitmapImage();
         }
 
-
+        /// <summary>
+        /// Vytvoří nový projekt z DICOM souboru.
+        /// </summary>
+        /// <param name="path">Cesta k DICOM souboru</param>
         public void CreateNewProject(string path) {
             string folderName = Path.GetFileName(path);
             fileManager.outputPath = Path.Combine(tempPath, "to_anotate");
@@ -111,6 +145,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
+        /// <summary>
+        /// Načte existující projekt ze zadané cesty.
+        /// </summary>
+        /// <param name="path">Cesta k projektu</param>
+        /// <returns>JSON řetězec s anotacemi nebo prázdný řetězec při chybě</returns>
         public string LoadProject(string path) {
             try {
                 string[] files = Directory.GetFiles(path);
@@ -150,25 +189,43 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * =============================
         */
 
+        /// <summary>
+        /// Získá seznam DICOM souborů dostupných pro vytvoření nového projektu.
+        /// </summary>
+        /// <returns>Seznam názvů DICOM souborů</returns>
         public List<string> ChooseNewProject() {
             return folderManager.ChooseNewProject();
         }
 
-
+        /// <summary>
+        /// Získá seznam projektů dostupných pro pokračování v anotaci.
+        /// </summary>
+        /// <returns>Seznam názvů projektů</returns>
         public List<string> ChooseContinueAnotation() {
             return folderManager.ChooseContinueAnotation();
         }
 
-
+        /// <summary>
+        /// Získá seznam projektů dostupných pro validaci.
+        /// </summary>
+        /// <returns>Seznam názvů projektů</returns>
         public List<string> ChooseValidation() {
             return folderManager.ChooseValidation();
         }
 
+        /// <summary>
+        /// Získá seznam neplatných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů neplatných DICOM souborů</returns>
         public List<string> InvalidDicoms()
         {
             return folderManager.InvalidDicoms();
         }
 
+        /// <summary>
+        /// Získá seznam validovaných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů validovaných DICOM souborů</returns>
         public List<string> ValidatedDicoms()
         {
             return folderManager.ValidatedDicoms();
@@ -180,6 +237,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * =============================
         */
 
+        /// <summary>
+        /// Zjistí, zda je k dispozici nějaký projekt pro aktuálního uživatele.
+        /// </summary>
+        /// <param name="isValidator">True, pokud je uživatel validátor, jinak false</param>
+        /// <returns>True, pokud je k dispozici alespoň jeden projekt, jinak false</returns>
         public bool anyProjectAvailable(bool isValidator) {
             if (isValidator && folderManager.ChooseValidation().Count == 0) {
                 return false;

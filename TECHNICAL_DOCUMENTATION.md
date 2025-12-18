@@ -525,27 +525,240 @@ public void ExtractAndSaveMetadata(User user)
 
 #### **FolderUtilityManager**
 
+Správce operací se složkami na vysoké úrovni. Koordinuje práci mezi ZipManager, FileManager a FolderManager.
+
 ```csharp
+/// <summary>
+/// Extrahuje ZIP soubor projektu do dočasné složky.
+/// </summary>
+/// <param name="path">Cesta k ZIP souboru projektu (.vmk)</param>
+/// <returns>True, pokud byla extrakce úspěšná, jinak false</returns>
 public bool ExtractZip(string path)
 ```
-**Parametry:**
-- `path`: Cesta k .vmk (ZIP) souboru
-
-**Vrací:** True, pokud byla extrakce úspěšná, jinak false.
-
-**Popis:** Extrahuje ZIP kontejner do dočasného adresáře a inicializuje strukturu složek.
 
 ---
 
 ```csharp
+/// <summary>
+/// Uloží projekt se všemi anotacemi, obrázky a metadaty.
+/// </summary>
+/// <param name="user">Uživatel provádějící uložení</param>
+/// <param name="newProject">True, pokud se jedná o nový projekt, jinak false</param>
+/// <param name="image">Obrázek k uložení</param>
+/// <param name="jsonString">JSON řetězec s anotacemi</param>
+/// <param name="savingParameter">Parametr určující cílovou složku: 0 = to_anotate, 1 = to_validate, 2 = validated, 3 = invalid</param>
+/// <param name="button">Název tlačítka, které spustilo uložení (pro metadata)</param>
+public void Save(User user, bool newProject, BitmapImage image, string jsonString, int savingParameter, string button)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Načte existující projekt ze zadané cesty.
+/// </summary>
+/// <param name="path">Cesta k projektu</param>
+/// <returns>JSON řetězec s anotacemi nebo prázdný řetězec při chybě</returns>
 public string LoadProject(string path)
 ```
-**Parametry:**
-- `path`: Cesta ke složce projektu
 
-**Vrací:** JSON řetězec obsahující data anotací, nebo prázdný řetězec, pokud se načítání nezdařilo.
+---
 
-**Popis:** Načte projekt ze složky, přečte PNG, JSON a metadata soubory.
+```csharp
+/// <summary>
+/// Získá seznam DICOM souborů dostupných pro vytvoření nového projektu.
+/// </summary>
+/// <returns>Seznam názvů DICOM souborů</returns>
+public List<string> ChooseNewProject()
+```
+
+---
+
+#### **FolderManager**
+
+Správce struktury složek v běhovém prostředí. Zajišťuje správnost temp složky a poskytuje nástroje pro výběr složek.
+
+```csharp
+/// <summary>
+/// Zkontroluje správnost temp složky v běhovém prostředí.
+/// Pokud nějaká složka chybí, vytvoří ji.
+/// </summary>
+public void CheckTempFolder()
+```
+
+---
+
+```csharp
+/// <summary>
+/// Zpracuje složky a odstraní duplicitní složky mezi různými adresáři.
+/// </summary>
+/// <param name="button">Název tlačítka, které spustilo akci (určuje logiku mazání)</param>
+public void ProcessFolders(string button)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Vrátí seznam DICOM souborů, pro které ještě není vytvořen projekt.
+/// </summary>
+/// <returns>Seznam názvů DICOM souborů dostupných pro vytvoření nového projektu</returns>
+public List<string> ChooseNewProject()
+```
+
+---
+
+#### **ZipManager**
+
+Správce operací s ZIP kontejnerem projektu (.vmk soubory). Zajišťuje extrakci a aktualizaci ZIP archivu.
+
+```csharp
+/// <summary>
+/// Načte a extrahuje ZIP soubor projektu do dočasné složky.
+/// </summary>
+/// <param name="zipPath">Cesta k ZIP souboru projektu</param>
+public void LoadZip(string zipPath)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Aktualizuje ZIP archiv ze změn v dočasné složce.
+/// </summary>
+public void UpdateZipFromTempFolder()
+```
+
+---
+
+#### **JsonManipulator**
+
+Třída pro serializaci a deserializaci anotací do/z JSON formátu.
+
+```csharp
+/// <summary>
+/// Exportuje anotace do JSON formátu.
+/// </summary>
+/// <param name="user">Uživatel (anotátor nebo validátor)</param>
+/// <param name="programAnnotations">Seznam anotací ve formátu slovníku</param>
+/// <param name="programValidatedAnnotations">Seznam ID validovaných anotací</param>
+/// <returns>JSON řetězec obsahující anotace a metadata</returns>
+public string ExportJson(User user, List<Dictionary<string, List<Tuple<int, int>>>> programAnnotations, List<string> programValidatedAnnotations)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Rozbalí JSON řetězec a vrátí seznam anotací a validovaných anotací.
+/// </summary>
+/// <param name="createdJson">JSON řetězec k rozbalení</param>
+/// <returns>Seznam obsahující JArray anotací a JArray validovaných anotací, nebo null při chybě</returns>
+public List<JArray>? UnpackJson(string createdJson)
+```
+
+---
+
+#### **PointMarker**
+
+Reprezentuje bodový marker pro anotace obratlů. Umožňuje zobrazení, přesouvání a škálování bodového markeru na canvasu.
+
+```csharp
+/// <summary>
+/// Vytvoří novou instanci bodového markeru a okamžitě ho vykreslí na canvas.
+/// </summary>
+/// <param name="canvas">Canvas pro vykreslení markeru</param>
+/// <param name="position">Počáteční pozice markeru</param>
+/// <param name="colorBrush">Barva markeru</param>
+/// <param name="label">Textový popisek markeru</param>
+public PointMarker(Canvas canvas, Point position, Brush colorBrush, string label)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Aktualizuje pozici markeru na canvasu.
+/// </summary>
+/// <param name="newPosition">Nová pozice markeru</param>
+public void UpdatePosition(Point newPosition)
+```
+
+---
+
+```csharp
+/// <summary>
+/// Aktualizuje měřítko markeru.
+/// </summary>
+/// <param name="scale">Nové měřítko (1.0 = 100%)</param>
+public void UpdateScale(double scale)
+```
+
+---
+
+#### **LineConnection**
+
+Reprezentuje čáru spojující dva bodové markery v anotaci. Automaticky aktualizuje svou pozici při pohybu markerů.
+
+```csharp
+/// <summary>
+/// Vytvoří novou čáru spojující dva bodové markery.
+/// </summary>
+/// <param name="startPoint">Počáteční bodový marker</param>
+/// <param name="endPoint">Koncový bodový marker</param>
+/// <param name="canvas">Canvas pro vykreslení čáry</param>
+/// <param name="colorBrush">Barva čáry</param>
+public LineConnection(PointMarker startPoint, PointMarker endPoint, Canvas canvas, Brush colorBrush)
+```
+
+---
+
+#### **TreeStructure (ButtonInfo, Subcategory, Category)**
+
+Třídy pro hierarchickou strukturu uživatelské příručky.
+
+```csharp
+/// <summary>
+/// Reprezentuje informace o tlačítku v uživatelské příručce.
+/// </summary>
+public class ButtonInfo
+{
+    /// <summary>Název tlačítka</summary>
+    public string Title { get; set; }
+    /// <summary>Cesta k GIF souboru s návodem</summary>
+    public string GifPath { get; set; }
+}
+```
+
+---
+
+```csharp
+/// <summary>
+/// Reprezentuje podkategorii v hierarchii uživatelské příručky.
+/// </summary>
+public class Subcategory
+{
+    /// <summary>Název podkategorie</summary>
+    public string Title { get; set; }
+    /// <summary>Kolekce tlačítek v podkategorii</summary>
+    public ObservableCollection<ButtonInfo> Buttons { get; set; }
+}
+```
+
+---
+
+```csharp
+/// <summary>
+/// Reprezentuje kategorii v hierarchii uživatelské příručky.
+/// </summary>
+public class Category
+{
+    /// <summary>Název kategorie</summary>
+    public string Title { get; set; }
+    /// <summary>Kolekce podkategorií v kategorii</summary>
+    public ObservableCollection<Subcategory> Subcategories { get; set; }
+}
+```
 
 ---
 
@@ -613,27 +826,100 @@ Reprezentuje přihlášeného uživatele.
 - UserID nemůže být prázdný (vynuceno v WelcomeWindow)
 
 #### **PointMarker**
-Reprezentuje jeden bodový marker na canvasu.
+Reprezentuje jeden bodový marker na canvasu pro anotace obratlů.
 
 **Vlastnosti:**
-- `Position`: System.Windows.Point (souřadnice x, y)
-- `_label`: Řetězcový štítek (A-H pro obratle)
+- `Position`: System.Windows.Point (souřadnice x, y) - pozice markeru na canvasu
+- `_scaleTransform`: ScaleTransform - transformace pro škálování markeru
+- `PositionChanged`: event Action - událost vyvolaná při změně pozice
 
 **Chování:**
-- Uživatelsky přetahovatelný
+- Uživatelsky přetahovatelný pomocí myši
 - Aktualizuje připojené objekty LineConnection při změně pozice
-- Měřítkuje se s úrovní zoomu
+- Měřítkuje se s úrovní zoomu pomocí UpdateScale()
+- Zobrazuje textový popisek (A-H pro obratle)
+- Má hitbox pro snadnější zachycení myší
 
 #### **LineConnection**
-Spojuje dvě instance PointMarker.
+Spojuje dvě instance PointMarker čárou.
 
 **Vlastnosti:**
-- `_startPoint`: PointMarker
-- `_endPoint`: PointMarker
+- `_startPoint`: PointMarker - počáteční bod
+- `_endPoint`: PointMarker - koncový bod (veřejná vlastnost)
+- `_line`: Line - WPF čára pro vykreslení
 
 **Chování:**
 - Automaticky aktualizuje pozici čáry při pohybu připojených bodů
 - Odstraněn při smazání kteréhokoli bodu
+- Přihlašuje se k událostem PositionChanged obou markerů
+- Má 50% průhlednost a tloušťku 3 pixely
+
+#### **JsonManipulator**
+Třída pro serializaci a deserializaci anotací do/z JSON formátu.
+
+**Vlastnosti:**
+- `ValidatorID`: string? - ID validátora
+- `AnnotatorID`: string? - ID anotátora
+- `LastEditDate`: string? - datum a čas poslední úpravy
+- `ValidationDate`: string? - datum a čas validace
+- `Annotations`: List<Dictionary<string, List<Tuple<int, int>>>>? - seznam anotací
+- `ValidatedAnnotations`: List<string>? - seznam ID validovaných anotací
+
+**Metody:**
+- `ExportJson()`: Vytvoří JSON řetězec z anotací a metadat
+- `UnpackJson()`: Rozbalí JSON řetězec a vrátí seznam anotací
+
+#### **FolderUtilityManager**
+Správce operací se složkami na vysoké úrovni.
+
+**Vlastnosti:**
+- `fileManager`: FileManager - správce souborových operací
+- `tempPath`: string - cesta k dočasné složce projektu
+
+**Hlavní metody:**
+- `ExtractZip()`: Extrahuje ZIP soubor projektu
+- `Save()`: Uloží projekt se všemi daty
+- `LoadProject()`: Načte existující projekt
+- `CreateNewProject()`: Vytvoří nový projekt z DICOM souboru
+- `ChooseNewProject()`, `ChooseContinueAnotation()`, `ChooseValidation()`: Získání seznamů projektů
+
+#### **FolderManager**
+Správce struktury složek v běhovém prostředí.
+
+**Vlastnosti:**
+- `tempFolderPath`: string? - cesta k dočasné složce
+
+**Hlavní metody:**
+- `CheckTempFolder()`: Zkontroluje a vytvoří potřebné složky
+- `ProcessFolders()`: Zpracuje složky a odstraní duplicity
+- `ChooseNewProject()`, `ChooseContinueAnotation()`, `ChooseValidation()`: Získání seznamů projektů podle stavu
+
+#### **ZipManager**
+Správce operací s ZIP kontejnerem projektu (.vmk soubory).
+
+**Vlastnosti:**
+- `zipPath`: string? - cesta k ZIP souboru
+- `tempFolderPath`: string? - cesta k dočasné složce pro extrakci
+- `zipName`: string? - název ZIP souboru bez přípony
+
+**Hlavní metody:**
+- `LoadZip()`: Načte a extrahuje ZIP soubor
+- `UpdateZipFromTempFolder()`: Aktualizuje ZIP archiv ze změn v dočasné složce
+
+#### **TreeStructure (ButtonInfo, Subcategory, Category)**
+Třídy pro hierarchickou strukturu uživatelské příručky.
+
+**ButtonInfo:**
+- `Title`: string - název tlačítka
+- `GifPath`: string - cesta k GIF souboru s návodem
+
+**Subcategory:**
+- `Title`: string - název podkategorie
+- `Buttons`: ObservableCollection<ButtonInfo> - kolekce tlačítek
+
+**Category:**
+- `Title`: string - název kategorie
+- `Subcategories`: ObservableCollection<Subcategory> - kolekce podkategorií
 
 ### Vztahy dat
 
