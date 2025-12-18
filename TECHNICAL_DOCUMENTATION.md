@@ -50,7 +50,7 @@ VerteMark/
 │   │   ├── PointMarker.cs               # UI komponenta bodového markeru
 │   │   ├── LineConnection.cs            # Čára spojující body
 │   │   ├── JsonManipulator.cs           # JSON serializace/deserializace
-│   │   ├── TreeStructure.cs              # !!!!
+│   │   ├── TreeStructure.cs             # 
 │   │   │
 │   │   └── FolderClasses/               # Operace se souborovým systémem
 │   │       ├── FileManager.cs           # Extrakce DICOM, I/O operace se soubory
