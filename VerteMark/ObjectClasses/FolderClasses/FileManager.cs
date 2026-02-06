@@ -35,11 +35,19 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             key = "XX"; //specialni oznaceni metadat pro UJEP (zatim podle zadani pouzivame XX)
         }
 
+        /// <summary>
+        /// Transformuje cesty PNG a JSON souborů do výstupního adresáře.
+        /// </summary>
         public void TransformPaths() {
             pngPath = Path.Combine(outputPath, Path.GetFileName(pngPath));
             jsonPath = Path.Combine(outputPath, Path.GetFileName(jsonPath));
         }
 
+        /// <summary>
+        /// Zkopíruje metadata soubor ze zdrojové cesty do cílové cesty.
+        /// </summary>
+        /// <param name="sourcePath">Cesta ke zdrojovému metadata souboru</param>
+        /// <exception cref="FileNotFoundException">Vyvoláno, pokud zdrojový soubor neexistuje</exception>
         public void CopyMetaFile(string sourcePath) {
             if (!File.Exists(sourcePath)) {
                 throw new FileNotFoundException($"The source file does not exist: {sourcePath}");
@@ -54,6 +62,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             File.Copy(sourcePath, metaPath, overwrite: true);
         }
 
+        /// <summary>
+        /// Zkopíruje všechny JSON soubory ze zdrojového adresáře do výstupního adresáře.
+        /// </summary>
+        /// <param name="sourcePath">Cesta ke zdrojovému adresáři</param>
         public void CopyAllJsonFiles(string sourcePath) {
 
             string[] jsonFiles = Directory.GetFiles(sourcePath, "*.json");
@@ -66,6 +78,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        /// <summary>
+        /// Uloží oříznutý obrázek jako PNG soubor.
+        /// </summary>
+        /// <param name="image">Bitmapa obrázku k uložení</param>
         public void SaveCroppedImage(BitmapImage image) {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));
@@ -75,6 +91,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
             }
         }
 
+        /// <summary>
+        /// Uloží JSON řetězec do souboru s prefixem podle role uživatele (a_ pro anotátora, v_ pro validátora).
+        /// </summary>
+        /// <param name="jsonString">JSON řetězec k uložení</param>
+        /// <param name="user">Uživatel určující prefix souboru</param>
         public void SaveJson(string jsonString, User user)
         {
             if (jsonPath != null)
@@ -103,7 +124,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        // nacte obrazek pomoci cesty pngPath
+        /// <summary>
+        /// Načte bitmapu obrázku z cesty pngPath.
+        /// </summary>
+        /// <returns>Načtená bitmapa nebo null, pokud se načítání nezdařilo</returns>
         public BitmapImage LoadBitmapImage() {
             try {
                 BitmapImage bitmapImage = new BitmapImage();
@@ -134,6 +158,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * ============================================
         */
 
+        /// <summary>
+        /// Přidá záznam o akci uživatele do metadata souboru.
+        /// </summary>
+        /// <param name="user">Uživatel, jehož akce se má zaznamenat</param>
         public void AddUserActionToMetadata(User user) {
             if (!File.Exists(metaPath)) {
                 return;
@@ -163,7 +191,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         * ======================================
         */
 
-        // Kdyz se nacte DICOM, vytvori to slozku, ktera se nastavi jako outputPath
+        /// <summary>
+        /// Vytvoří výstupní adresář pro projekt.
+        /// </summary>
+        /// <param name="outputDirectoryName">Název výstupního adresáře</param>
         public void CreateOutputFile(string outputDirectoryName) {
             if (outputPath != null) {
                 string fullPath = Path.Combine(outputPath, outputDirectoryName);
@@ -173,8 +204,10 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        // extrahuje png obrazek z dicom souboru a ulozi ho do slozky
-        // nastavi instanci pngPath
+        /// <summary>
+        /// Extrahuje PNG obrázek z DICOM souboru a uloží ho do složky.
+        /// Nastaví vlastnosti pngPath a jsonPath.
+        /// </summary>
         public void ExtractImageFromDicom() {
             DicomFile dicomFile = DicomFile.Open(dicomPath);
             DicomImage image = new DicomImage(dicomFile.Dataset);
@@ -187,7 +220,11 @@ namespace VerteMark.ObjectClasses.FolderClasses {
         }
 
 
-        // extrahuje metadata do output slozky - vola se pouze pokud je vytvoreny novy projekt
+        /// <summary>
+        /// Extrahuje všechna metadata z DICOM souboru a uloží je do .meta souboru.
+        /// Volá se pouze při vytváření nového projektu.
+        /// </summary>
+        /// <param name="user">Uživatel pro historii metadat</param>
         public void ExtractAndSaveMetadata(User user)
         {
             if (string.IsNullOrEmpty(dicomPath) || !File.Exists(dicomPath))

@@ -46,6 +46,10 @@ namespace VerteMark.ObjectClasses
             anyProjectAvailable = true;
         }
 
+        /// <summary>
+        /// Ořízne původní obrázek podle zadané bitmapy.
+        /// </summary>
+        /// <param name="image">Bitmapa obsahující oříznutý obrázek</param>
         public void CropOriginalPicture(BitmapSource image)
         {
             BitmapImage bitmapImage = new BitmapImage();
@@ -62,10 +66,19 @@ namespace VerteMark.ObjectClasses
             SetOriginalPicture(bitmapImage);
         }
 
+        /// <summary>
+        /// Vybere a extrahuje projekt ze ZIP souboru (.vmk).
+        /// </summary>
+        /// <param name="path">Cesta k ZIP souboru projektu</param>
+        /// <returns>True, pokud byla extrakce úspěšná, jinak false</returns>
         public bool ChooseProjectFolder(string path) {
             return folderUtilityManager.ExtractZip(path);
         }
 
+        /// <summary>
+        /// Zjistí, zda je k dispozici nějaký projekt pro aktuálního uživatele.
+        /// </summary>
+        /// <returns>True, pokud je k dispozici alespoň jeden projekt, jinak false</returns>
         public bool isAnyProjectAvailable()
         {
             return anyProjectAvailable;
@@ -79,6 +92,10 @@ namespace VerteMark.ObjectClasses
             folderUtilityManager.CreateNewProject(path);
             originalPicture = folderUtilityManager.GetImage();
         }
+        /// <summary>
+        /// Vytvoří nový debug projekt pro testování bez DICOM souboru.
+        /// Načte debug obrázek z Pictures/debug.png.
+        /// </summary>
         public void CreateNewProjectDEBUG() {
             newProject = true;
             CreateNewAnotaces();
@@ -118,7 +135,11 @@ namespace VerteMark.ObjectClasses
             anotaces = anotaces.OrderBy(a => a.Id).ToList();
         }
 
-        // saving parameters : 0: to_anotate, 1: to_validate, 2: validated, 3: invalid, 4: neukladat
+        /// <summary>
+        /// Uloží aktuální projekt se všemi anotacemi, metadaty a obrázky.
+        /// </summary>
+        /// <param name="savingParameter">Parametr určující cílovou složku: 0 = to_anotate, 1 = to_validate, 2 = validated, 3 = invalid</param>
+        /// <param name="button">Název tlačítka, které spustilo uložení (pro metadata)</param>
         public void SaveProject(int savingParameter, string button) {
 
             // pred ulozenim - pokud je uzivatel anotator:
@@ -141,21 +162,33 @@ namespace VerteMark.ObjectClasses
             this.anyProjectAvailable = folderUtilityManager.anyProjectAvailable(loggedInUser.Validator);
         }
 
+        /// <summary>
+        /// Smaže dočasnou složku projektu.
+        /// </summary>
         public void DeleteTempFolder() {
             folderUtilityManager.DeleteTempFolder();
         }
 
-
+        /// <summary>
+        /// Získá původní obrázek projektu.
+        /// </summary>
+        /// <returns>Bitmapa původního obrázku nebo null, pokud není načten</returns>
         public BitmapImage? GetOriginalPicture() {
             return originalPicture;
         }
 
+        /// <summary>
+        /// Nastaví původní obrázek projektu.
+        /// </summary>
+        /// <param name="image">Bitmapa obrázku k nastavení</param>
         public void SetOriginalPicture(BitmapImage image) {
             originalPicture = image;
         }
 
-
-        // Singleton metoda
+        /// <summary>
+        /// Získá singleton instanci třídy Project.
+        /// </summary>
+        /// <returns>Jediná instance Project</returns>
         public static Project GetInstance() {
             if (instance == null) {
                 instance = new Project();
@@ -283,7 +316,11 @@ namespace VerteMark.ObjectClasses
             anotaces.Add(new Anotace(id, name, color, type));
         }
 
-        // Funkce pro získání správného typu podle ID
+        /// <summary>
+        /// Určí typ anotace podle jejího ID.
+        /// </summary>
+        /// <param name="id">ID anotace (např. "V0", "I1", "F0")</param>
+        /// <returns>Typ anotace podle předpony ID (V=Vertebra, I=Implant, F=Fusion)</returns>
         public static AnotaceType GetTypeForId(string id)
         {
             if (id.StartsWith("V"))
@@ -296,11 +333,21 @@ namespace VerteMark.ObjectClasses
             return AnotaceType.Vertebra;
         }
 
+        /// <summary>
+        /// Extrahuje číselnou část z ID anotace.
+        /// </summary>
+        /// <param name="id">ID anotace (např. "V3" -> 3)</param>
+        /// <returns>Číselná část ID nebo 0, pokud parsování selže</returns>
         public int ExtractNumericId(string id)
         {
             return int.TryParse(id.Substring(1), out int result) ? result : 0;
         }
 
+        /// <summary>
+        /// Vytvoří novou anotaci zadaného typu s automaticky vygenerovaným ID.
+        /// </summary>
+        /// <param name="type">Typ anotace (Implant nebo Fusion)</param>
+        /// <returns>Nově vytvořená anotace</returns>
         public Anotace CreateNewAnnotation(AnotaceType type)
         {
             var existing = anotaces
@@ -323,6 +370,10 @@ namespace VerteMark.ObjectClasses
             return newAnnotation;
         }
 
+        /// <summary>
+        /// Získá bitmapu aktivní anotace.
+        /// </summary>
+        /// <returns>WriteableBitmap aktivní anotace</returns>
         public WriteableBitmap ActiveAnotaceImage() {
             if (activeAnotace == null) {
                 SelectActiveAnotace("V0");
@@ -330,6 +381,9 @@ namespace VerteMark.ObjectClasses
             return activeAnotace.GetCanvas();
         }
 
+        /// <summary>
+        /// Nastaví preview obrázky pro všechny anotace kromě aktivní.
+        /// </summary>
         public void PreviewAllAnotaces() {
             foreach(Anotace anot in anotaces) {
                 if (activeAnotace != anot) {
@@ -338,6 +392,11 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Najde anotaci podle jejího ID.
+        /// </summary>
+        /// <param name="idAnotace">ID anotace k vyhledání</param>
+        /// <returns>Nalezená anotace nebo null, pokud nebyla nalezena</returns>
         public Anotace FindAnotaceById(string idAnotace) {
             Anotace? foundAnotace = anotaces.Find(anotace => anotace.Id == idAnotace);
             if (foundAnotace != null) {
@@ -348,6 +407,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Přepne stav validace anotace podle ID.
+        /// </summary>
+        /// <param name="id">ID anotace k validaci/zrušení validace</param>
         public void ValidateAnnotationByID(string id) {
             Anotace anotace = FindAnotaceById(id);
             if (anotace.IsValidated) {
@@ -358,12 +421,20 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Nastaví aktivní anotaci podle ID.
+        /// </summary>
+        /// <param name="id">ID anotace k aktivaci</param>
+        /// <returns>Vybraná anotace</returns>
         public Anotace SelectActiveAnotace(string id) {
             activeAnotace = FindAnotaceById(id);
             return activeAnotace;
         }
 
-
+        /// <summary>
+        /// Získá ID aktivní anotace.
+        /// </summary>
+        /// <returns>ID aktivní anotace nebo prázdný řetězec, pokud není žádná aktivní</returns>
         public string ActiveAnotaceId() {
             if (activeAnotace != null) {
                 return activeAnotace.Id;
@@ -371,17 +442,27 @@ namespace VerteMark.ObjectClasses
             return "";
         }
 
-
+        /// <summary>
+        /// Získá barvu aktivní anotace ve formátu WPF Color.
+        /// </summary>
+        /// <returns>Barva aktivní anotace</returns>
         public System.Windows.Media.Color ActiveAnotaceColor() {
             return System.Windows.Media.Color.FromArgb(activeAnotace.Color.A, activeAnotace.Color.R, activeAnotace.Color.G, activeAnotace.Color.B);
         }
 
+        /// <summary>
+        /// Aktualizuje canvas aktivní anotace novou bitmapou.
+        /// </summary>
+        /// <param name="bitmapSource">Nová bitmapa pro canvas anotace</param>
         public void UpdateSelectedAnotaceCanvas(WriteableBitmap bitmapSource) {
             if (activeAnotace != null) {
                 activeAnotace.UpdateCanvas(bitmapSource);
             }
         }
 
+        /// <summary>
+        /// Vymaže obsah aktivní anotace (canvas, body a čáry).
+        /// </summary>
         public void ClearActiveAnotace() {
             if (activeAnotace != null) {
                 activeAnotace.ClearCanvas();
@@ -391,6 +472,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Vymaže obsah zadané anotace.
+        /// </summary>
+        /// <param name="annotation">Anotace k vymazání</param>
         public void ClearAnotace(Anotace annotation)
         {
             annotation.ClearCanvas();
@@ -398,6 +483,10 @@ namespace VerteMark.ObjectClasses
             annotation.Lines.Clear();   
         }
 
+        /// <summary>
+        /// Vymaže všechny anotace v projektu.
+        /// </summary>
+        /// <param name="PointCanvas">Canvas pro odstranění bodových markerů</param>
         public void ClearAllAnotace(Canvas PointCanvas)
         {
             foreach (Anotace annotation in anotaces)
@@ -408,7 +497,9 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-
+        /// <summary>
+        /// Validuje všechny anotace, pokud ještě nebyly validovány.
+        /// </summary>
         public void ValidateAll() {
             bool wasValidated = false;
             foreach (Anotace annotation in anotaces) {
@@ -422,12 +513,19 @@ namespace VerteMark.ObjectClasses
 				}
 			}
         }
-        
 
+        /// <summary>
+        /// Získá seznam všech anotací v projektu.
+        /// </summary>
+        /// <returns>Seznam všech anotací</returns>
         public List<Anotace> GetAnotaces(){
             return anotaces;
         }
 
+        /// <summary>
+        /// Smaže anotaci podle ID.
+        /// </summary>
+        /// <param name="annotationId">ID anotace ke smazání</param>
         public void DeleteAnnotation(string annotationId) { 
             Anotace annotation = FindAnotaceById(annotationId);
             if (annotation != null)
@@ -436,6 +534,11 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Změní ID anotace na nové ID.
+        /// </summary>
+        /// <param name="annotationId">Původní ID anotace</param>
+        /// <param name="newId">Nové ID anotace</param>
         public void ChangeAnnotationId(string annotationId, string newId)
         {
             Anotace annotation = FindAnotaceById(annotationId);
@@ -445,6 +548,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Přidá bodový marker do aktivní anotace.
+        /// </summary>
+        /// <param name="point">Bodový marker k přidání</param>
         public void AddPointActiveAnot(PointMarker point)
         {
             if (activeAnotace != null)
@@ -453,6 +560,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Získá počet bodů v aktivní anotaci.
+        /// </summary>
+        /// <returns>Počet bodů nebo 0, pokud není žádná aktivní anotace</returns>
         public int GetPointsCount()
         {
             if (activeAnotace != null)
@@ -462,6 +573,10 @@ namespace VerteMark.ObjectClasses
             return 0;
         }
 
+        /// <summary>
+        /// Aktualizuje měřítko všech bodových markerů podle faktoru zoomu.
+        /// </summary>
+        /// <param name="zoomFactor">Faktor zoomu (1.0 = 100%)</param>
         public void UpdatePointsScale(double zoomFactor)
         {
             double scale = 1 / zoomFactor;
@@ -473,6 +588,9 @@ namespace VerteMark.ObjectClasses
                 }
         }
 
+        /// <summary>
+        /// Zrcadlí původní obrázek horizontálně.
+        /// </summary>
         public void MirrorOriginalPicture()
         {
             if (originalPicture == null)
@@ -501,6 +619,10 @@ namespace VerteMark.ObjectClasses
             originalPicture = mirroredImage;
         }
 
+        /// <summary>
+        /// Odstraní všechny body a čáry aktivní anotace z canvasu.
+        /// </summary>
+        /// <param name="canvas">Canvas, ze kterého se mají odstranit prvky</param>
         public void RemoveActivePointsAndConnections(Canvas canvas)
         {
             if (activeAnotace != null)
@@ -516,6 +638,11 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Odstraní všechny body a čáry zadané anotace z canvasu.
+        /// </summary>
+        /// <param name="canvas">Canvas, ze kterého se mají odstranit prvky</param>
+        /// <param name="anotace">Anotace, jejíž prvky se mají odstranit</param>
         public void RemovePointsAndConnections(Canvas canvas, Anotace anotace)
         {
             foreach (LineConnection line in anotace.Lines)
@@ -528,6 +655,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Odstraní poslední bod aktivní anotace a všechny čáry k němu připojené.
+        /// </summary>
+        /// <param name="canvas">Canvas, ze kterého se má bod odstranit</param>
         public void RemoveActiveLastPoint(Canvas canvas)
         {
             if (activeAnotace != null)
@@ -550,6 +681,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Načte všechny bodové markery ze všech anotací na canvas.
+        /// </summary>
+        /// <param name="canvas">Canvas pro vykreslení markerů</param>
         public void LoadPointMarkers(Canvas canvas)
         {
             foreach (Anotace anotace in anotaces)
@@ -562,6 +697,12 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Vykreslí čáru spojující body v anotaci podle indexu.
+        /// </summary>
+        /// <param name="pointCanvas">Canvas pro vykreslení čáry</param>
+        /// <param name="index">Index bodu (určuje, které body spojit)</param>
+        /// <param name="anotace">Anotace, pro kterou se má čára vykreslit. Pokud je null, použije se aktivní anotace.</param>
         public void DrawLineConnection(Canvas pointCanvas, int index, Anotace? anotace = null)
         {
             if (anotace == null && activeAnotace != null)
@@ -612,6 +753,11 @@ namespace VerteMark.ObjectClasses
             anotace.Lines.Add(line2);
         }
 
+        /// <summary>
+        /// Ořízne preview obrázky všech anotací na zadané rozměry.
+        /// </summary>
+        /// <param name="width">Nová šířka preview obrázku</param>
+        /// <param name="height">Nová výška preview obrázku</param>
         public void CropPreviewImages(double width, double height)
         {
             foreach (Anotace anotace in anotaces)
@@ -621,6 +767,11 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Zjistí, zda je projekt v režimu pouze pro čtení.
+        /// Projekt je read-only, pokud je uživatel anotátor a existují validované soubory.
+        /// </summary>
+        /// <returns>True, pokud je projekt read-only, jinak false</returns>
         public bool IsReadOnly()
         {
             if (loggedInUser.Validator)
@@ -643,11 +794,20 @@ namespace VerteMark.ObjectClasses
         * ===========
         */
 
+        /// <summary>
+        /// Přihlásí nového uživatele do systému.
+        /// </summary>
+        /// <param name="id">Identifikátor uživatele</param>
+        /// <param name="validator">True, pokud je uživatel validátor, false pokud anotátor</param>
         public void LoginNewUser(string id, bool validator) {
             loggedInUser = new User(id, validator);
             Debug.WriteLine(loggedInUser);
         }
 
+        /// <summary>
+        /// Získá přihlášeného uživatele.
+        /// </summary>
+        /// <returns>Instance přihlášeného uživatele</returns>
         public User GetLoggedInUser() {
             return loggedInUser;
         }
@@ -658,8 +818,11 @@ namespace VerteMark.ObjectClasses
         * =============================
         */
 
-        // ZDE JE VYBRANI CREATE NEBO LOAD !!
-        // Zavisi na vybranem souboru v FolderbrowserWindow
+        /// <summary>
+        /// Vybere a načte projekt podle typu (nový projekt nebo pokračování).
+        /// </summary>
+        /// <param name="path">Cesta k projektu</param>
+        /// <param name="projectType">Typ projektu: "dicoms" pro nový projekt, jinak pro načtení existujícího</param>
         public void Choose(string path, string projectType) {
             string newPath = Path.Combine(folderUtilityManager.tempPath, projectType, path);
             if (projectType == "dicoms") {
@@ -673,6 +836,10 @@ namespace VerteMark.ObjectClasses
             this.projectType = projectType;
         }
 
+        /// <summary>
+        /// Zjistí, zda je projekt anotován (obsahuje alespoň jednu anotaci s obsahem).
+        /// </summary>
+        /// <returns>True, pokud je projekt anotován, jinak false</returns>
         public bool GetIsAnotated()
         {
             CheckIsAnotated();
@@ -692,33 +859,55 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Nastaví stav anotace aktivní anotace.
+        /// </summary>
+        /// <param name="isAnotated">True, pokud je anotace anotována, jinak false</param>
         public void SetActiveAnotaceIsAnotated(bool isAnotated)
         {
             if (activeAnotace != null)
             {
                 activeAnotace.SetIsAnotated(isAnotated);
             }
-        }    
+        }
 
-
-        // Vola se z FolderbrowserWindow - vraci vsechny soubory, ktere jsou k dispozici
+        /// <summary>
+        /// Získá seznam DICOM souborů dostupných pro vytvoření nového projektu.
+        /// </summary>
+        /// <returns>Seznam názvů DICOM souborů</returns>
         public List<string> ChooseNewProject() {
             return folderUtilityManager.ChooseNewProject();
         }
 
+        /// <summary>
+        /// Získá seznam projektů dostupných pro pokračování v anotaci.
+        /// </summary>
+        /// <returns>Seznam názvů projektů</returns>
         public List<string> ChooseContinueAnotation() {
             return folderUtilityManager.ChooseContinueAnotation();
         }
 
+        /// <summary>
+        /// Získá seznam projektů dostupných pro validaci.
+        /// </summary>
+        /// <returns>Seznam názvů projektů</returns>
         public List<string> ChooseValidation() {
             return folderUtilityManager.ChooseValidation();
         }
 
+        /// <summary>
+        /// Získá seznam neplatných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů neplatných DICOM souborů</returns>
         public List<string> InvalidDicoms()
         {
             return folderUtilityManager.InvalidDicoms();
         }
 
+        /// <summary>
+        /// Získá seznam validovaných DICOM souborů.
+        /// </summary>
+        /// <returns>Seznam názvů validovaných DICOM souborů</returns>
         public List<string> ValidatedDicoms()
         {
             return folderUtilityManager.ValidatedDicoms();

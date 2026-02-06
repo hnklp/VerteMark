@@ -13,25 +13,48 @@ namespace VerteMark.ObjectClasses
     /// </summary>
     internal class Anotace {
 
+        /// <summary>
+        /// Typ anotace.
+        /// </summary>
         public enum AnotaceType
             {
+                /// <summary>Anotace obratle (bodová)</summary>
                 Vertebra,
+                /// <summary>Anotace implantátu (kreslící)</summary>
                 Implant,
+                /// <summary>Anotace fúze (kreslící)</summary>
                 Fusion
             }
         
+        /// <summary>Jedinečný identifikátor anotace (např. "V0", "I1", "F0")</summary>
         public string Id { get; private set; }
+        /// <summary>Zobrazovaný název anotace (např. "C1", "Implantát")</summary>
         public string Name { get; private set; }
+        /// <summary>Barva anotace pro vizualizaci</summary>
         public System.Drawing.Color Color { get; private set; }
+        /// <summary>Stav validace anotace</summary>
         public bool IsValidated { get; private set; }
+        /// <summary>Označuje, zda má anotace obsah (je anotována)</summary>
         public bool IsAnotated { get; private set; }
+        /// <summary>Typ anotace</summary>
         public AnotaceType Type { get; private set; }
+        /// <summary>Bitmapa canvasu pro kreslící anotace</summary>
         public WriteableBitmap? Canvas;
+        /// <summary>Preview obrázek anotace</summary>
         public Image PreviewImage;
 
+        /// <summary>Seznam bodových markerů (pro anotace obratlů)</summary>
         public List<PointMarker> Points;
+        /// <summary>Seznam čar spojujících body</summary>
         public List<LineConnection> Lines;
 
+        /// <summary>
+        /// Vytvoří novou instanci anotace.
+        /// </summary>
+        /// <param name="id">Identifikátor anotace</param>
+        /// <param name="name">Název anotace</param>
+        /// <param name="color">Barva anotace</param>
+        /// <param name="type">Typ anotace (výchozí: Vertebra)</param>
         public Anotace(string id, string name, System.Drawing.Color color, AnotaceType type = AnotaceType.Vertebra)
         {
             this.Id = id;
@@ -45,11 +68,19 @@ namespace VerteMark.ObjectClasses
         }
 
 
+        /// <summary>
+        /// Vytvoří prázdný canvas zadaných rozměrů.
+        /// </summary>
+        /// <param name="width">Šířka canvasu</param>
+        /// <param name="height">Výška canvasu</param>
         public void CreateEmptyCanvas(int width, int height) {
             Canvas = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
         }
 
-
+        /// <summary>
+        /// Aktualizuje canvas anotace novou bitmapou.
+        /// </summary>
+        /// <param name="bitmapSource">Nová bitmapa pro canvas</param>
         public void UpdateCanvas(WriteableBitmap bitmapSource) {
             if (bitmapSource is WriteableBitmap writableBitmap) {
                 if (Canvas == null) {
@@ -72,7 +103,12 @@ namespace VerteMark.ObjectClasses
             }
         }
 
-        // NACITANI CARY
+        /// <summary>
+        /// Načte anotaci z JSON pole pixelů (pro kreslící anotace - Implant/Fusion).
+        /// </summary>
+        /// <param name="pixelsArray">JSON pole obsahující souřadnice pixelů</param>
+        /// <param name="width">Šířka obrázku</param>
+        /// <param name="height">Výška obrázku</param>
         public void LoadAnnotationCanvas(JArray pixelsArray, int width, int height) {
             // Vytvoření pole pixelů
             byte[] pixels = new byte[width * height * 4];
@@ -93,8 +129,10 @@ namespace VerteMark.ObjectClasses
             this.UpdateCanvas(newBitmap);
         }
 
-        // *****************************************************************************************
-        // NACITANI BODU
+        /// <summary>
+        /// Načte bodové markery z JSON pole souřadnic (pro anotace obratlů).
+        /// </summary>
+        /// <param name="pixelsArray">JSON pole obsahující souřadnice bodů</param>
         public void LoadAnnotationPointMarker(JArray pixelsArray) {
             string[] labels = { "A", "B", "C", "D", "E", "F", "G", "H" };
             int index = 0;
@@ -117,11 +155,18 @@ namespace VerteMark.ObjectClasses
 
         // *****************************************************************************************
 
+        /// <summary>
+        /// Získá bitmapu canvasu anotace.
+        /// </summary>
+        /// <returns>WriteableBitmap canvasu nebo null, pokud není nastaven</returns>
         public WriteableBitmap GetCanvas() {
             return Canvas;
 
         }
 
+        /// <summary>
+        /// Nastaví preview obrázek anotace s 50% průhledností.
+        /// </summary>
         public void SetPreviewImage()
         {
             if (PreviewImage != null && Canvas != null) {
@@ -130,6 +175,9 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Vymaže obsah canvasu anotace.
+        /// </summary>
         public void ClearCanvas() {
             if (Canvas != null) {
                 Canvas = new WriteableBitmap((int)Canvas.Width, (int)Canvas.Height, 96, 96, PixelFormats.Bgra32, null);
@@ -137,6 +185,10 @@ namespace VerteMark.ObjectClasses
             }
         }
 
+        /// <summary>
+        /// Nastaví stav validace anotace.
+        /// </summary>
+        /// <param name="validate">True pro označení jako validováno, false pro zrušení validace</param>
         public void Validate(bool validate) {
             IsValidated = validate;
         }
@@ -163,7 +215,11 @@ namespace VerteMark.ObjectClasses
             return list;
         }
 
-        // *****************************************************************************************
+        /// <summary>
+        /// Serializuje anotaci do formátu slovníku pro export do JSON.
+        /// Pro anotace obratlů vrací souřadnice bodů, pro kreslící anotace vrací souřadnice pixelů.
+        /// </summary>
+        /// <returns>Slovník mapující ID anotace na seznam souřadnicových n-tic (x, y)</returns>
         public Dictionary<String, List<Tuple<int, int>>> GetAsDict() {
             Dictionary<String, List<Tuple<int, int>>> result = new Dictionary<String, List<Tuple<int, int>>>();
 
@@ -199,11 +255,19 @@ namespace VerteMark.ObjectClasses
         }
         // *****************************************************************************************
 
+        /// <summary>
+        /// Nastaví stav anotace (zda má obsah).
+        /// </summary>
+        /// <param name="isAnotated">True, pokud je anotace anotována, jinak false</param>
         public void SetIsAnotated(bool isAnotated)
         {
             this.IsAnotated = isAnotated;
         }
 
+        /// <summary>
+        /// Nastaví ID anotace.
+        /// </summary>
+        /// <param name="id">Nové ID anotace</param>
         public void SetId(string id)
         {
            Id = id;

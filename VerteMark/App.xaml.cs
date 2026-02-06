@@ -6,10 +6,14 @@ using System.Windows;
 namespace VerteMark
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Hlavní třída aplikace WPF. Spravuje inicializaci a životní cyklus aplikace.
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Obsluha spuštění aplikace - inicializuje kódování a kontroluje verzi Windows.
+        /// </summary>
+        /// <param name="e">Argumenty spuštění</param>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -32,12 +36,19 @@ namespace VerteMark
             }
         }
 
+        /// <summary>
+        /// Zjistí, zda je verze Windows 8.1 nebo novější.
+        /// </summary>
+        /// <returns>True, pokud je Windows 8.1 nebo novější, jinak false</returns>
         private bool IsWindows81OrNewer()
         {
             Version winVersion = Environment.OSVersion.Version;
             return (winVersion >= new Version(6, 3));
         }
 
+        /// <summary>
+        /// Restartuje aplikaci a předá parametr "allDone".
+        /// </summary>
         public static void RestartApplication()
         {
             var currentExecutablePath = Process.GetCurrentProcess().MainModule.FileName;

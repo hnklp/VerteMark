@@ -9,11 +9,22 @@ using System.Diagnostics;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace VerteMark.ObjectClasses.FolderClasses{
+    /// <summary>
+    /// Správce operací s ZIP kontejnerem projektu (.vmk soubory).
+    /// Zajišťuje extrakci a aktualizaci ZIP archivu.
+    /// </summary>
     public class ZipManager{
+        /// <summary>Cesta k ZIP souboru projektu</summary>
         public string? zipPath;
+        /// <summary>Cesta k dočasné složce pro extrakci</summary>
         public string? tempFolderPath;
+        /// <summary>Název ZIP souboru bez přípony</summary>
         public string? zipName;
 
+        /// <summary>
+        /// Načte a extrahuje ZIP soubor projektu do dočasné složky.
+        /// </summary>
+        /// <param name="zipPath">Cesta k ZIP souboru projektu</param>
         public void LoadZip(string zipPath){
                 this.zipPath = zipPath;
                 this.zipName = Path.GetFileNameWithoutExtension(zipPath);
@@ -63,6 +74,10 @@ namespace VerteMark.ObjectClasses.FolderClasses{
 		}
 
 
+        /// <summary>
+        /// Aktualizuje ZIP archiv ze změn v dočasné složce.
+        /// Odstraní soubory, které už nejsou na disku, a přidá/aktualizuje změněné soubory.
+        /// </summary>
         public void UpdateZipFromTempFolder(){
             try{
                 using (ZipArchive archive = System.IO.Compression.ZipFile.Open(zipPath, ZipArchiveMode.Update)){
@@ -72,6 +87,12 @@ namespace VerteMark.ObjectClasses.FolderClasses{
             catch (Exception ex){}
         }
 
+        /// <summary>
+        /// Rekurzivně aktualizuje ZIP archiv ze změn v dočasné složce.
+        /// </summary>
+        /// <param name="archive">ZIP archiv k aktualizaci</param>
+        /// <param name="currentPath">Aktuální cesta v ZIP archivu</param>
+        /// <param name="currentFolderPath">Aktuální cesta na disku</param>
         private void UpdateZipFromTempFolderRecursive(ZipArchive archive, string currentPath, string currentFolderPath)
         {
             // Získání aktuální cesty jako prefix pro ZIP entry
