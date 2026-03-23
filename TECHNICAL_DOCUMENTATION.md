@@ -1245,19 +1245,19 @@ Project (1) ──> (1) User
 **Exportní formát:**
 ```json
 {
-  "AnnotatorID": "user123",
-  "LastEditDate": "20. 10. 2025 14:30:00",
   "ValidatorID": null,
+  "AnnotatorID": "test",
+  "LastEditDate": "20. 10. 2025 14:30:00",
   "ValidationDate": null,
   "Annotations": [
     {
-      "V0": [[100, 200], [150, 250], ...]
+      "V0": [{"Item1":456,"Item2":1233}, {"Item1":438,"Item2":1331}, ...]
     },
     {
-      "I0": [[50, 60], [51, 61], ...]
+      "I0": [{"Item1":590,"Item2":1820}, {"Item1":591,"Item2":1820}, ...]
     }
   ],
-  "ValidatedAnnotations": ["V0", "V1", "V2"]
+  "ValidatedAnnotations": []
 }
 ```
 
